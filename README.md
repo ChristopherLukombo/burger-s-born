@@ -21,4 +21,9 @@ Mettre la variable dans VM arguments et au niveau du build MAVEN dans eclipse ou
 
 Ajouter une copie du fichier de configuration "burgersterminal.properties" correspondant au chemin indiqué dans la variable -DCONF_DIR. Le fichier "burgersterminal.properties" permettra d'externaliser les variables de configuration.
 
+Aussi ajouter également la variable avec votre chemin où vous voulez mettre le fichier de log
+-Dlogging.file=/home/christopher/Documents/log4j-application.log
+
 Créer la base de données MySQL "burgersterminal"
+
+Pour lancer la partie Angular, se placer dans le dossier front et lancer la commande ng serve --open
