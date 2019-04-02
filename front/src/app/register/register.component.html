@@ -1,0 +1,40 @@
+<form class="example-form" #f="ngForm" (ngSubmit)="save(f.value)">
+  <mat-form-field class="example-full-width">
+    <input matInput placeholder="login" name="login" #login="ngModel" ngModel>
+  </mat-form-field>
+
+  <mat-form-field class="example-full-width">
+    <input matInput placeholder="firstName"  name="firstName" #firstName="ngModel" ngModel >
+  </mat-form-field>
+
+  <mat-form-field class="example-full-width">
+    <input matInput placeholder="lastName"  name="lastName" #firstName="ngModel" ngModel >
+  </mat-form-field>
+
+  <mat-form-field class="example-full-width">
+    <input matInput placeholder="email" name="email" #email="ngModel" ngModel >
+  </mat-form-field>
+
+  <mat-form-field class="example-full-width">
+    <input matInput placeholder="password" name="password" #password="ngModel" ngModel>
+  </mat-form-field>
+
+  <mat-form-field class="example-full-width">
+    <input matInput placeholder="imageUrl" name="imageUrl" #imageUrl="ngModel" ngModel>
+  </mat-form-field>
+
+  <mat-form-field class="example-full-width">
+    <input matInput placeholder="activated" name="activated" #activated="ngModel" ngModel>
+  </mat-form-field>
+
+  <mat-form-field class="example-full-width">
+    <input matInput placeholder="langKey" name="langKey" #langKey="ngModel" ngModel>
+  </mat-form-field>
+
+  <p>
+    <button type="submit" class="btn btn-primary">Valider</button>
+  </p>
+
+</form>
+
+

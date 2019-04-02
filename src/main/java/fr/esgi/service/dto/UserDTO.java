@@ -1,62 +1,131 @@
 package fr.esgi.service.dto;
 
-import javax.validation.constraints.NotNull;
+
+
+import javax.validation.constraints.*;
+
+import fr.esgi.domain.User;
 
 /**
- * @author christopher
- * A UserDTO
+ * A DTO representing a user, with his authorities.
  */
 public class UserDTO {
+
     private Long id;
 
-    @NotNull
-    private String lastName;
+    @NotBlank
+    @Pattern(regexp = "^[_'.@A-Za-z0-9-]*$")
+    @Size(min = 1, max = 50)
+    private String login;
 
-    @NotNull
+    @Size(max = 50)
     private String firstName;
 
-    public UserDTO() {}
+    @Size(max = 50)
+    private String lastName;
 
-    /**
-     * @return the id
-     */
+    @Email
+    @Size(min = 5, max = 100)
+    private String email;
+
+    @Size(max = 256)
+    private String imageUrl;
+
+    private boolean activated = false;
+
+    @Size(min = 2, max = 6)
+    private String langKey;
+
+    public UserDTO() {
+        // Empty constructor needed for Jackson.
+    }
+
+    public UserDTO(User user) {
+        this.id = user.getId();
+        this.login = user.getLogin();
+        this.firstName = user.getFirstName();
+        this.lastName = user.getLastName();
+        this.email = user.getEmail();
+        this.activated = user.getActivated();
+        this.imageUrl = user.getImageUrl();
+        this.langKey = user.getLangKey();
+    }
+
     public Long getId() {
         return id;
     }
 
-    /**
-     * @param id the id to set
-     */
     public void setId(Long id) {
         this.id = id;
     }
 
-    /**
-     * @return the lastName
-     */
-    public String getLastName() {
-        return lastName;
+    public String getLogin() {
+        return login;
     }
 
-    /**
-     * @param lastName the lastName to set
-     */
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
+    public void setLogin(String login) {
+        this.login = login;
     }
 
-    /**
-     * @return the firstName
-     */
     public String getFirstName() {
         return firstName;
     }
 
-    /**
-     * @param firstName the firstName to set
-     */
     public void setFirstName(String firstName) {
         this.firstName = firstName;
     }
 
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
+    }
+
+    public boolean isActivated() {
+        return activated;
+    }
+
+    public void setActivated(boolean activated) {
+        this.activated = activated;
+    }
+
+    public String getLangKey() {
+        return langKey;
+    }
+
+    public void setLangKey(String langKey) {
+        this.langKey = langKey;
+    }
+
+
+    @Override
+    public String toString() {
+        return "UserDTO{" +
+            "login='" + login + '\'' +
+            ", firstName='" + firstName + '\'' +
+            ", lastName='" + lastName + '\'' +
+            ", email='" + email + '\'' +
+            ", imageUrl='" + imageUrl + '\'' +
+            ", activated=" + activated +
+            ", langKey='" + langKey + '\'' +
+            "}";
+    }
 }

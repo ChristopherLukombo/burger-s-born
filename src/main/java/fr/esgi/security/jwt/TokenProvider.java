@@ -15,7 +15,10 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.stream.Collectors;
-
+/**
+ * TokenProvider for managing configuration validity of token.
+ * @author christopher
+ */
 @Component
 public class TokenProvider {
 

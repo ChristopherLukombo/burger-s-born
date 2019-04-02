@@ -10,6 +10,10 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 
 import fr.esgi.exception.BurgerSTerminalException;
 
+/**
+ * ResponseEntityExceptionHandler for handle exception and launch error with custom status.
+ * @author christopher
+ */
 @RestControllerAdvice
 public class RestResponseEntityExceptionHandler extends ResponseEntityExceptionHandler {
 

@@ -7,6 +7,10 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.annotation.PropertySources;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 
+/**
+ * PropertiesConfig for import configuration file.
+ * @author christopher
+ */
 @Configuration
 @ConfigurationProperties
 @PropertySources(value = {@PropertySource(value = "file:${CONF_DIR}/burgersterminal.properties", ignoreResourceNotFound = true)})

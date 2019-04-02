@@ -1,13 +1,23 @@
-import { Injectable } from '@angular/core';
-import {HttpClient} from "@angular/common/http";
-import {AppConstants} from '../app.constants';
+import {Injectable} from '@angular/core';
+import {HttpClient, HttpHeaders} from "@angular/common/http";
+import {User} from "../../model/model.user";
+import {environment} from "../../environments/environment";
+
+const httpOptions = {
+  headers: new HttpHeaders({
+    'Content-Type': 'application/json',
+  })
+};
 
 @Injectable()
 export class ServicesDataService {
-  private resourceUrl = AppConstants.SERVER_API_URL + '/api';
+  private resourceUrl = environment.serverUrl;
 
   constructor(private http: HttpClient) { }
 
-  // Auth
+  // Register
+  save(user: User) {
+      return this.http.post<User>(this.resourceUrl + '/register', user, httpOptions);
+  }
 
 }

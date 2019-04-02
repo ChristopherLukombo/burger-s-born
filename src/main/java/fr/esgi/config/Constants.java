@@ -1,7 +1,8 @@
 package fr.esgi.config;
 
 /**
- * Application constants.
+ * Application constants for managing constants.
+ * @author christopher
  */
 public final class Constants {
 
