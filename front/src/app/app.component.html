@@ -1,7 +1,19 @@
+<h3 translate>home.title</h3>
 <!-- Menu -->
 <div>
     <button routerLink="/home">Accueil</button>
     <button routerLink="/register">Inscription</button>
+</div>
+<br/>
+<div>
+        <span (click)="switchLanguage('fr')" class="btnLanguage"
+              [ngClass]="{activeLanguage: getLanguage() === 'fr',
+              inactiveLanguage: getLanguage() !== 'fr'}">FR
+        </span>
+    <span (click)="switchLanguage('en')" class="btnLanguage"
+          [ngClass]="{activeLanguage: getLanguage() === 'en',
+              inactiveLanguage: getLanguage() !== 'en'}">EN
+        </span>
 </div>
 
 <router-outlet></router-outlet>

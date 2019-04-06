@@ -26,4 +26,24 @@ body {
     width: 100%;
 }
 
+.btnLanguage {
+    padding: 10px;
+    margin-left: 2px;
+    color: black;
+    background: antiquewhite;
+    line-height: 35px;
+    font-family: "Source Sans Pro", sans-serif;
+}
 
+.activeLanguage {
+    background-color: #BDB76B !important;
+}
+
+.activeLanguage:hover {
+    cursor: default;
+}
+
+.inactiveLanguage:hover {
+    background-color: #DFC11F !important;
+    cursor: pointer;
+}
