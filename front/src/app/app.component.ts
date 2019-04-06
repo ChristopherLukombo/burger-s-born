@@ -1,6 +1,9 @@
 import {Component, OnInit} from '@angular/core';
 import {TranslateService} from "@ngx-translate/core";
 import {CountryCode} from "./country-code.enum";
+import {NGXLogger} from 'ngx-logger';
+import {AppConstants} from "./app.constants";
+import {environment} from "../environments/environment";
 
 @Component({
   selector: 'app-root',
@@ -12,6 +15,7 @@ export class AppComponent implements OnInit {
 
   constructor(
       private translateService: TranslateService,
+      private logger: NGXLogger
   ) {}
 
 
@@ -22,6 +26,9 @@ export class AppComponent implements OnInit {
   }
 
   public switchLanguage(language: string): void {
+    if (false === environment.production) {
+      this.logger.debug(AppConstants.LANGUAGE_CHANGE);
+    }
     this.translateService.use(language);
     this.language = language;
   }

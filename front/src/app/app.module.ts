@@ -13,6 +13,7 @@ import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
 import {FormsModule} from "@angular/forms";
 import {TranslateHttpLoader} from "@ngx-translate/http-loader";
 import {TranslateLoader, TranslateModule} from "@ngx-translate/core";
+import {LoggerModule, NGXLogger, NgxLoggerLevel} from 'ngx-logger';
 
 const appRoutes: Routes = [
   {path: 'home', component: HomeComponent},
@@ -30,6 +31,9 @@ export function HttpLoaderFactory(http: HttpClient) {
     HomeComponent,
     RegisterComponent
   ],
+  exports: [
+    TranslateModule
+  ],
   imports: [
     BrowserModule,
     AppRoutingModule,
@@ -44,10 +48,17 @@ export function HttpLoaderFactory(http: HttpClient) {
         useFactory: HttpLoaderFactory,
         deps: [HttpClient]
       }
-    })
+    }),
+    LoggerModule.forRoot(
+        {
+          serverLoggingUrl: '/api/logs',
+          level: NgxLoggerLevel.DEBUG,
+          serverLogLevel: NgxLoggerLevel.ERROR
+        }
+    )
   ],
   providers: [
-      ServicesDataService
+    ServicesDataService
   ],
   bootstrap: [AppComponent]
 })
