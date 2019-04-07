@@ -1,8 +1,10 @@
 package fr.esgi.web.rest;
 
-import javax.validation.Valid;
-
+import com.fasterxml.jackson.annotation.JsonProperty;
+import fr.esgi.security.jwt.JWTConfigurer;
+import fr.esgi.security.jwt.TokenProvider;
 import fr.esgi.web.Login;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,10 +17,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-
-import fr.esgi.security.jwt.JWTConfigurer;
-import fr.esgi.security.jwt.TokenProvider;
+import javax.validation.Valid;
 
 /**
  * UserJWTController to authenticate users.
@@ -32,7 +31,7 @@ public class UserJWTResource {
 
     private final AuthenticationManager authenticationManager;
 
-
+    @Autowired
     public UserJWTResource(TokenProvider tokenProvider, AuthenticationManager authenticationManager) {
         this.tokenProvider = tokenProvider;
         this.authenticationManager = authenticationManager;

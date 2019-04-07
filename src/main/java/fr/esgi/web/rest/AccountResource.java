@@ -1,19 +1,25 @@
 package fr.esgi.web.rest;
 
-import fr.esgi.dao.UserRepository;
-import fr.esgi.domain.User;
+import fr.esgi.config.ErrorMessage;
 import fr.esgi.exception.BurgerSTerminalException;
 import fr.esgi.service.UserService;
+import fr.esgi.service.dto.UserDTO;
 import fr.esgi.web.ManagedUser;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import java.net.URI;
+import java.net.URISyntaxException;
+
+import static fr.esgi.config.Utils.getLang;
 
 /**
  * REST controller for managing the current user's account.
@@ -25,14 +31,14 @@ public class AccountResource {
 
     private final Logger log = LoggerFactory.getLogger(AccountResource.class);
 
-    private final UserRepository userRepository;
-
     private final UserService userService;
 
-    public AccountResource(UserRepository userRepository, UserService userService) {
+    private final MessageSource messageSource;
 
-        this.userRepository = userRepository;
+    @Autowired
+    public AccountResource(UserService userService, MessageSource messageSource) {
         this.userService = userService;
+        this.messageSource = messageSource;
     }
 
     /**
@@ -41,27 +47,29 @@ public class AccountResource {
      * @param managedUser the managed user View Model
      */
     @PostMapping("/register")
-    @ResponseStatus(HttpStatus.CREATED)
-    public void registerAccount(@RequestBody ManagedUser managedUser) throws BurgerSTerminalException {
+    public ResponseEntity registerAccount(
+            @RequestBody @Valid ManagedUser managedUser,
+            @RequestParam(required = false, defaultValue = "fr") String lang
+    ) throws BurgerSTerminalException, URISyntaxException {
         if (!checkPasswordLength(managedUser.getPassword())) {
-            throw new BurgerSTerminalException("Password is not valid");
+            throw new BurgerSTerminalException(HttpStatus.BAD_REQUEST.value(),
+                    messageSource.getMessage(ErrorMessage.PASSWORD_IS_NOT_VALID, null, getLang(lang)));
         }
-        userRepository.findOneByLogin(managedUser.getLogin().toLowerCase()).ifPresent(u -> {
-            try {
-                throw new BurgerSTerminalException("Erreur");
-            } catch (BurgerSTerminalException e) {
-                return;
-            }
-        });
-        userRepository.findOneByEmailIgnoreCase(managedUser.getEmail()).ifPresent(u -> {
-            try {
-                throw new BurgerSTerminalException("Erreur");
-            } catch (BurgerSTerminalException e) {
-                return;
-            }
-        });
-        // TODO: retourner une ReponseEntity avec une URI.
-        User user = userService.registerUser(managedUser, managedUser.getPassword());
+
+        if (userService.loginIsPresent(managedUser)) {
+            throw new BurgerSTerminalException(HttpStatus.BAD_REQUEST.value(),
+                    messageSource.getMessage(ErrorMessage.LOGIN_IS_ALREADY_REGISTERED , null, getLang(lang)));
+        }
+
+        if (userService.emailIsPresent(managedUser)) {
+            throw new BurgerSTerminalException(HttpStatus.BAD_REQUEST.value(),
+                    messageSource.getMessage(ErrorMessage.EMAIL_IS_ALREADY_USED, null, getLang(lang)));
+        }
+
+        UserDTO userDTO = userService.registerUser(managedUser, managedUser.getPassword());
+
+        return ResponseEntity.created(new URI("/api/users/" + userDTO.getId()))
+                .build();
     }
 
 
@@ -79,7 +87,8 @@ public class AccountResource {
 
     private static boolean checkPasswordLength(String password) {
         return !StringUtils.isEmpty(password) &&
-            password.length() >= ManagedUser.PASSWORD_MIN_LENGTH &&
-            password.length() <= ManagedUser.PASSWORD_MAX_LENGTH;
+                password.length() >= ManagedUser.PASSWORD_MIN_LENGTH &&
+                password.length() <= ManagedUser.PASSWORD_MAX_LENGTH;
     }
+
 }

@@ -1,4 +1,3 @@
 export enum CountryCode {
-    FR = 'fr',
-    EN = 'en'
+    FR = 'fr'
 }
