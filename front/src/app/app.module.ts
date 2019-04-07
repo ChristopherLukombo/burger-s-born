@@ -13,7 +13,7 @@ import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
 import {FormsModule} from "@angular/forms";
 import {TranslateHttpLoader} from "@ngx-translate/http-loader";
 import {TranslateLoader, TranslateModule} from "@ngx-translate/core";
-import {LoggerModule, NGXLogger, NgxLoggerLevel} from 'ngx-logger';
+import {LoggerModule, NgxLoggerLevel} from 'ngx-logger';
 
 const appRoutes: Routes = [
   {path: 'home', component: HomeComponent},
