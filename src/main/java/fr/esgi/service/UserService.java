@@ -1,6 +1,5 @@
 package fr.esgi.service;
 
-import fr.esgi.domain.User;
 import fr.esgi.service.dto.UserDTO;
 import org.springframework.stereotype.Service;
 
@@ -10,6 +9,26 @@ import org.springframework.stereotype.Service;
 @Service
 public interface UserService {
 
-    User registerUser(UserDTO userDTO, String password);
+    /**
+     * Save the user in database.
+     * @param userDTO
+     * @param password
+     * @return User
+     */
+    UserDTO registerUser(UserDTO userDTO, String password);
+
+    /**
+     * Returns true if the login is already used.
+     * @param userDTO
+     * @return boolean
+     */
+    boolean loginIsPresent(UserDTO userDTO);
+
+    /**
+     * Returns true if the email is already used.
+     * @param userDTO
+     * @return boolean
+     */
+    boolean emailIsPresent(UserDTO userDTO);
 
 }

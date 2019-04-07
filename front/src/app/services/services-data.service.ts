@@ -1,13 +1,11 @@
 import {Injectable} from '@angular/core';
-import {HttpClient, HttpHeaders} from "@angular/common/http";
+import {HttpClient, HttpHeaders, HttpParams} from "@angular/common/http";
 import {User} from "../../model/model.user";
 import {environment} from "../../environments/environment";
 
-const httpOptions = {
-  headers: new HttpHeaders({
-    'Content-Type': 'application/json',
-  })
-};
+const headers = new HttpHeaders({
+  'Content-Type': 'application/json'
+});
 
 @Injectable()
 export class ServicesDataService {
@@ -16,8 +14,9 @@ export class ServicesDataService {
   constructor(private http: HttpClient) { }
 
   // Register
-  save(user: User) {
-      return this.http.post<User>(this.resourceUrl + '/register', user, httpOptions);
+  save(user: User, lang: string) {
+    const params = new HttpParams().set('lang', lang);
+    return this.http.post<User>(this.resourceUrl + '/register', user, {headers, params});
   }
 
 }
