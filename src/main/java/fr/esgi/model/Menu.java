@@ -1,12 +1,13 @@
 package fr.esgi.model;
 
 import java.util.ArrayList;
-import java.util.Set;
+import java.util.List;
 
-
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
@@ -24,17 +25,24 @@ public class Menu {
 	@Id
 	@GeneratedValue
 	private Long id;
+	
+	@Column(name="name")
 	private String name;
+	
+	@Column(name="price")
 	private double price;
+	
+	@Column(name="isAvailable")
 	private Boolean isAvailable;
 	
-//	@ManyToOne
-//	private Manager hisManager;
+	@ManyToOne
+	@JoinColumn
+	private Manager manager;
 	
-//	@ManyToMany(targetEntity=Product.class)
-//	private Product hisProducts;
+	@ManyToMany(targetEntity=Product.class)
+	private List<Product> products = new ArrayList<Product>();
 	
-//	@ManyToMany(targetEntity=Order.class)
-//	private Order hisOrders;
+	@ManyToMany(mappedBy = "menus")
+	private List<Order> orders = new ArrayList<Order>();
 
 }

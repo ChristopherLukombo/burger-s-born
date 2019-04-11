@@ -1,7 +1,9 @@
 package fr.esgi.model;
 
 import java.util.ArrayList;
+import java.util.List;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -13,15 +15,18 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
-@Entity(name="CATEGORY")
+@Entity(name="category")
 @Getter @Setter @AllArgsConstructor @NoArgsConstructor @ToString
 public class Category {
 
 	@Id
 	@GeneratedValue
 	private Long id;
+	
+	@Column(name="name")
 	private String name;
 	
-//	private Product hisProduct;
+	@OneToMany(mappedBy = "category")
+	private List<Product> products = new ArrayList<Product>();
 
 }
