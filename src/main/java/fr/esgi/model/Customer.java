@@ -1,5 +1,6 @@
 package fr.esgi.model;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 
 import javax.persistence.Column;
@@ -49,8 +50,10 @@ public class Customer {
 	@Column(name="birthDay")
 	private LocalDate birthDay;
 	
-	@OneToOne(mappedBy = "customer")
-	private Order order;
+	@OneToOne
+    @JoinColumn
+    @MapsId
+	private Command command;
 
 
 

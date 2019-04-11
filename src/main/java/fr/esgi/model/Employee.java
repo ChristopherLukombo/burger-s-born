@@ -1,12 +1,16 @@
 package fr.esgi.model;
 
+import java.io.Serializable;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 
 import lombok.AllArgsConstructor;
@@ -47,9 +51,6 @@ public class Employee {
 	@Column(name="birthDay")
 	private LocalDate birthDay;
 	
-	
-	@OneToOne(mappedBy = "employee")
-	private CompoOrder compoOrder;
-
-	
+    @OneToMany(mappedBy = "employee")
+	private List<CommandCompo> commandCompo = new ArrayList<CommandCompo>();
 }
