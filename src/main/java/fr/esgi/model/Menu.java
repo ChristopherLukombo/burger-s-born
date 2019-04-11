@@ -1,5 +1,6 @@
 package fr.esgi.model;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,7 +31,7 @@ public class Menu {
 	private String name;
 	
 	@Column(name="price")
-	private double price;
+	private float price;
 	
 	@Column(name="isAvailable")
 	private Boolean isAvailable;
@@ -39,10 +40,10 @@ public class Menu {
 	@JoinColumn
 	private Manager manager;
 	
-	@ManyToMany(targetEntity=Product.class)
+	@ManyToMany
 	private List<Product> products = new ArrayList<Product>();
 	
-	@ManyToMany(mappedBy = "menus")
-	private List<Order> orders = new ArrayList<Order>();
+	@ManyToMany
+	private List<Command> commands = new ArrayList<Command>();
 
 }

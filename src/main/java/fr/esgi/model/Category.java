@@ -1,5 +1,6 @@
 package fr.esgi.model;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,7 +18,7 @@ import lombok.ToString;
 
 @Entity(name="category")
 @Getter @Setter @AllArgsConstructor @NoArgsConstructor @ToString
-public class Category {
+public class Category  {
 
 	@Id
 	@GeneratedValue
