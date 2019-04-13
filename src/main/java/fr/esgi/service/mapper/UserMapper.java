@@ -22,6 +22,7 @@ public interface UserMapper {
             @Mapping(source = "imageUrl", target = "imageUrl"),
             @Mapping(source = "activated", target = "activated"),
             @Mapping(source = "birthDay", target = "birthDay"),
+            @Mapping(source = "role.id", target = "roleId"),
     })
     UserDTO userToUserDTO(User user);
 
