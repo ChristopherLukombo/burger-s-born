@@ -1,10 +1,10 @@
 <form class="example-form" #f="ngForm" (ngSubmit)="save(f.value)">
   <mat-form-field class="example-full-width">
-    <input matInput placeholder="login" name="login" #login="ngModel" ngModel required>
+    <input matInput placeholder="pseudo" name="pseudo" #pseudo="ngModel" ngModel required>
   </mat-form-field>
 
-  <div class="alert alert-danger" role="alert" *ngIf="(login.touched && login.errors)">
-    <div *ngIf="login.errors?.required">
+  <div class="alert alert-danger" role="alert" *ngIf="(pseudo.touched && pseudo.errors)">
+    <div *ngIf="pseudo.errors?.required">
       Le champs est obligatoire
     </div>
   </div>

@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
 
+import fr.esgi.domain.User;
 import fr.esgi.exception.BurgerSTerminalException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,7 +18,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import fr.esgi.dao.UserRepository;
-import fr.esgi.domain.User;
 
 /**
  * Authenticate a user from the database.
@@ -47,7 +47,7 @@ public class DomainUserDetailsService implements UserDetailsService {
                 return null;
             }
         }).orElseGet(() -> {
-            Optional<User> userByLoginFromDatabase = userRepository.findOneWithAuthoritiesByLogin(lowercaseLogin);
+            Optional<User> userByLoginFromDatabase = userRepository.findOneWithAuthoritiesByPseudo(lowercaseLogin);
             return userByLoginFromDatabase.map(user -> {
                 try {
                     return createSpringSecurityUser(lowercaseLogin, user);
@@ -61,7 +61,7 @@ public class DomainUserDetailsService implements UserDetailsService {
     }
 
     private org.springframework.security.core.userdetails.User createSpringSecurityUser(String lowercaseLogin, User user) throws BurgerSTerminalException {
-        if (!user.getActivated()) {
+        if (!user.isActivated()) {
             throw new BurgerSTerminalException("User " + lowercaseLogin + " was not activated");
         }
 
@@ -69,7 +69,7 @@ public class DomainUserDetailsService implements UserDetailsService {
         List<GrantedAuthority> grantedAuthorities = new ArrayList<>();
         grantedAuthorities.add(new SimpleGrantedAuthority("ROLE_CUSTOMER"));
 
-        return new org.springframework.security.core.userdetails.User(user.getLogin(),
+        return new org.springframework.security.core.userdetails.User(user.getPseudo(),
                 user.getPassword(),
                 grantedAuthorities);
     }

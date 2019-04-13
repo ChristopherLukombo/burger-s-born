@@ -2,15 +2,13 @@ package fr.esgi.domain;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import org.apache.commons.lang3.StringUtils;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
-import java.util.Locale;
-import java.util.Objects;
+import java.time.LocalDate;
 
 /**
  *
@@ -28,7 +26,7 @@ public class User {
     @Pattern(regexp = "^[_'.@A-Za-z0-9-]*$")
     @Size(min = 1, max = 50)
     @Column(length = 50, unique = true, nullable = false)
-    private String login;
+    private String pseudo;
 
     @JsonIgnore
     @NotNull
@@ -49,17 +47,19 @@ public class User {
     @Column(length = 100, unique = true)
     private String email;
 
+    @Column(name = "createDate")
+    private LocalDate createDate;
+
     @NotNull
     @Column(nullable = false)
     private boolean activated = false;
 
-    @Size(min = 2, max = 6)
-    @Column(name = "lang_key", length = 6)
-    private String langKey;
-
     @Size(max = 256)
     @Column(name = "image_url", length = 256)
     private String imageUrl;
+
+    @Column
+    private LocalDate birthDay;
 
     public User() { }
 
@@ -71,13 +71,12 @@ public class User {
         this.id = id;
     }
 
-    public String getLogin() {
-        return login;
+    public String getPseudo() {
+        return pseudo;
     }
 
-    // Lowercase the login before saving it in database
-    public void setLogin(String login) {
-        this.login = StringUtils.lowerCase(login, Locale.ENGLISH);
+    public void setPseudo(String pseudo) {
+        this.pseudo = pseudo;
     }
 
     public String getPassword() {
@@ -112,6 +111,22 @@ public class User {
         this.email = email;
     }
 
+    public LocalDate getCreateDate() {
+        return createDate;
+    }
+
+    public void setCreateDate(LocalDate createDate) {
+        this.createDate = createDate;
+    }
+
+    public boolean isActivated() {
+        return activated;
+    }
+
+    public void setActivated(boolean activated) {
+        this.activated = activated;
+    }
+
     public String getImageUrl() {
         return imageUrl;
     }
@@ -120,50 +135,11 @@ public class User {
         this.imageUrl = imageUrl;
     }
 
-    public boolean getActivated() {
-        return activated;
+    public LocalDate getBirthDay() {
+        return birthDay;
     }
 
-    public void setActivated(boolean activated) {
-        this.activated = activated;
+    public void setBirthDay(LocalDate birthDay) {
+        this.birthDay = birthDay;
     }
-    public String getLangKey() {
-        return langKey;
-    }
-
-    public void setLangKey(String langKey) {
-        this.langKey = langKey;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-
-        User user = (User) o;
-        return !(user.getId() == null || getId() == null) && Objects.equals(getId(), user.getId());
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hashCode(getId());
-    }
-
-    @Override
-    public String toString() {
-        return "User{" +
-            "login='" + login + '\'' +
-            ", firstName='" + firstName + '\'' +
-            ", lastName='" + lastName + '\'' +
-            ", email='" + email + '\'' +
-            ", imageUrl='" + imageUrl + '\'' +
-            ", activated='" + activated + '\'' +
-            ", langKey='" + langKey + '\'' +
-            "}";
-    }
-
 }
