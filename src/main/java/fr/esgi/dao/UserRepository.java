@@ -12,11 +12,11 @@ import java.util.Optional;
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
 
-	Optional<User> findOneWithAuthoritiesByLogin(String lowercaseLogin);
+	Optional<User> findOneWithAuthoritiesByPseudo(String lowercaseLogin);
 
 	Optional<User> findOneWithAuthoritiesByEmail(String lowercaseLogin);
 
-    Optional<User> findOneByLogin(String toLowerCase);
+    Optional<User> findOneByPseudo(String toLowerCase);
 
     Optional<User> findOneByEmailIgnoreCase(String email);
 
