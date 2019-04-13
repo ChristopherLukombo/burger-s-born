@@ -61,6 +61,9 @@ public class User {
     @Column
     private LocalDate birthDay;
 
+    @ManyToOne
+    private Role role;
+
     public User() { }
 
     public Long getId() {
@@ -141,5 +144,13 @@ public class User {
 
     public void setBirthDay(LocalDate birthDay) {
         this.birthDay = birthDay;
+    }
+
+    public Role getRole() {
+        return role;
+    }
+
+    public void setRole(Role role) {
+        this.role = role;
     }
 }

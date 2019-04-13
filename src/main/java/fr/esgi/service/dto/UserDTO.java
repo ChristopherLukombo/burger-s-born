@@ -40,6 +40,8 @@ public class UserDTO {
 
     private LocalDate birthDay;
 
+    private Long roleId;
+
 
     public UserDTO() {
         // Empty constructor needed for Jackson.
@@ -55,6 +57,7 @@ public class UserDTO {
         this.createDate = user.getCreateDate();
         this.imageUrl = user.getImageUrl();
         this.birthDay = user.getBirthDay();
+        this.roleId = user.getRole().getId();
     }
 
     public Long getId() {
@@ -127,5 +130,13 @@ public class UserDTO {
 
     public void setBirthDay(LocalDate birthDay) {
         this.birthDay = birthDay;
+    }
+
+    public Long getRoleId() {
+        return roleId;
+    }
+
+    public void setRoleId(Long roleId) {
+        this.roleId = roleId;
     }
 }
