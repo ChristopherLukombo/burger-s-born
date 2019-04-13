@@ -2,7 +2,6 @@ package fr.esgi.service.impl;
 
 import fr.esgi.dao.UserRepository;
 import fr.esgi.domain.User;
-import fr.esgi.exception.BurgerSTerminalException;
 import fr.esgi.service.UserService;
 import fr.esgi.service.dto.UserDTO;
 import fr.esgi.service.mapper.UserMapper;
@@ -12,7 +11,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.util.Optional;
 
 /**
  * Service Implementation for managing User.
@@ -45,14 +43,15 @@ public class UserServiceImpl implements UserService {
     public UserDTO registerUser(UserDTO userDTO, String password) {
         User newUser = new User();
         String encryptedPassword = passwordEncoder.encode(password);
-        newUser.setLogin(userDTO.getLogin());
+        newUser.setPseudo(userDTO.getPseudo());
         // new user gets initially a generated password
         newUser.setPassword(encryptedPassword);
         newUser.setFirstName(userDTO.getFirstName());
         newUser.setLastName(userDTO.getLastName());
         newUser.setEmail(userDTO.getEmail());
         newUser.setImageUrl(userDTO.getImageUrl());
-        newUser.setLangKey(userDTO.getLangKey());
+        newUser.setBirthDay(userDTO.getBirthDay());
+        newUser.setCreateDate(userDTO.getCreateDate());
         // new user is not active
         newUser.setActivated(false);
         newUser = userRepository.save(newUser);
@@ -67,7 +66,7 @@ public class UserServiceImpl implements UserService {
      * @return boolean
      */
     public boolean loginIsPresent(UserDTO userDTO) {
-        return userRepository.findOneByLogin(userDTO.getLogin().toLowerCase())
+        return userRepository.findOneByPseudo(userDTO.getPseudo().toLowerCase())
                 .isPresent();
     }
 
