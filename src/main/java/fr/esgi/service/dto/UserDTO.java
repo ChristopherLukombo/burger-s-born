@@ -1,10 +1,13 @@
 package fr.esgi.service.dto;
 
 
-
-import javax.validation.constraints.*;
-
 import fr.esgi.domain.User;
+
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
+import java.time.LocalDate;
 
 /**
  * A DTO representing a user, with his authorities.
@@ -16,7 +19,7 @@ public class UserDTO {
     @NotBlank
     @Pattern(regexp = "^[_'.@A-Za-z0-9-]*$")
     @Size(min = 1, max = 50)
-    private String login;
+    private String pseudo;
 
     @Size(max = 50)
     private String firstName;
@@ -31,10 +34,12 @@ public class UserDTO {
     @Size(max = 256)
     private String imageUrl;
 
+    private LocalDate createDate;
+
     private boolean activated = false;
 
-    @Size(min = 2, max = 6)
-    private String langKey;
+    private LocalDate birthDay;
+
 
     public UserDTO() {
         // Empty constructor needed for Jackson.
@@ -42,13 +47,14 @@ public class UserDTO {
 
     public UserDTO(User user) {
         this.id = user.getId();
-        this.login = user.getLogin();
+        this.pseudo = user.getPseudo();
         this.firstName = user.getFirstName();
         this.lastName = user.getLastName();
         this.email = user.getEmail();
-        this.activated = user.getActivated();
+        this.activated = user.isActivated();
+        this.createDate = user.getCreateDate();
         this.imageUrl = user.getImageUrl();
-        this.langKey = user.getLangKey();
+        this.birthDay = user.getBirthDay();
     }
 
     public Long getId() {
@@ -59,12 +65,12 @@ public class UserDTO {
         this.id = id;
     }
 
-    public String getLogin() {
-        return login;
+    public String getPseudo() {
+        return pseudo;
     }
 
-    public void setLogin(String login) {
-        this.login = login;
+    public void setPseudo(String pseudo) {
+        this.pseudo = pseudo;
     }
 
     public String getFirstName() {
@@ -107,25 +113,19 @@ public class UserDTO {
         this.activated = activated;
     }
 
-    public String getLangKey() {
-        return langKey;
+    public LocalDate getCreateDate() {
+        return createDate;
     }
 
-    public void setLangKey(String langKey) {
-        this.langKey = langKey;
+    public void setCreateDate(LocalDate createDate) {
+        this.createDate = createDate;
     }
 
+    public LocalDate getBirthDay() {
+        return birthDay;
+    }
 
-    @Override
-    public String toString() {
-        return "UserDTO{" +
-            "login='" + login + '\'' +
-            ", firstName='" + firstName + '\'' +
-            ", lastName='" + lastName + '\'' +
-            ", email='" + email + '\'' +
-            ", imageUrl='" + imageUrl + '\'' +
-            ", activated=" + activated +
-            ", langKey='" + langKey + '\'' +
-            "}";
+    public void setBirthDay(LocalDate birthDay) {
+        this.birthDay = birthDay;
     }
 }
