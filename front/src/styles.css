@@ -36,14 +36,16 @@ body {
 }
 
 .activeLanguage {
-    background-color: #BDB76B !important;
+    color: white !important;
+    background-color: #bdbdbd !important;
 }
 
-.activeLanguage:hover {
-    cursor: default;
+.inactiveLanguage {
+    color: white !important;
+    background-color: #4285F4 !important;
 }
 
 .inactiveLanguage:hover {
-    background-color: #DFC11F !important;
-    cursor: pointer;
+    color: white !important;
+    background-color: #0d47a1 !important;
 }

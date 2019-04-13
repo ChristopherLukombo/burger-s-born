@@ -40,7 +40,7 @@
   </div>
 
   <mat-form-field class="example-full-width">
-    <input matInput placeholder="password" name="password" #password="ngModel" ngModel required>
+    <input matInput placeholder="password" type="password" name="password" #password="ngModel" ngModel required>
   </mat-form-field>
 
   <div class="alert alert-danger" role="alert" *ngIf="(password.touched && password.errors)">
@@ -79,9 +79,9 @@
     </div>
   </div>
 
-  <p>
-    <button type="submit" [disabled]="!f.form.valid">Valider</button>
-  </p>
+  <div style="text-align: center;">
+    <button class="btn btn-primary" type="submit" [disabled]="!f.form.valid">Valider</button>
+  </div>
 
 </form>
 
