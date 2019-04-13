@@ -1,15 +1,27 @@
-<h3 translate>home.title</h3>
-<!-- Menu -->
-<div>
-    <button routerLink="/home">Accueil</button>
-    <button routerLink="/register">Inscription</button>
-</div>
-<br/>
-<div>
-        <span (click)="switchLanguage('fr')" class="btnLanguage"
-              [ngClass]="{activeLanguage: getLanguage() === 'fr',
-              inactiveLanguage: getLanguage() !== 'fr'}">FR
-        </span>
-</div>
+<h3 style="text-align:center; margin: 20px;" translate>home.title</h3>
 
-<router-outlet></router-outlet>
+<!-- Menu -->
+<div class="container">
+    <hr>
+
+    <div class="row">
+        <div class="col-3">
+            <h4 style="text-align: center;">Menu</h4>
+            <div class="nav flex-column nav-pills" role="tablist" aria-orientation="vertical">
+                <a class="nav-link" routerLink="/home" routerLinkActive="active" role="tab">Accueil</a>
+                <a class="nav-link" routerLink="/register" routerLinkActive="active" role="tab">Inscription</a>
+                <a class="nav-link" routerLink="#" routerLinkActive="active" role="tab">Menu 3</a>
+                <a class="nav-link" routerLink="#" routerLinkActive="active" role="tab">Menu 4</a>
+            </div>
+        </div>
+        <div class="col-9">
+            <div class="tab-content">
+                <router-outlet></router-outlet>
+            </div>
+        </div>
+
+        <button class="btn btnLanguage" (click)="switchLanguage('fr')" [ngClass]="{activeLanguage: getLanguage() === 'fr',
+            inactiveLanguage: getLanguage() !== 'fr'}">FR
+        </button>
+    </div>
+</div>
