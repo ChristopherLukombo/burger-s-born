@@ -19,13 +19,12 @@ public abstract class UserMapperDecorator implements UserMapper {
         } else {
             User user = new User();
             user.setId(userDTO.getId());
-            user.setLogin(userDTO.getLogin());
+            user.setPseudo(userDTO.getPseudo());
             user.setFirstName(userDTO.getFirstName());
             user.setLastName(userDTO.getLastName());
             user.setEmail(userDTO.getEmail());
             user.setImageUrl(userDTO.getImageUrl());
             user.setActivated(userDTO.isActivated());
-            user.setLangKey(userDTO.getLangKey());
             return user;
         }
     }
