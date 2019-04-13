@@ -5,6 +5,7 @@ import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 
 @Entity
+@IdClass(CommandCompoID.class)
 public class CommandCompo implements Serializable {
 	
 	@Id
