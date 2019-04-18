@@ -27,3 +27,6 @@ Aussi ajouter également la variable avec votre chemin où vous voulez mettre le
 Créer la base de données MySQL "burgersterminal"
 
 Pour lancer la partie Angular, se placer dans le dossier front et lancer la commande ng serve --open
+
+
+Swagger est accessible à l'URL suivante : http://localhost:8080/swagger-ui.html#
