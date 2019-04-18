@@ -57,6 +57,19 @@ public class TokenProvider {
                 .compact();
     }
 
+    public String createToken() {
+        long now = (new Date()).getTime();
+        Date validity;
+        validity = new Date(now + this.tokenValidityInMillisecondsForRememberMe);
+
+        return Jwts.builder()
+                .setSubject("USER")
+                .claim(AUTHORITIES_KEY, "ROLE")
+                .signWith(SignatureAlgorithm.HS512, secretKey)
+                .setExpiration(validity)
+                .compact();
+    }
+
     public Authentication getAuthentication(String token) {
         Claims claims = Jwts.parser()
                 .setSigningKey(secretKey)
