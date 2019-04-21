@@ -16,6 +16,7 @@ export class AuthComponent implements OnInit {
   login: Login;
   registerForm: FormGroup;
   submitted = false;
+  errorMessage: String;
 
   constructor(
       private authProviderService: AuthProviderService,
@@ -56,9 +57,9 @@ export class AuthComponent implements OnInit {
         }, err => {
           if (err instanceof HttpErrorResponse) {
             if (403 === err.status) {
-              alert('Login ou mot de passe incorrecte');
+              this.errorMessage = 'Login ou mot de passe incorrecte';
             } else {
-              alert('Il y a eu une erreur Serveur');
+              this.errorMessage = 'Une erreur serveur s\'est produite';
             }
           }
         });
