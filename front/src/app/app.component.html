@@ -11,7 +11,7 @@
                 <a class="nav-link" routerLink="/home" routerLinkActive="active" role="tab">
                     Accueil
                 </a>
-                <a class="nav-link" routerLink="/register" routerLinkActive="active" role="tab">
+                <a class="nav-link" routerLink="/register" routerLinkActive="active" *ngIf="!authProviderService.isAuthenticated()" role="tab">
                     Inscription
                 </a>
                 <a class="nav-link" routerLink="/auth" routerLinkActive="active" role="tab" *ngIf="!authProviderService.isAuthenticated()">
