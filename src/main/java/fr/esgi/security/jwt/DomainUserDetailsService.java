@@ -1,11 +1,8 @@
 package fr.esgi.security.jwt;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
-import java.util.Optional;
-
+import fr.esgi.dao.UserRepository;
 import fr.esgi.domain.User;
+import fr.esgi.enums.RoleName;
 import fr.esgi.exception.BurgerSTerminalException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,7 +14,10 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import fr.esgi.dao.UserRepository;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+import java.util.Optional;
 
 /**
  * Authenticate a user from the database.
@@ -26,7 +26,7 @@ import fr.esgi.dao.UserRepository;
 @Component("userDetailsService")
 public class DomainUserDetailsService implements UserDetailsService {
 
-    private final Logger LOGGER = LoggerFactory.getLogger(DomainUserDetailsService.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(DomainUserDetailsService.class);
 
     private final UserRepository userRepository;
 
@@ -65,12 +65,26 @@ public class DomainUserDetailsService implements UserDetailsService {
             throw new BurgerSTerminalException("User " + lowercaseLogin + " was not activated");
         }
 
-        // TODO: Gérer les rôles
-        List<GrantedAuthority> grantedAuthorities = new ArrayList<>();
-        grantedAuthorities.add(new SimpleGrantedAuthority("ROLE_CUSTOMER"));
+        final List<GrantedAuthority> grantedAuthorities = new ArrayList<>();
+        grantedAuthorities.add(new SimpleGrantedAuthority(getRole(user)));
 
         return new org.springframework.security.core.userdetails.User(user.getPseudo(),
                 user.getPassword(),
                 grantedAuthorities);
+    }
+
+    private String getRole(User user) {
+        String role = null;
+
+        if (null != user.getRole()) {
+            if (null != user.getRole().getName()) {
+                role = user.getRole().getName();
+            }
+        }
+
+        if (null == role) {
+            role = RoleName.ROLE_CUSTOMER.toString();
+        }
+        return role;
     }
 }

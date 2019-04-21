@@ -10,7 +10,7 @@ public class ProductDTO {
 
 	private double price;
 	
-	private boolean isAvailable;
+	private boolean available;
 	
 	private Long categoryId;
 	
@@ -24,7 +24,7 @@ public class ProductDTO {
 		this.id = product.getId();
 		this.name = product.getName();
 		this.price = product.getPrice();
-		this.isAvailable = product.isAvailable();
+		this.available = product.isAvailable();
 		this.categoryId = product.getCategory().getId();
 		this.managerId = product.getManager().getId();
 	}
@@ -54,11 +54,11 @@ public class ProductDTO {
 	}
 
 	public boolean isAvailable() {
-		return isAvailable;
+		return available;
 	}
 
 	public void setAvailable(boolean available) {
-		isAvailable = available;
+		this.available = available;
 	}
 
 	public Long getCategoryId() {

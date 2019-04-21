@@ -30,7 +30,7 @@ import static fr.esgi.config.Utils.getLang;
 @RequestMapping("/api")
 public class AccountResource {
 
-    private final Logger LOGGER = LoggerFactory.getLogger(AccountResource.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(AccountResource.class);
 
     private final UserService userService;
 
@@ -74,18 +74,19 @@ public class AccountResource {
     }
 
     @PostMapping("/register/file/{userId}")
-    public ResponseEntity<String> uploadFile(@RequestParam("file") MultipartFile file, @PathVariable("userId") Long userId) throws BurgerSTerminalException {
+    public ResponseEntity<String> uploadFile(
+            @RequestParam("file") MultipartFile file,
+            @PathVariable("userId") Long userId) throws BurgerSTerminalException {
         LOGGER.info("Call API service store ...");
 
-        final String message;
         try {
             this.userService.store(file, userId);
-            message = "Successfully uploaded " + file.getOriginalFilename() + "!";
         } catch (Exception e) {
-            throw new BurgerSTerminalException(HttpStatus.INTERNAL_SERVER_ERROR.value(), " FAIL to upload " + file.getOriginalFilename() + "!", e);
+            throw new BurgerSTerminalException(HttpStatus.INTERNAL_SERVER_ERROR.value(),
+                    messageSource.getMessage(ErrorMessage.ERROR_FAIL_TO_UPLOAD, null, getLang("fr")) + file.getOriginalFilename(), e);
         }
 
-        return ResponseEntity.ok().body(message);
+        return ResponseEntity.ok().body("Successfully uploaded : " + file.getOriginalFilename());
     }
 
 
