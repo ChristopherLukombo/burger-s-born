@@ -1,0 +1,36 @@
+<form class="example-form" [formGroup]="registerForm" (ngSubmit)="authenticate()">
+  <div class="wrapper fadeInDown">
+    <div id="formContent">
+
+      <mat-form-field class="example-full-width">
+        <input matInput placeholder="Login" name="username" formControlName="username">
+      </mat-form-field>
+      <div class="alert alert-danger" role="alert" *ngIf="(submitted && f.username.errors)">
+        <div *ngIf="f.username.errors.required">
+          Le champs est obligatoire
+        </div>
+        <div *ngIf="f.username.errors.maxlength">
+          Le champs doit contenir au maximun 50 caractères
+        </div>
+      </div>
+      <mat-form-field class="example-full-width">
+        <input matInput placeholder="Mot de passe" type="password" name="password" formControlName="password">
+      </mat-form-field>
+      <div class="alert alert-danger" role="alert" *ngIf="(submitted && f.password.errors)">
+        <div *ngIf="f.password.errors.required">
+          Le champs est obligatoire
+        </div>
+        <div *ngIf="f.password.errors.minlength">
+          Le champs doit avoir au moins 12 caractères
+        </div>
+        <div *ngIf="f.password.errors.maxlength">
+          Le champs doit contenir au maximun 20 caractères
+        </div>
+      </div>
+
+      <div style="text-align: center;">
+        <button class="btn btn-primary" type="submit">Connexion</button>
+      </div>
+    </div>
+  </div>
+</form>
