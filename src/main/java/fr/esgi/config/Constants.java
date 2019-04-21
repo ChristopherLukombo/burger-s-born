@@ -10,6 +10,8 @@ public final class Constants {
     public static final String HEADER = "header";
     public static final String BEARER = "Bearer ";
     public static final String STRING = "string";
+    public static final String IMAGES = "/images";
+    public static final String DELIMITER = "/";
 
     private Constants() {
         // private constructor needed for Constants class.

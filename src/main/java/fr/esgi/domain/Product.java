@@ -26,8 +26,8 @@ public class Product {
 	@Column(name = "price")
 	private double price;
 	
-	@Column(name = "isAvailable")
-	private boolean isAvailable;
+	@Column(name = "available")
+	private boolean available;
 	
 	@ManyToOne
 	private Category category;
@@ -78,11 +78,11 @@ public class Product {
 	}
 
 	public boolean isAvailable() {
-		return isAvailable;
+		return available;
 	}
 
 	public void setAvailable(boolean available) {
-		isAvailable = available;
+		this.available = available;
 	}
 
 	public Category getCategory() {
