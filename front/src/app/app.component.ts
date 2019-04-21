@@ -4,6 +4,8 @@ import {CountryCode} from "./country-code.enum";
 import {NGXLogger} from 'ngx-logger';
 import {AppConstants} from "./app.constants";
 import {environment} from "../environments/environment";
+import {AuthProviderService} from "./services/auth-provider.service";
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-root',
@@ -15,7 +17,9 @@ export class AppComponent implements OnInit {
 
   constructor(
       private translateService: TranslateService,
-      private logger: NGXLogger
+      private logger: NGXLogger,
+      public authProviderService: AuthProviderService,
+      private router: Router
   ) {}
 
 
@@ -34,5 +38,11 @@ export class AppComponent implements OnInit {
 
   public getLanguage(): string {
     return this.language;
+  }
+
+  public logout() {
+    this.authProviderService.logout()
+        .subscribe();
+    this.router.navigate(['/auth']);
   }
 }

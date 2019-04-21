@@ -1,11 +1,9 @@
-import {Injectable} from '@angular/core';
-import {HttpClient, HttpHeaders, HttpParams} from "@angular/common/http";
-import {User} from "../../model/model.user";
-import {environment} from "../../environments/environment";
+import { HttpClient, HttpHeaders, HttpParams, HttpRequest, HttpResponse } from '@angular/common/http';
+import { Injectable } from '@angular/core';
+import { Observable } from 'rxjs';
+import { environment } from '../../environments/environment';
+import { User } from '../../model/model.user';
 
-const headers = new HttpHeaders({
-  'Content-Type': 'application/json'
-});
 
 @Injectable()
 export class ServicesDataService {
@@ -13,10 +11,27 @@ export class ServicesDataService {
 
   constructor(private http: HttpClient) { }
 
+
   // Register
-  save(user: User, lang: string) {
+  save(user: User, lang: string): Observable<HttpResponse<Object>>  {
     const params = new HttpParams().set('lang', lang);
-    return this.http.post<User>(this.resourceUrl + '/register', user, {headers, params});
+    let headers = new HttpHeaders().set('Content-Type', 'application/json');
+        // .set('Authorization', 'Bearer ' + this.authProviderService.getToken());
+
+    return this.http.post<HttpResponse<Object>>(this.resourceUrl + '/register', user, {params, observe: 'response'});
+  }
+
+
+  uploadFile(file: File, userId: any) {
+    const formdata: FormData = new FormData();
+    formdata.append('file', file);
+
+    const req = new HttpRequest('POST', this.resourceUrl +  '/register/file/' + `${userId}`, formdata, {
+      responseType: 'text',
+
+    });
+
+    return this.http.request(req);
   }
 
 }
