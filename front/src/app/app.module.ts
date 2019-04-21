@@ -5,43 +5,53 @@ import {AppRoutingModule} from './app-routing.module';
 import {AppComponent} from './app.component';
 import {ServicesDataService} from "./services/services-data.service";
 import {HttpClient, HttpClientModule} from "@angular/common/http";
-import {RouterModule, Routes} from "@angular/router";
 import {HomeComponent} from './home/home.component';
 import {RegisterComponent} from './register/register.component';
-import {MatInputModule} from "@angular/material";
+import {MatDialogModule, MatInputModule, MatNativeDateModule} from "@angular/material";
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
-import {FormsModule} from "@angular/forms";
+import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {TranslateHttpLoader} from "@ngx-translate/http-loader";
 import {TranslateLoader, TranslateModule} from "@ngx-translate/core";
 import {LoggerModule, NgxLoggerLevel} from 'ngx-logger';
-
-const appRoutes: Routes = [
-  {path: 'home', component: HomeComponent},
-  {path: 'register', component: RegisterComponent},
-  {path: '', redirectTo: '/home', pathMatch: 'full'}
-];
+import {AuthComponent} from './auth/auth.component';
+import {AuthProviderService} from "./services/auth-provider.service";
+import {LocalStorageService} from "ngx-webstorage";
+import {AuthGuard} from "./auth.guard";
+import {JwtModule} from '@auth0/angular-jwt';
+import {MatDatepickerModule} from '@angular/material/datepicker';
+import { DialogSuccessComponent } from './dialog-success/dialog-success.component'
 
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http, 'assets/i18n/', '.json');
+}
+export function tokenGetter() {
+  return localStorage.getItem('authenticationToken');
 }
 
 @NgModule({
   declarations: [
     AppComponent,
     HomeComponent,
-    RegisterComponent
+    RegisterComponent,
+    AuthComponent,
+    DialogSuccessComponent
   ],
   exports: [
-    TranslateModule
+    DialogSuccessComponent,
+    TranslateModule,
   ],
+  entryComponents: [DialogSuccessComponent],
   imports: [
+    ReactiveFormsModule,
     BrowserModule,
     AppRoutingModule,
     HttpClientModule,
-    RouterModule.forRoot(appRoutes),
     MatInputModule,
+    MatDatepickerModule,
+    MatNativeDateModule,
     BrowserAnimationsModule,
     FormsModule,
+    MatDialogModule,
     TranslateModule.forRoot({
       loader: {
         provide: TranslateLoader,
@@ -51,14 +61,22 @@ export function HttpLoaderFactory(http: HttpClient) {
     }),
     LoggerModule.forRoot(
         {
-          serverLoggingUrl: '/api/logs',
           level: NgxLoggerLevel.DEBUG,
           serverLogLevel: NgxLoggerLevel.ERROR
         }
-    )
+    ),
+    JwtModule.forRoot({
+      config: {
+        tokenGetter: tokenGetter,
+      }
+    })
   ],
   providers: [
-    ServicesDataService
+    ServicesDataService,
+    AuthProviderService,
+    LocalStorageService,
+    AuthGuard,
+    MatDatepickerModule,
   ],
   bootstrap: [AppComponent]
 })

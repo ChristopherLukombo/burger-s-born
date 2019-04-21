@@ -2,6 +2,7 @@ package fr.esgi.service;
 
 import fr.esgi.service.dto.UserDTO;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  * Service Interface for managing User.
@@ -31,4 +32,5 @@ public interface UserService {
      */
     boolean emailIsPresent(UserDTO userDTO);
 
+    void store(MultipartFile file, Long userId);
 }

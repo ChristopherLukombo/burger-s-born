@@ -1,16 +1,27 @@
 package fr.esgi.service.impl;
 
+import fr.esgi.dao.RoleRepository;
 import fr.esgi.dao.UserRepository;
+import fr.esgi.domain.Role;
 import fr.esgi.domain.User;
 import fr.esgi.service.UserService;
 import fr.esgi.service.dto.UserDTO;
 import fr.esgi.service.mapper.UserMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.transaction.Transactional;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Optional;
 
 /**
  * Service Implementation for managing User.
@@ -25,12 +36,19 @@ public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
 
+    private final RoleRepository roleRepository;
+
     private final UserMapper userMapper;
 
+    @Value("${app.imagesDirectory}")
+    private String imagesDirectory;
 
-    public UserServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder, UserMapper userMapper) {
-        this.userRepository = userRepository;
+    @Autowired
+    public UserServiceImpl(PasswordEncoder passwordEncoder, UserRepository userRepository, RoleRepository roleRepository,
+                           UserMapper userMapper) {
         this.passwordEncoder = passwordEncoder;
+        this.userRepository = userRepository;
+        this.roleRepository = roleRepository;
         this.userMapper = userMapper;
     }
 
@@ -52,8 +70,11 @@ public class UserServiceImpl implements UserService {
         newUser.setImageUrl(userDTO.getImageUrl());
         newUser.setBirthDay(userDTO.getBirthDay());
         newUser.setCreateDate(userDTO.getCreateDate());
-        // new user is not active
-        newUser.setActivated(false);
+        final Optional<Role> role = roleRepository.findById(userDTO.getRoleId());
+        if (role.isPresent()) {
+            newUser.setRole(role.get());
+        }
+        newUser.setActivated(true);
         newUser = userRepository.save(newUser);
 
         LOGGER.debug("Created Information for User: {}", newUser);
@@ -79,5 +100,41 @@ public class UserServiceImpl implements UserService {
         return userRepository.findOneByEmailIgnoreCase(userDTO.getEmail())
                 .isPresent();
     }
+
+    @Override
+    public void store(MultipartFile file, Long userId) {
+        final Optional<User> userOptional = userRepository.findById(userId);
+
+        if (userOptional.isPresent()) {
+            try {
+                User user = userOptional.get();
+                user.setImageUrl(file.getOriginalFilename());
+                userRepository.saveAndFlush(user);
+                createFolder(userId);
+                final Path rootLocation = Paths.get(imagesDirectory + "/images/" + userId);
+                sendFileToFolder(file, rootLocation);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private void createFolder(Long userId) throws IOException {
+        String pathname = imagesDirectory + "/images";
+        File folder = new File(pathname);
+
+        if (!folder.exists()) {
+            Files.createDirectories(Paths.get(pathname));
+        }
+        folder = new File(pathname + "/" + userId);
+        if (!folder.exists()) {
+            Files.createDirectories(Paths.get(pathname + "/" + userId));
+        }
+    }
+
+    private void sendFileToFolder(MultipartFile file, Path path) throws IOException {
+        Files.copy(file.getInputStream(), path.resolve(file.getOriginalFilename()));
+    }
+
 
 }

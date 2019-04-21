@@ -13,6 +13,7 @@ import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
@@ -29,7 +30,7 @@ import static fr.esgi.config.Utils.getLang;
 @RequestMapping("/api")
 public class AccountResource {
 
-    private final Logger log = LoggerFactory.getLogger(AccountResource.class);
+    private final Logger LOGGER = LoggerFactory.getLogger(AccountResource.class);
 
     private final UserService userService;
 
@@ -58,7 +59,7 @@ public class AccountResource {
 
         if (userService.loginIsPresent(managedUser)) {
             throw new BurgerSTerminalException(HttpStatus.BAD_REQUEST.value(),
-                    messageSource.getMessage(ErrorMessage.LOGIN_IS_ALREADY_REGISTERED , null, getLang(lang)));
+                    messageSource.getMessage(ErrorMessage.PSEUDO_IS_ALREADY_REGISTERED, null, getLang(lang)));
         }
 
         if (userService.emailIsPresent(managedUser)) {
@@ -72,6 +73,21 @@ public class AccountResource {
                 .build();
     }
 
+    @PostMapping("/register/file/{userId}")
+    public ResponseEntity<String> uploadFile(@RequestParam("file") MultipartFile file, @PathVariable("userId") Long userId) throws BurgerSTerminalException {
+        LOGGER.info("Call API service store ...");
+
+        final String message;
+        try {
+            this.userService.store(file, userId);
+            message = "Successfully uploaded " + file.getOriginalFilename() + "!";
+        } catch (Exception e) {
+            throw new BurgerSTerminalException(HttpStatus.INTERNAL_SERVER_ERROR.value(), " FAIL to upload " + file.getOriginalFilename() + "!", e);
+        }
+
+        return ResponseEntity.ok().body(message);
+    }
+
 
     /**
      * GET  /authenticate : check if the user is authenticated, and return its login.
@@ -81,7 +97,7 @@ public class AccountResource {
      */
     @GetMapping("/authenticate")
     public ResponseEntity<String> isAuthenticated(HttpServletRequest request) {
-        log.debug("REST request to check if the current user is authenticated");
+        LOGGER.debug("REST request to check if the current user is authenticated");
         return new ResponseEntity<>(request.getRemoteUser(), HttpStatus.OK);
     }
 

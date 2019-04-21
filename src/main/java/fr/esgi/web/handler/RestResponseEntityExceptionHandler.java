@@ -45,7 +45,7 @@ public class RestResponseEntityExceptionHandler extends ResponseEntityExceptionH
 						Collectors.mapping(FieldError::getDefaultMessage, Collectors.toSet())
 				)
 		);
-		return new ResponseEntity(errorsMap.isEmpty() ? ex:errorsMap, headers, HttpStatus.BAD_REQUEST);
+		return new ResponseEntity(errorsMap.isEmpty() ? ex:errorsMap, headers, HttpStatus.UNPROCESSABLE_ENTITY);
 	}
 
 }

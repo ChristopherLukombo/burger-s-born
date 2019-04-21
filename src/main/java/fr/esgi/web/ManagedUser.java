@@ -5,7 +5,7 @@ import javax.validation.constraints.Size;
 import fr.esgi.service.dto.UserDTO;
 
 /**
- * ManagedUser extending the UserDTO, which is meant to be used in the user management UI.
+ * ManagedUser extending the UserDTO.
  * @author christopher
  */
 public class ManagedUser extends UserDTO {

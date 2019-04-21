@@ -39,18 +39,18 @@ public class UserJWTResource {
 
     /**
      * Authenticate the user and return the token which identify him.
-     * @param loginVM
+     * @param login
      * @return JWTToken
      */
     @PostMapping("/authenticate")
-    public ResponseEntity<JWTToken> authorize(@Valid @RequestBody Login loginVM) {
+    public ResponseEntity<JWTToken> authorize(@Valid @RequestBody Login login) {
 
         UsernamePasswordAuthenticationToken authenticationToken =
-            new UsernamePasswordAuthenticationToken(loginVM.getUsername(), loginVM.getPassword());
+            new UsernamePasswordAuthenticationToken(login.getUsername(), login.getPassword());
 
         Authentication authentication = this.authenticationManager.authenticate(authenticationToken);
         SecurityContextHolder.getContext().setAuthentication(authentication);
-        boolean rememberMe = (loginVM.isRememberMe() == null) ? false : loginVM.isRememberMe();
+        boolean rememberMe = (login.isRememberMe() == null) ? false : login.isRememberMe();
         String jwt = tokenProvider.createToken(authentication, rememberMe);
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.add(JWTConfigurer.AUTHORIZATION_HEADER, "Bearer " + jwt);
