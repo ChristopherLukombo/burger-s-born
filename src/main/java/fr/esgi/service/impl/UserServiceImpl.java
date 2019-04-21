@@ -1,9 +1,12 @@
 package fr.esgi.service.impl;
 
+import fr.esgi.config.Constants;
+import fr.esgi.config.ErrorMessage;
 import fr.esgi.dao.RoleRepository;
 import fr.esgi.dao.UserRepository;
 import fr.esgi.domain.Role;
 import fr.esgi.domain.User;
+import fr.esgi.exception.BurgerSTerminalException;
 import fr.esgi.service.UserService;
 import fr.esgi.service.dto.UserDTO;
 import fr.esgi.service.mapper.UserMapper;
@@ -30,7 +33,7 @@ import java.util.Optional;
 @Transactional
 public class UserServiceImpl implements UserService {
 
-    private final Logger LOGGER = LoggerFactory.getLogger(UserServiceImpl.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(UserServiceImpl.class);
 
     private final PasswordEncoder passwordEncoder;
 
@@ -101,8 +104,14 @@ public class UserServiceImpl implements UserService {
                 .isPresent();
     }
 
+    /**
+     * Upload file in folder
+     * @param file
+     * @param userId
+     * @throws BurgerSTerminalException
+     */
     @Override
-    public void store(MultipartFile file, Long userId) {
+    public void store(MultipartFile file, Long userId) throws BurgerSTerminalException {
         final Optional<User> userOptional = userRepository.findById(userId);
 
         if (userOptional.isPresent()) {
@@ -111,30 +120,31 @@ public class UserServiceImpl implements UserService {
                 user.setImageUrl(file.getOriginalFilename());
                 userRepository.saveAndFlush(user);
                 createFolder(userId);
-                final Path rootLocation = Paths.get(imagesDirectory + "/images/" + userId);
+                final Path rootLocation = Paths.get(imagesDirectory + Constants.IMAGES  + Constants.DELIMITER + userId);
                 sendFileToFolder(file, rootLocation);
             } catch (IOException e) {
-                e.printStackTrace();
+                LOGGER.error(ErrorMessage.ERROR_DURING_SAVING_FILE, e);
+                throw new BurgerSTerminalException(ErrorMessage.ERROR_DURING_SAVING_FILE, e);
             }
         }
     }
 
     private void createFolder(Long userId) throws IOException {
-        String pathname = imagesDirectory + "/images";
+        String pathname = imagesDirectory + Constants.IMAGES;
         File folder = new File(pathname);
-
+        // creation of first folder
         if (!folder.exists()) {
             Files.createDirectories(Paths.get(pathname));
         }
-        folder = new File(pathname + "/" + userId);
+        folder = new File(pathname + Constants.DELIMITER + userId);
+        // creation of sub folder
         if (!folder.exists()) {
-            Files.createDirectories(Paths.get(pathname + "/" + userId));
+            Files.createDirectories(Paths.get(pathname + Constants.DELIMITER + userId));
         }
     }
 
     private void sendFileToFolder(MultipartFile file, Path path) throws IOException {
         Files.copy(file.getInputStream(), path.resolve(file.getOriginalFilename()));
     }
-
 
 }
