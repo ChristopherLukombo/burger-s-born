@@ -85,23 +85,21 @@ public class UserServiceImpl implements UserService {
     }
 
     /**
-     * Returns true if the login is already used.
+     * Returns user by login
      * @param userDTO
-     * @return boolean
+     * @return Optional<User>
      */
-    public boolean loginIsPresent(UserDTO userDTO) {
-        return userRepository.findOneByPseudo(userDTO.getPseudo().toLowerCase())
-                .isPresent();
+    public Optional<User> findUserByPseudo(UserDTO userDTO) {
+        return userRepository.findOneByPseudo(userDTO.getPseudo().toLowerCase());
     }
 
     /**
-     * Returns true if the email is already used.
+     * Returns user found by email.
      * @param userDTO
-     * @return boolean
+     * @return Optional<User>
      */
-    public boolean emailIsPresent(UserDTO userDTO) {
-        return userRepository.findOneByEmailIgnoreCase(userDTO.getEmail())
-                .isPresent();
+    public Optional<User> findUserByEmail(UserDTO userDTO) {
+        return userRepository.findOneByEmailIgnoreCase(userDTO.getEmail());
     }
 
     /**
