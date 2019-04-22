@@ -57,12 +57,12 @@ public class AccountResource {
                     messageSource.getMessage(ErrorMessage.PASSWORD_IS_NOT_VALID, null, getLang(lang)));
         }
 
-        if (userService.loginIsPresent(managedUser)) {
+        if (userService.findUserByPseudo(managedUser).isPresent()) {
             throw new BurgerSTerminalException(HttpStatus.BAD_REQUEST.value(),
                     messageSource.getMessage(ErrorMessage.PSEUDO_IS_ALREADY_REGISTERED, null, getLang(lang)));
         }
 
-        if (userService.emailIsPresent(managedUser)) {
+        if (userService.findUserByEmail(managedUser).isPresent()) {
             throw new BurgerSTerminalException(HttpStatus.BAD_REQUEST.value(),
                     messageSource.getMessage(ErrorMessage.EMAIL_IS_ALREADY_USED, null, getLang(lang)));
         }
