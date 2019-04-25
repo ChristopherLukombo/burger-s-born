@@ -57,7 +57,9 @@ public class UserDTO {
         this.createDate = user.getCreateDate();
         this.imageUrl = user.getImageUrl();
         this.birthDay = user.getBirthDay();
-        this.roleId = user.getRole().getId();
+        if (null != user.getRole()) {
+            this.roleId = user.getRole().getId();
+        }
     }
 
     public Long getId() {
