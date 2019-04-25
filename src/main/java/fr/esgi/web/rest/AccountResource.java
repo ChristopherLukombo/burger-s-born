@@ -52,6 +52,11 @@ public class AccountResource {
             @RequestBody @Valid ManagedUser managedUser,
             @RequestParam(required = false, defaultValue = "fr") String lang
     ) throws BurgerSTerminalException, URISyntaxException {
+        if (null != managedUser.getId()) {
+            throw new BurgerSTerminalException(HttpStatus.BAD_REQUEST.value(),
+                    messageSource.getMessage(ErrorMessage.ERROR_NEW_USER_CANNOT_ALREADY_HAVE_AN_ID, null, getLang(lang)));
+        }
+
         if (!checkPasswordLength(managedUser.getPassword())) {
             throw new BurgerSTerminalException(HttpStatus.BAD_REQUEST.value(),
                     messageSource.getMessage(ErrorMessage.PASSWORD_IS_NOT_VALID, null, getLang(lang)));
@@ -75,7 +80,7 @@ public class AccountResource {
 
     @PostMapping("/register/file/{userId}")
     public ResponseEntity<String> uploadFile(
-            @RequestParam("file") MultipartFile file,
+            @RequestPart("file") MultipartFile file,
             @PathVariable("userId") Long userId) throws BurgerSTerminalException {
         LOGGER.info("Call API service store ...");
 
@@ -83,10 +88,12 @@ public class AccountResource {
             this.userService.store(file, userId);
         } catch (Exception e) {
             throw new BurgerSTerminalException(HttpStatus.INTERNAL_SERVER_ERROR.value(),
-                    messageSource.getMessage(ErrorMessage.ERROR_FAIL_TO_UPLOAD, null, getLang("fr")) + file.getOriginalFilename(), e);
+                    messageSource.getMessage(ErrorMessage.ERROR_FAIL_TO_UPLOAD, null, getLang("fr")) +
+                            file.getOriginalFilename(), e);
         }
 
-        return ResponseEntity.ok().body("Successfully uploaded : " + file.getOriginalFilename());
+        return ResponseEntity.ok()
+                .body("Successfully uploaded : " + file.getOriginalFilename());
     }
 
 
