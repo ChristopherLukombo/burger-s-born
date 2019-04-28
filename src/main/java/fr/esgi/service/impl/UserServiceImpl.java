@@ -90,7 +90,7 @@ public class UserServiceImpl implements UserService {
      * @return Optional<User>
      */
     public Optional<User> findUserByPseudo(UserDTO userDTO) {
-        return userRepository.findOneByPseudo(userDTO.getPseudo().toLowerCase());
+        return userRepository.findOneByPseudoIgnoreCase(userDTO.getPseudo());
     }
 
     /**
