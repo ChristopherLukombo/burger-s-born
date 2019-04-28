@@ -113,7 +113,7 @@ public class AccountResourceTest {
     @Test
     public void shouldRegisterWithFileWhenIsOk() throws IOException {
         final File file = createFile();
-        int userId = 1;
+        long userId = 1L;
 
         given()
                 .multiPart("file",  file, "application/octet-stream")
