@@ -39,7 +39,7 @@ public class DomainUserDetailsService implements UserDetailsService {
     public UserDetails loadUserByUsername(final String login) {
         LOGGER.debug("Authenticating {}", login);
         String lowercaseLogin = login.toLowerCase(Locale.ENGLISH);
-        Optional<User> userByEmailFromDatabase = userRepository.findOneWithAuthoritiesByEmail(lowercaseLogin);
+        Optional<User> userByEmailFromDatabase = userRepository.findOneByEmailIgnoreCase(lowercaseLogin);
         return userByEmailFromDatabase.map(user -> {
             try {
                 return createSpringSecurityUser(lowercaseLogin, user);
@@ -47,7 +47,7 @@ public class DomainUserDetailsService implements UserDetailsService {
                 return null;
             }
         }).orElseGet(() -> {
-            Optional<User> userByLoginFromDatabase = userRepository.findOneWithAuthoritiesByPseudo(lowercaseLogin);
+            Optional<User> userByLoginFromDatabase = userRepository.findOneByPseudoIgnoreCase(lowercaseLogin);
             return userByLoginFromDatabase.map(user -> {
                 try {
                     return createSpringSecurityUser(lowercaseLogin, user);
