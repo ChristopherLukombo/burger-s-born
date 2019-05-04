@@ -140,7 +140,6 @@ public class AccountResourceTest {
                 .statusCode(HttpStatus.SC_OK);
     }
 
-
     @Before
     @After
     public void deleteFolder() throws IOException {
@@ -156,5 +155,4 @@ public class AccountResourceTest {
             FileUtils.forceDelete(new File(fileName));
         }
     }
-
 }
