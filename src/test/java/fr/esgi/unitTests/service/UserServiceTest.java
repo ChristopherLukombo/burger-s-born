@@ -19,6 +19,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 @ActiveProfiles("test")
@@ -42,7 +43,7 @@ public class UserServiceTest {
     private UserMapper userMapper;
 
     @InjectMocks
-    private UserServiceImpl userService;
+    private UserServiceImpl userServiceImpl;
 
     private User user;
 
@@ -68,91 +69,72 @@ public class UserServiceTest {
     @Test
     public void shouldFindUserByLoginWhenIsOk() {
         // Given
-        UserDTO userDTO = new UserDTO();
-        userDTO.setId(ID);
-        userDTO.setPseudo(PSEUDO);
-        userDTO.setEmail(EMAIL);
+        Optional<User> user = Optional.of(this.user);
 
         // When
-        when(userService.findUserByPseudo(userDTO)).thenReturn(Optional.of(user));
+        when(userServiceImpl.findUserByPseudo(mock(UserDTO.class))).thenReturn(user);
 
         // Then
-        assertThat(userService.findUserByPseudo(userDTO).get().getPseudo()).isEqualTo(user.getPseudo());
+        assertThat(userServiceImpl.findUserByPseudo(mock(UserDTO.class)).get().getPseudo()).isEqualTo(this.user.getPseudo());
     }
 
     @Test
     public void shouldFindUserByLoginWhenIsKO1() {
         // Given
-        UserDTO userDTO = new UserDTO();
-        userDTO.setId(ID);
-        userDTO.setPseudo(PSEUDO);
-        userDTO.setEmail(EMAIL);
+        Optional<User> user = Optional.of(this.user);
 
         // When
-        when(userService.findUserByPseudo(userDTO)).thenReturn(Optional.of(user));
+        when(userServiceImpl.findUserByPseudo(mock(UserDTO.class))).thenReturn(user);
 
         // Then
-        assertThat(userService.findUserByPseudo(userDTO).get().getPseudo()).isNotEqualTo("coucou");
+        assertThat(userServiceImpl.findUserByPseudo(mock(UserDTO.class)).get().getPseudo()).isNotEqualTo("BIBI");
     }
 
     @Test
     public void shouldFindUserByLoginWhenIsKO2() {
         // Given
-        UserDTO userDTO = new UserDTO();
-        userDTO.setId(ID);
-        userDTO.setPseudo(PSEUDO);
-        userDTO.setEmail(EMAIL);
+        Optional<User> user = Optional.of(this.user);
 
         // When
-        when(userService.findUserByPseudo(userDTO)).thenReturn(Optional.of(user));
+        when(userServiceImpl.findUserByPseudo(mock(UserDTO.class))).thenReturn(user);
 
         // Then
-        assertThat(userService.findUserByPseudo(userDTO).get().getPseudo()).isNotEqualTo("");
+        assertThat(userServiceImpl.findUserByPseudo(mock(UserDTO.class)).get().getPseudo()).isNotEqualTo("");
     }
 
     @Test
     public void shouldFindUserByEmailWhenIsOk() {
         // Given
-        UserDTO userDTO = new UserDTO();
-        userDTO.setId(ID);
-        userDTO.setPseudo(PSEUDO);
-        userDTO.setEmail(EMAIL);
+        Optional<User> user = Optional.of(this.user);
 
         // When
-        when(userService.findUserByEmail(userDTO)).thenReturn(Optional.of(user));
+        when(userServiceImpl.findUserByEmail(mock(UserDTO.class))).thenReturn(user);
 
         // Then
-        assertThat(userService.findUserByEmail(userDTO).get().getEmail()).isEqualTo(user.getEmail());
+        assertThat(userServiceImpl.findUserByEmail(mock(UserDTO.class)).get().getEmail()).isEqualTo(this.user.getEmail());
     }
 
     @Test
     public void shouldFindUserByEmailWhenIsKO1() {
         // Given
-        UserDTO userDTO = new UserDTO();
-        userDTO.setId(ID);
-        userDTO.setPseudo(PSEUDO);
-        userDTO.setEmail(EMAIL);
+        Optional<User> user = Optional.of(this.user);
 
         // When
-        when(userService.findUserByEmail(userDTO)).thenReturn(Optional.of(user));
+        when(userServiceImpl.findUserByEmail(mock(UserDTO.class))).thenReturn(user);
 
         // Then
-        assertThat(userService.findUserByEmail(userDTO).get().getEmail()).isNotEqualTo("toto@gmail.com");
+        assertThat(userServiceImpl.findUserByEmail(mock(UserDTO.class)).get().getEmail()).isNotEqualTo("toto@gmail.com");
     }
 
     @Test
     public void shouldFindUserByEmailWhenIsKO2() {
         // Given
-        UserDTO userDTO = new UserDTO();
-        userDTO.setId(ID);
-        userDTO.setPseudo(PSEUDO);
-        userDTO.setEmail(EMAIL);
+        Optional<User> user = Optional.of(this.user);
 
         // When
-        when(userService.findUserByEmail(userDTO)).thenReturn(Optional.of(user));
+        when(userServiceImpl.findUserByEmail(mock(UserDTO.class))).thenReturn(user);
 
         // Then
-        assertThat(userService.findUserByEmail(userDTO).get().getEmail()).isNotEqualTo("");
+        assertThat(userServiceImpl.findUserByEmail(mock(UserDTO.class)).get().getEmail()).isNotEqualTo("");
     }
-
 }
