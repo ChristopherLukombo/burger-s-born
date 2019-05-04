@@ -130,7 +130,4 @@ public class UserJWTResourceTest {
                 .then()
                 .statusCode(HttpStatus.SC_UNPROCESSABLE_ENTITY);
     }
-
-
-
 }
