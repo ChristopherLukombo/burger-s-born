@@ -22,4 +22,13 @@ public class CommandCompoID implements Serializable {
     public int hashCode() {
         return Objects.hash(id, command, employee);
     }
+
+    @Override
+    public String toString() {
+        return "CommandCompoID{" +
+                "id=" + id +
+                ", command=" + command +
+                ", employee=" + employee +
+                '}';
+    }
 }

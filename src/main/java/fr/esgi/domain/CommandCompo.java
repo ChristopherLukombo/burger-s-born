@@ -3,6 +3,7 @@ package fr.esgi.domain;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
+import java.util.Objects;
 
 @Entity
 @IdClass(CommandCompoID.class)
@@ -80,5 +81,35 @@ public class CommandCompo implements Serializable {
 
 	public void setEmployee(Employee employee) {
 		this.employee = employee;
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+		CommandCompo that = (CommandCompo) o;
+		return Double.compare(that.price, price) == 0 &&
+				Double.compare(that.quantity, quantity) == 0 &&
+				Objects.equals(id, that.id) &&
+				Objects.equals(state, that.state) &&
+				Objects.equals(command, that.command) &&
+				Objects.equals(employee, that.employee);
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(id, price, state, quantity, command, employee);
+	}
+
+	@Override
+	public String toString() {
+		return "CommandCompo{" +
+				"id=" + id +
+				", price=" + price +
+				", state='" + state + '\'' +
+				", quantity=" + quantity +
+				", command=" + command +
+				", employee=" + employee +
+				'}';
 	}
 }

@@ -3,6 +3,7 @@ package fr.esgi.domain;
 import javax.persistence.*;
 import javax.validation.constraints.Size;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 public class Menu {
@@ -86,5 +87,37 @@ public class Menu {
 
 	public void setCommands(List<Command> commands) {
 		this.commands = commands;
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+		Menu menu = (Menu) o;
+		return Double.compare(menu.price, price) == 0 &&
+				Objects.equals(id, menu.id) &&
+				Objects.equals(name, menu.name) &&
+				Objects.equals(available, menu.available) &&
+				Objects.equals(manager, menu.manager) &&
+				Objects.equals(products, menu.products) &&
+				Objects.equals(commands, menu.commands);
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(id, name, price, available, manager, products, commands);
+	}
+
+	@Override
+	public String toString() {
+		return "Menu{" +
+				"id=" + id +
+				", name='" + name + '\'' +
+				", price=" + price +
+				", available=" + available +
+				", manager=" + manager +
+				", products=" + products +
+				", commands=" + commands +
+				'}';
 	}
 }

@@ -2,6 +2,8 @@ package fr.esgi.service.dto;
 
 import fr.esgi.domain.Customer;
 
+import java.util.Objects;
+
 /**
  * A DTO representing a customer.
  */
@@ -78,5 +80,35 @@ public class CustomerDTO {
 
 	public void setUserId(Long userId) {
 		this.userId = userId;
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+		CustomerDTO that = (CustomerDTO) o;
+		return zipCode == that.zipCode &&
+				Objects.equals(id, that.id) &&
+				Objects.equals(address, that.address) &&
+				Objects.equals(city, that.city) &&
+				Objects.equals(commandId, that.commandId) &&
+				Objects.equals(userId, that.userId);
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(id, address, zipCode, city, commandId, userId);
+	}
+
+	@Override
+	public String toString() {
+		return "CustomerDTO{" +
+				"id=" + id +
+				", address='" + address + '\'' +
+				", zipCode=" + zipCode +
+				", city='" + city + '\'' +
+				", commandId=" + commandId +
+				", userId=" + userId +
+				'}';
 	}
 }
