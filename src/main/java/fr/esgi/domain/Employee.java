@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import javax.persistence.*;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 public class Employee {
@@ -55,5 +56,31 @@ public class Employee {
 
 	public void setUser(User user) {
 		this.user = user;
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+		Employee employee = (Employee) o;
+		return Objects.equals(id, employee.id) &&
+				Objects.equals(hiringDate, employee.hiringDate) &&
+				Objects.equals(commandCompo, employee.commandCompo) &&
+				Objects.equals(user, employee.user);
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(id, hiringDate, commandCompo, user);
+	}
+
+	@Override
+	public String toString() {
+		return "Employee{" +
+				"id=" + id +
+				", hiringDate=" + hiringDate +
+				", commandCompo=" + commandCompo +
+				", user=" + user +
+				'}';
 	}
 }

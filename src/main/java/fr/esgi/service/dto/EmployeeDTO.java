@@ -3,6 +3,7 @@ package fr.esgi.service.dto;
 import fr.esgi.domain.Employee;
 
 import java.time.LocalDate;
+import java.util.Objects;
 
 /**
  * A DTO representing a employee.
@@ -47,5 +48,29 @@ public class EmployeeDTO {
 
     public void setUserId(Long userId) {
         this.userId = userId;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        EmployeeDTO that = (EmployeeDTO) o;
+        return Objects.equals(id, that.id) &&
+                Objects.equals(hiringDate, that.hiringDate) &&
+                Objects.equals(userId, that.userId);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, hiringDate, userId);
+    }
+
+    @Override
+    public String toString() {
+        return "EmployeeDTO{" +
+                "id=" + id +
+                ", hiringDate=" + hiringDate +
+                ", userId=" + userId +
+                '}';
     }
 }

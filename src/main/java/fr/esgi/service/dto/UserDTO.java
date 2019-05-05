@@ -2,12 +2,14 @@ package fr.esgi.service.dto;
 
 
 import fr.esgi.domain.User;
+import org.apache.commons.lang3.builder.ToStringBuilder;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 import java.time.LocalDate;
+import java.util.Objects;
 
 /**
  * A DTO representing a user, with his authorities.
@@ -140,5 +142,43 @@ public class UserDTO {
 
     public void setRoleId(Long roleId) {
         this.roleId = roleId;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        UserDTO userDTO = (UserDTO) o;
+        return activated == userDTO.activated &&
+                Objects.equals(id, userDTO.id) &&
+                Objects.equals(pseudo, userDTO.pseudo) &&
+                Objects.equals(firstName, userDTO.firstName) &&
+                Objects.equals(lastName, userDTO.lastName) &&
+                Objects.equals(email, userDTO.email) &&
+                Objects.equals(imageUrl, userDTO.imageUrl) &&
+                Objects.equals(createDate, userDTO.createDate) &&
+                Objects.equals(birthDay, userDTO.birthDay) &&
+                Objects.equals(roleId, userDTO.roleId);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, pseudo, firstName, lastName, email, imageUrl, createDate, activated, birthDay, roleId);
+    }
+
+    @Override
+    public String toString() {
+        return "UserDTO{" +
+                "id=" + id +
+                ", pseudo='" + pseudo + '\'' +
+                ", firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", email='" + email + '\'' +
+                ", imageUrl='" + imageUrl + '\'' +
+                ", createDate=" + createDate +
+                ", activated=" + activated +
+                ", birthDay=" + birthDay +
+                ", roleId=" + roleId +
+                '}';
     }
 }

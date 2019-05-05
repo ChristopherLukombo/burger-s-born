@@ -6,6 +6,7 @@ import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 public class Product {
@@ -115,5 +116,41 @@ public class Product {
 
 	public void setCommands(List<Command> commands) {
 		this.commands = commands;
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+		Product product = (Product) o;
+		return Double.compare(product.price, price) == 0 &&
+				available == product.available &&
+				Objects.equals(id, product.id) &&
+				Objects.equals(name, product.name) &&
+				Objects.equals(ingredients, product.ingredients) &&
+				Objects.equals(category, product.category) &&
+				Objects.equals(menus, product.menus) &&
+				Objects.equals(manager, product.manager) &&
+				Objects.equals(commands, product.commands);
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(id, name, ingredients, price, available, category, menus, manager, commands);
+	}
+
+	@Override
+	public String toString() {
+		return "Product{" +
+				"id=" + id +
+				", name='" + name + '\'' +
+				", ingredients=" + ingredients +
+				", price=" + price +
+				", available=" + available +
+				", category=" + category +
+				", menus=" + menus +
+				", manager=" + manager +
+				", commands=" + commands +
+				'}';
 	}
 }

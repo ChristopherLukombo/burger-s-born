@@ -2,6 +2,8 @@ package fr.esgi.service.dto;
 
 import fr.esgi.domain.Menu;
 
+import java.util.Objects;
+
 public class MenuDTO {
 
 	private Long id;
@@ -64,5 +66,33 @@ public class MenuDTO {
 
 	public void setManagerId(Long managerId) {
 		this.managerId = managerId;
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+		MenuDTO menuDTO = (MenuDTO) o;
+		return Double.compare(menuDTO.price, price) == 0 &&
+				Objects.equals(id, menuDTO.id) &&
+				Objects.equals(name, menuDTO.name) &&
+				Objects.equals(available, menuDTO.available) &&
+				Objects.equals(managerId, menuDTO.managerId);
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(id, name, price, available, managerId);
+	}
+
+	@Override
+	public String toString() {
+		return "MenuDTO{" +
+				"id=" + id +
+				", name='" + name + '\'' +
+				", price=" + price +
+				", available=" + available +
+				", managerId=" + managerId +
+				'}';
 	}
 }

@@ -2,6 +2,8 @@ package fr.esgi.service.dto;
 
 import fr.esgi.domain.Product;
 
+import java.util.Objects;
+
 public class ProductDTO {
 
 	private Long id;
@@ -75,5 +77,35 @@ public class ProductDTO {
 
 	public void setManagerId(Long managerId) {
 		this.managerId = managerId;
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+		ProductDTO that = (ProductDTO) o;
+		return Double.compare(that.price, price) == 0 &&
+				available == that.available &&
+				Objects.equals(id, that.id) &&
+				Objects.equals(name, that.name) &&
+				Objects.equals(categoryId, that.categoryId) &&
+				Objects.equals(managerId, that.managerId);
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(id, name, price, available, categoryId, managerId);
+	}
+
+	@Override
+	public String toString() {
+		return "ProductDTO{" +
+				"id=" + id +
+				", name='" + name + '\'' +
+				", price=" + price +
+				", available=" + available +
+				", categoryId=" + categoryId +
+				", managerId=" + managerId +
+				'}';
 	}
 }

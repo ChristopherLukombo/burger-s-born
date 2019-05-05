@@ -2,6 +2,7 @@ package fr.esgi.domain;
 
 import javax.persistence.*;
 import javax.validation.constraints.Size;
+import java.util.Objects;
 
 @Entity
 public class Customer {
@@ -74,5 +75,35 @@ public class Customer {
 
 	public void setUser(User user) {
 		this.user = user;
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+		Customer customer = (Customer) o;
+		return zipCode == customer.zipCode &&
+				Objects.equals(id, customer.id) &&
+				Objects.equals(address, customer.address) &&
+				Objects.equals(city, customer.city) &&
+				Objects.equals(command, customer.command) &&
+				Objects.equals(user, customer.user);
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(id, address, zipCode, city, command, user);
+	}
+
+	@Override
+	public String toString() {
+		return "Customer{" +
+				"id=" + id +
+				", address='" + address + '\'' +
+				", zipCode=" + zipCode +
+				", city='" + city + '\'' +
+				", command=" + command +
+				", user=" + user +
+				'}';
 	}
 }
