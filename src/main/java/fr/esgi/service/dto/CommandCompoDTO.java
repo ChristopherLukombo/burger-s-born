@@ -7,6 +7,8 @@ import java.util.Objects;
 
 public class CommandCompoDTO implements Serializable {
 	
+	private static final long serialVersionUID = 1L;
+
 	private Long id;
 
 	private double price;

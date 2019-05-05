@@ -1,17 +1,19 @@
 package fr.esgi.service.mapper;
 
-import fr.esgi.domain.Menu;
-import fr.esgi.service.dto.MenuDTO;
 import org.mapstruct.InheritInverseConfiguration;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
+import org.mapstruct.ReportingPolicy;
+
+import fr.esgi.domain.Menu;
+import fr.esgi.service.dto.MenuDTO;
 
 /**
  * Mapper for the entity Menu and its DTO called MenuDTO.
  * @author christopher
  */
-@Mapper(uses = { MenuDTO.class }, componentModel = "spring")
+@Mapper(uses = { MenuDTO.class }, componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface MenuMapper {
 
     @Mappings({
