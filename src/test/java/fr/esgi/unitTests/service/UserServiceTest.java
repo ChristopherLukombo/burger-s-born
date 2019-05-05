@@ -19,6 +19,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -103,6 +104,20 @@ public class UserServiceTest {
     }
 
     @Test
+    public void shouldFindUserByLoginWhenIsKO3() {
+        // Given
+        Optional<User> user = Optional.ofNullable(null);
+
+        // When
+        when(userServiceImpl.findUserByPseudo(mock(UserDTO.class))).thenReturn(user);
+
+        System.out.println(userServiceImpl.findUserByPseudo(mock(UserDTO.class)));
+
+        // Then
+        assertThat(userServiceImpl.findUserByPseudo(mock(UserDTO.class))).isEqualTo(Optional.empty());
+    }
+
+    @Test
     public void shouldFindUserByEmailWhenIsOk() {
         // Given
         Optional<User> user = Optional.of(this.user);
@@ -136,5 +151,44 @@ public class UserServiceTest {
 
         // Then
         assertThat(userServiceImpl.findUserByEmail(mock(UserDTO.class)).get().getEmail()).isNotEqualTo("");
+    }
+
+    @Test
+    public void shouldFindUserByEmailWhenIsKO3() {
+        // Given
+        Optional<User> user = Optional.ofNullable(null);
+
+        // When
+        when(userServiceImpl.findUserByEmail(mock(UserDTO.class))).thenReturn(user);
+
+        // Then
+        assertThat(userServiceImpl.findUserByEmail(mock(UserDTO.class))).isEqualTo(Optional.empty());
+    }
+
+    @Test
+    public void shouldRegisterWhenIsOk() {
+        // Given
+        UserDTO userDTO = new UserDTO();
+        userDTO.setId(ID);
+        userDTO.setPseudo(PSEUDO);
+        userDTO.setEmail(EMAIL);
+
+        // When
+        when(userServiceImpl.registerUser(mock(UserDTO.class), anyString())).thenReturn(userDTO);
+
+        // Then
+        assertThat(userServiceImpl.registerUser(mock(UserDTO.class), anyString())).isEqualTo(userDTO);
+    }
+
+    @Test
+    public void shouldRegisterWhenIsKo() {
+        // Given
+        UserDTO userDTO = null;
+
+        // When
+        when(userServiceImpl.registerUser(mock(UserDTO.class), anyString())).thenReturn(userDTO);
+
+        // Then
+        assertThat(userServiceImpl.registerUser(mock(UserDTO.class), anyString())).isEqualTo(null);
     }
 }
