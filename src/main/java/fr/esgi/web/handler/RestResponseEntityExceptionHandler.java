@@ -1,22 +1,21 @@
 package fr.esgi.web.handler;
 
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
+
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import fr.esgi.exception.BurgerSTerminalException;
-
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 /**
  * ResponseEntityExceptionHandler for handle exception and launch error with custom status.
@@ -45,7 +44,7 @@ public class RestResponseEntityExceptionHandler extends ResponseEntityExceptionH
 						Collectors.mapping(FieldError::getDefaultMessage, Collectors.toSet())
 				)
 		);
-		return new ResponseEntity(errorsMap.isEmpty() ? ex:errorsMap, headers, HttpStatus.UNPROCESSABLE_ENTITY);
+		return new ResponseEntity<Object>(errorsMap.isEmpty() ? ex:errorsMap, headers, HttpStatus.UNPROCESSABLE_ENTITY);
 	}
 
 }
