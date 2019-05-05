@@ -4,6 +4,7 @@ package fr.esgi.service.dto;
 import fr.esgi.domain.Command;
 
 import java.time.LocalDate;
+import java.util.Objects;
 
 public class CommandDTO {
 
@@ -56,5 +57,31 @@ public class CommandDTO {
 
 	public void setCustomerId(Long customerId) {
 		this.customerId = customerId;
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+		CommandDTO that = (CommandDTO) o;
+		return Objects.equals(id, that.id) &&
+				Objects.equals(orderStatus, that.orderStatus) &&
+				Objects.equals(date, that.date) &&
+				Objects.equals(customerId, that.customerId);
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(id, orderStatus, date, customerId);
+	}
+
+	@Override
+	public String toString() {
+		return "CommandDTO{" +
+				"id=" + id +
+				", orderStatus='" + orderStatus + '\'' +
+				", date=" + date +
+				", customerId=" + customerId +
+				'}';
 	}
 }

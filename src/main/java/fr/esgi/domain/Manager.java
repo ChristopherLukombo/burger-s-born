@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 public class Manager {
@@ -55,5 +56,31 @@ public class Manager {
 
 	public void setUser(User user) {
 		this.user = user;
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+		Manager manager = (Manager) o;
+		return Objects.equals(id, manager.id) &&
+				Objects.equals(products, manager.products) &&
+				Objects.equals(menus, manager.menus) &&
+				Objects.equals(user, manager.user);
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(id, products, menus, user);
+	}
+
+	@Override
+	public String toString() {
+		return "Manager{" +
+				"id=" + id +
+				", products=" + products +
+				", menus=" + menus +
+				", user=" + user +
+				'}';
 	}
 }
