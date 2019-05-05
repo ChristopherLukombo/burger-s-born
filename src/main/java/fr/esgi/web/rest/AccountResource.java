@@ -46,9 +46,13 @@ public class AccountResource {
      * POST  /register : register the user.
      *
      * @param managedUser the managed user View Model
+     * @param lang 
+     * @return ResponseEntity
+     * @throws BurgerSTerminalException 
+     * @throws URISyntaxException 
      */
     @PostMapping("/register")
-    public ResponseEntity registerAccount(
+    public ResponseEntity<Object> registerAccount(
             @RequestBody @Valid ManagedUser managedUser,
             @RequestParam(required = false, defaultValue = "fr") String lang
     ) throws BurgerSTerminalException, URISyntaxException {

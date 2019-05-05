@@ -1,15 +1,15 @@
 package fr.esgi.service.dto;
 
 
-import fr.esgi.domain.User;
-import org.apache.commons.lang3.builder.ToStringBuilder;
+import java.time.LocalDate;
+import java.util.Objects;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
-import java.time.LocalDate;
-import java.util.Objects;
+
+import fr.esgi.domain.User;
 
 /**
  * A DTO representing a user, with his authorities.

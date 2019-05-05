@@ -1,17 +1,19 @@
 package fr.esgi.service.mapper;
 
-import fr.esgi.domain.Product;
-import fr.esgi.service.dto.ProductDTO;
 import org.mapstruct.InheritInverseConfiguration;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
+import org.mapstruct.ReportingPolicy;
+
+import fr.esgi.domain.Product;
+import fr.esgi.service.dto.ProductDTO;
 
 /**
  * Mapper for the entity Product and its DTO called ProductDTO.
  * @author christopher
  */
-@Mapper(uses = { ProductDTO.class }, componentModel = "spring")
+@Mapper(uses = { ProductDTO.class }, componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface ProductMapper {
 
     @Mappings({

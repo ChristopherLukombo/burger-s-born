@@ -4,7 +4,10 @@ import java.io.Serializable;
 import java.util.Objects;
 
 public class CommandCompoID implements Serializable {
-    Long id;
+	
+	private static final long serialVersionUID = 1L;
+	
+	Long id;
     Command command;
     Employee employee;
 
