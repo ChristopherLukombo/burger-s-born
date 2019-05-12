@@ -14,6 +14,7 @@ public interface MenuService {
 	Menu findById(Long id);
 	Menu findByName(String name);
 	Menu update(Menu menu);
+	List<Menu> getAll();
 	void delete(Long id);
 	void deleteByName(String name);
 }

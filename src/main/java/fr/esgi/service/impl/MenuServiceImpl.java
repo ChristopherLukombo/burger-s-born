@@ -55,4 +55,9 @@ public class MenuServiceImpl implements MenuService {
 			menuRepo.deleteByName(name);
 	}
 
+	@Override
+	public List<Menu> getAll() {
+		return menuRepo.findAll();
+	}
+
 }
