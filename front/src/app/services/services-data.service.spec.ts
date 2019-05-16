@@ -5,6 +5,7 @@ import {HttpClient, HttpClientModule} from "@angular/common/http";
 import {AppComponent} from "../app.component";
 import {HomeComponent} from "../home/home.component";
 import {RegisterComponent} from "../register/register.component";
+import {ProductComponent} from "../product/product.component";
 import {AuthComponent} from "../auth/auth.component";
 import {DialogSuccessComponent} from "../dialog-success/dialog-success.component";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
@@ -27,7 +28,8 @@ describe('ServicesDataService', () => {
           HomeComponent,
           RegisterComponent,
           AuthComponent,
-          DialogSuccessComponent
+          DialogSuccessComponent,
+          ProductComponent
       ],
       imports: [
           ReactiveFormsModule,

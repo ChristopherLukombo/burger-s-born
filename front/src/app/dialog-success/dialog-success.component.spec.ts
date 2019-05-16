@@ -2,6 +2,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { DialogSuccessComponent } from './dialog-success.component';
 import {AppComponent} from "../app.component";
+import {ProductComponent} from "../product/product.component";
 import {HomeComponent} from "../home/home.component";
 import {RegisterComponent} from "../register/register.component";
 import {AuthComponent} from "../auth/auth.component";
@@ -29,6 +30,7 @@ describe('DialogSuccessComponent', () => {
         declarations: [
             AppComponent,
             HomeComponent,
+            ProductComponent,
             RegisterComponent,
             AuthComponent,
             DialogSuccessComponent

@@ -20,7 +20,7 @@ import {JwtModule} from "@auth0/angular-jwt";
 import {AuthProviderService} from "../services/auth-provider.service";
 import {LocalStorageService} from "ngx-webstorage";
 import {AuthGuard} from "../auth.guard";
-
+import {ProductComponent} from '../product/product.component';
 
 
 describe('RegisterComponent', () => {
@@ -34,6 +34,7 @@ describe('RegisterComponent', () => {
             AppComponent,
             HomeComponent,
             RegisterComponent,
+            ProductComponent,
             AuthComponent,
             DialogSuccessComponent
         ],

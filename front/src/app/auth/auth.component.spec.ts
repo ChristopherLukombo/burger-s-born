@@ -4,6 +4,7 @@ import { AuthComponent } from './auth.component';
 import {AppComponent} from "../app.component";
 import {HomeComponent} from "../home/home.component";
 import {RegisterComponent} from "../register/register.component";
+import {ProductComponent} from "../product/product.component";
 import {DialogSuccessComponent} from "../dialog-success/dialog-success.component";
 import {BrowserModule} from "@angular/platform-browser";
 import {AppRoutingModule} from "../app-routing.module";
@@ -30,6 +31,7 @@ describe('AuthComponent', () => {
         AppComponent,
         HomeComponent,
         RegisterComponent,
+        ProductComponent,
         AuthComponent,
         DialogSuccessComponent
       ],

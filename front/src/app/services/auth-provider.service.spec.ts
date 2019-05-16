@@ -1,3 +1,4 @@
+import { ProductComponent } from './../product/product.component';
 import {TestBed} from '@angular/core/testing';
 
 import {AuthProviderService} from './auth-provider.service';
@@ -26,6 +27,7 @@ describe('AuthProviderService', () => {
       AppComponent,
       HomeComponent,
       RegisterComponent,
+      ProductComponent,
       AuthComponent,
       DialogSuccessComponent
     ],

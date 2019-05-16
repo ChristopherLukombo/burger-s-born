@@ -20,7 +20,7 @@ import {AuthGuard} from "./auth.guard";
 import {JwtModule} from '@auth0/angular-jwt';
 import {MatDatepickerModule} from '@angular/material/datepicker';
 import { DialogSuccessComponent } from './dialog-success/dialog-success.component';
-import { ProductComponent } from './product/product.component'
+import { ProductComponent } from './product/product.component';
 
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http, 'assets/i18n/', '.json');

@@ -3,6 +3,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { HomeComponent } from './home.component';
 import {AppComponent} from "../app.component";
 import {RegisterComponent} from "../register/register.component";
+import {ProductComponent} from '../product/product.component';
 import {AuthComponent} from "../auth/auth.component";
 import {DialogSuccessComponent} from "../dialog-success/dialog-success.component";
 import {TranslateLoader, TranslateModule} from "@ngx-translate/core";
@@ -30,6 +31,7 @@ describe('HomeComponent', () => {
             AppComponent,
             HomeComponent,
             RegisterComponent,
+            ProductComponent,
             AuthComponent,
             DialogSuccessComponent
         ],
