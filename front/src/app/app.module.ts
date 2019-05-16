@@ -19,7 +19,8 @@ import {LocalStorageService} from "ngx-webstorage";
 import {AuthGuard} from "./auth.guard";
 import {JwtModule} from '@auth0/angular-jwt';
 import {MatDatepickerModule} from '@angular/material/datepicker';
-import { DialogSuccessComponent } from './dialog-success/dialog-success.component'
+import { DialogSuccessComponent } from './dialog-success/dialog-success.component';
+import { ProductComponent } from './product/product.component'
 
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http, 'assets/i18n/', '.json');
@@ -34,7 +35,8 @@ export function tokenGetter() {
     HomeComponent,
     RegisterComponent,
     AuthComponent,
-    DialogSuccessComponent
+    DialogSuccessComponent,
+    ProductComponent
   ],
   exports: [
     DialogSuccessComponent,

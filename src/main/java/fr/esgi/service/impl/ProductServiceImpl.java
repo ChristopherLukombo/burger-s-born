@@ -1,17 +1,17 @@
 package fr.esgi.service.impl;
 
-import java.util.List;
-
-import javax.transaction.Transactional;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
-
+import org.springframework.transaction.annotation.Transactional;
+ 
 import fr.esgi.dao.ProductRepository;
-import fr.esgi.domain.Product;
 import fr.esgi.service.ProductService;
+import fr.esgi.service.dto.ProductDTO;
+import fr.esgi.service.mapper.ProductMapper;
 
 /**
  * Service Implementation for managing User.
@@ -21,22 +21,27 @@ import fr.esgi.service.ProductService;
 @Transactional
 public class ProductServiceImpl implements ProductService {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(ProductServiceImpl.class);
-
+	private static final Logger LOGGER = LoggerFactory.getLogger(ProductServiceImpl.class);
+	 
     private final ProductRepository productRepository;
-
-    @Autowired
-    public ProductServiceImpl(ProductRepository productRepository) {
+ 
+    private final ProductMapper productMapper;
+ 
+    @Autowired(required = true)    
+    public ProductServiceImpl(ProductRepository productRepository, ProductMapper productMapper) {
         this.productRepository = productRepository;
+        this.productMapper = productMapper;
     }
-
-    
+ 
     /**
      * Returns all products
      * @return List<Product>
      */
-    public List<Product> findAll() {
-        return productRepository.findAll();
+    @Transactional(readOnly = true)
+    public Page<ProductDTO> findAll(int page, int size) {
+        LOGGER.debug("Request to get all products");
+        return productRepository.findAll(PageRequest.of(page, size))
+                .map(productMapper::productToProductDTO);
     }
 
 }
