@@ -1,24 +1,41 @@
+<h4>Les produits</h4>
+<br>
+
+<!-- Messages -->
+<div class="alert alert-success" role="alert" *ngIf="successMessage != null">
+    {{successMessage}}
+</div>
+<div class="alert alert-danger" role="alert" *ngIf="errorMessage != null">
+    {{errorMessage}}
+</div>
+
 <table class="table table-striped">
     <thead>
-    <tr>
-      <th class="hidden">Id</th>
-      <th>FirstName</th>
-      <th>LastName</th>
-      <th>UserName</th>
-      <th>Age</th>
-      <th>Salary</th>
-    </tr>
+        <tr>
+            <th>Nom</th>
+            <th>Catégorie</th>
+            <th>Prix</th>
+            <th>Disponibilité</th>
+            <th>Actions</th>
+        </tr>
     </thead>
     <tbody>
-    <tr *ngFor="let user of users">
-      <td class="hidden"></td>
-      <td></td>
-      <td></td>
-      <td></td>
-      <td></td>
-      <td></td>
-      <td><button class="btn btn-success" (click)="deleteUser(user)"> Delete</button>
-        <button class="btn btn-success" (click)="editUser(user)" style="margin-left: 20px;"> Edit</button></td>
-    </tr>
+        <tr *ngFor="let product of products">
+            <td>{{product.name}}</td>
+            <td>{{product.categoryId}}</td>
+            <td>{{product.price | number : '1.2-2'}} €</td>
+            <td>
+                <span *ngIf="product.available">En stock</span>
+                <span *ngIf="!product.available">En rupture de stock</span>
+            </td>
+            <td>
+                <button class="btn btn-primary" (click)="null" style="margin-right: 10px;"> Modifier </button>
+                <button class="btn btn-danger" (click)="null"> Supprimer </button>
+            </td>
+        </tr>
     </tbody>
-  </table>
+</table>
+
+<div style="text-align: right;" *ngIf="products != null">
+    Nombre total de produits : {{products.length}}
+</div>

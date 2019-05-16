@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Product } from "../../model/model.product";
 import { ServicesDataService } from '../services/services-data.service';
-import {HttpErrorResponse} from "@angular/common/http";
+import { HttpErrorResponse } from "@angular/common/http";
 
 @Component({
     selector: 'app-product',
@@ -10,7 +10,11 @@ import {HttpErrorResponse} from "@angular/common/http";
 })
 export class ProductComponent implements OnInit {
 
-    constructor(private servicesDataService : ServicesDataService) { }
+    errorMessage;
+    successMessage;
+    products;
+
+    constructor(private servicesDataService: ServicesDataService) { }
 
     ngOnInit() {
         this.findAll();
@@ -20,13 +24,14 @@ export class ProductComponent implements OnInit {
 
         this.servicesDataService.findAllProduct()
             .subscribe(data => {
-                console.log(data);
+                this.products = data.body['content'];
+                console.log(this.products);
             }, err => {
                 if (err instanceof HttpErrorResponse) {
                     if (403 === err.status) {
-                        //this.errorMessage = 'Login ou mot de passe incorrecte';
+                        this.errorMessage = 'Vous n\'êtes pas autorisé à effectuer cette action.';
                     } else {
-                        //this.errorMessage = 'Une erreur serveur s\'est produite';
+                        this.errorMessage = 'Une erreur serveur s\'est produite.';
                     }
                 }
             });

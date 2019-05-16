@@ -7,13 +7,11 @@ import { Product } from '../../model/model.product';
 import { AuthProviderService } from './auth-provider.service';
 
 
-
-
 @Injectable()
 export class ServicesDataService {
     private resourceUrl = environment.serverUrl;
 
-    constructor(private http: HttpClient, private authProviderService : AuthProviderService) { }
+    constructor(private http: HttpClient, private authProviderService: AuthProviderService) { }
 
 
     // Register
@@ -40,9 +38,7 @@ export class ServicesDataService {
 
     // Product
     public findAllProduct(): Observable<HttpResponse<Object>> {
-        let headers = new HttpHeaders().set('Content-Type', 'application/json')
-            .set('Authorization', 'Bearer ' + this.authProviderService.getToken());
-        return this.http.get<HttpResponse<Object>>(this.resourceUrl + '/product?page=1&size=5', { observe: 'response' });
+        return this.http.get<HttpResponse<Object>>(this.resourceUrl + '/product?page=0&size=999', { observe: 'response' });
     }
 
 }
