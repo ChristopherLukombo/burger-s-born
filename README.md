@@ -29,4 +29,6 @@ Créer la base de données MySQL "burgersterminal"
 Pour lancer la partie Angular, se placer dans le dossier front et lancer la commande ng serve --open
 
 
-Swagger est accessible à l'URL suivante : http://localhost:8080/swagger-ui.html#
+Swagger : http://localhost:8080/swagger-ui.html#
+SEMAPHORE : https://semaphoreci.com/christopherlukombo/burger-s-terminal
+SONARCLOUD : https://sonarcloud.io/dashboard?id=ChristopherLukombo_burger-s-terminal
