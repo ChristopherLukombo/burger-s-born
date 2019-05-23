@@ -1,7 +1,8 @@
 package fr.esgi;
 
-import fr.esgi.config.DefaultProfileUtil;
-import fr.esgi.config.PropertiesConfig;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
@@ -9,8 +10,9 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.core.env.Environment;
 
-import java.net.InetAddress;
-import java.net.UnknownHostException;
+import fr.esgi.config.DefaultProfileUtil;
+import fr.esgi.config.PropertiesConfig;
+
 @EnableConfigurationProperties({PropertiesConfig.class})
 @SpringBootApplication
 public class BurgerSTerminalApplication {

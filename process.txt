@@ -2,6 +2,17 @@
  * Ce fichier détaille les manipulations à faire pour que le projet soit fonctionnel pour la prochaine personne.
  */
 
+Ajouter les variables de configuration suivantes :
+
+# ACTUATOR
+management.server.port = 9000
+management.endpoints.web.exposure.include = health,info,metrics
+management.endpoint.shutdown.enabled = true
+info.app.version = 0.0.1
+
+# HEALTH ENDPOINT
+management.endpoint.health.show-details = always
+
 ------------------------------------------------------------------------------------------------------------------------
 
 Ajouter l'URL suivante dans la variable de conf app.authorizedURLs
