@@ -101,7 +101,7 @@
       <input matInput [matDatepicker]="picker" placeholder="Date de naissance" name="birthDay" formControlName="birthDay">
       <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
       <mat-datepicker #picker startView="year" [startAt]="startDate"></mat-datepicker>
-    </mat-form-field>
+  </mat-form-field>
 
   <div class="alert alert-danger" role="alert" *ngIf="(submitted && f.birthDay.errors)">
     <div *ngIf="f.birthDay.errors.required">
@@ -111,6 +111,17 @@
       Le champs {{registerForm.get('birthDay').errors?.serverError}}
     </div>
   </div>
+  &nbsp;
+  <span *ngIf="authProviderService.isAuthenticated() && this.isAdmin">
+    <mat-form-field>
+      <mat-label>Rôle</mat-label>
+      <mat-select>
+        <mat-option *ngFor="let role of roles" [value]="role.value">
+          {{role.viewValue}}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+  </span>
 
   <div style="text-align: center;">
     <button class="btn btn-primary" type="submit">Valider</button>
