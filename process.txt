@@ -1,7 +1,15 @@
 /**
  * Ce fichier détaille les manipulations à faire pour que le projet soit fonctionnel pour la prochaine personne.
  */
+ 
+------------------------------------------------------------------------------------------------------------------------ 
+Ajouter la variable de conf suivante : 
+spring.output.ansi.enabled = DETECT 
 
+Supprimer la variable de conf dans VM arguments : -Dlogging.file. 
+Puis suivre la nouvelle procédure pour le fichier de logs dans le README.md.
+
+------------------------------------------------------------------------------------------------------------------------
 Ajouter les variables de configuration suivantes :
 
 # ACTUATOR
