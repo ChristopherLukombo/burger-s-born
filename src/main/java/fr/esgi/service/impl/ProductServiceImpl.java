@@ -44,4 +44,10 @@ public class ProductServiceImpl implements ProductService {
                 .map(productMapper::productToProductDTO);
     }
 
+	@Override
+	public ProductDTO addProduct(ProductDTO productDTO, Long id, Boolean available, String name, double price) {
+		LOGGER.debug("Request to add new product");
+		return null;
+	}
+
 }
