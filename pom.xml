@@ -175,6 +175,7 @@
 				<excludes>
 					<exclude>**/logback-spring.xml</exclude>
 					<exclude>**/burgersterminal.properties</exclude>
+				    <exclude>**/scripts/*.sql</exclude>
 				</excludes>
 			</resource>
 		</resources>
