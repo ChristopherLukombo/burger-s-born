@@ -6,11 +6,20 @@ import { environment } from '../../environments/environment';
 import { AppConstants } from '../app.constants';
 import { TranslateService } from '@ngx-translate/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
 import { RoleName } from '../RoleName';
 import {HttpErrorResponse, HttpResponse} from '@angular/common/http';
-import {DialogSuccessComponent} from "../dialog-success/dialog-success.component";
-import {MatDialog} from "@angular/material";
+import {DialogSuccessComponent} from '../dialog-success/dialog-success.component';
+import {MatDialog} from '@angular/material';
+import {AuthProviderService} from '../services/auth-provider.service';
+import { JwtHelperService } from '@auth0/angular-jwt';
+
+export interface RoleView {
+    value: string;
+    viewValue: string;
+}
+
+const WIDTH = '50%';
+const HEIGHT = '10%';
 
 @Component({
     selector: 'app-register',
@@ -26,14 +35,18 @@ export class RegisterComponent implements OnInit {
 
     selectedFiles: FileList;
     currentFileUpload: File;
-    @Input() image: String;
-    errorMessage: String;
+    @Input() image: string;
+    errorMessage: string;
+
+    roles: RoleView[];
+
+    isAdmin: boolean;
 
     constructor(
         private servicesDataService: ServicesDataService,
         private logger: NGXLogger,
         private translateService: TranslateService,
-        private router: Router,
+        private authProviderService: AuthProviderService,
         private formBuilder: FormBuilder,
         public dialog: MatDialog,
     ) { }
@@ -49,6 +62,18 @@ export class RegisterComponent implements OnInit {
 
     ngOnInit() {
         this.createForm();
+        this.roles = this.getRoles();
+        this.isAdmin = this.authProviderService.isAdmin();
+    }
+
+    private getRoles() {
+        const roleList = [];
+        RoleName.ROLES.forEach(function(role) {
+            roleList.push({
+                value: role.id, viewValue: role.name.substring(5, role.name.length)
+            });
+        });
+        return roleList;
     }
 
     private createForm() {
@@ -86,7 +111,7 @@ export class RegisterComponent implements OnInit {
 
         if (this.currentFileUpload) {
             if (!RegisterComponent.checkExtension(this.currentFileUpload)) {
-                this.errorMessage = "Fichier non valide";
+                this.errorMessage = 'Fichier non valide';
             }
         }
 
@@ -105,7 +130,6 @@ export class RegisterComponent implements OnInit {
                 this.logger.info(AppConstants.USER_SAVED_SUCCESSFULLY);
             }, error => {
                 if (error instanceof HttpErrorResponse) {
-
                     if (422 === error.status) {
                         Object.keys(error.error).forEach(prop => {
                             const formControl = this.registerForm.get(prop);
@@ -120,15 +144,13 @@ export class RegisterComponent implements OnInit {
                     } else if (500 === error.status) {
                         this.errorMessage = 'Une erreur serveur s\'est produite';
                     }
-
-
                 }
                 this.logger.error(AppConstants.USER_HASNT_BEEN_SAVED, error.message, error.status);
             });
 
 
         function getUserId(data) {
-            let userId;
+            let userId: string;
             if ('/api/users/' === data.headers.get('Location').slice(0, 11)) {
                 userId = data.headers.get('Location').slice(11, data.headers.get('Location').length);
             }
@@ -138,8 +160,11 @@ export class RegisterComponent implements OnInit {
 
     private resetForm() {
         this.registerForm.reset();
-        for (let i in this.registerForm.controls) {
-            this.registerForm.controls[i].setErrors(null);
+        for (const r in this.registerForm.controls) {
+            if (undefined === this.registerForm.controls[r]) {
+                continue;
+            }
+            this.registerForm.controls[r].setErrors(null);
         }
     }
 
@@ -175,8 +200,8 @@ export class RegisterComponent implements OnInit {
         this.dialog.open(
             DialogSuccessComponent,
             {
-                width: '50%',
-                height: '10%'
+                width: WIDTH,
+                height: HEIGHT
             }
         );
     }
