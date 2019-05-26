@@ -5,6 +5,7 @@ import {Login} from '../../model/model.login';
 import {environment} from '../../environments/environment';
 import {Observable} from 'rxjs';
 import { JwtHelperService } from '@auth0/angular-jwt';
+import { RoleName } from '../RoleName';
 
 @Injectable({
   providedIn: 'root'
@@ -45,5 +46,12 @@ export class AuthProviderService {
       return !this.jwtHelper.isTokenExpired(token);
   }
 
-
+  isAdmin(): boolean {
+    const helper = new JwtHelperService();
+    const decodedToken = helper.decodeToken(this.getToken());
+    if (null === decodedToken) {
+      return false;
+    }
+    return RoleName.ROLE_ADMIN === decodedToken.auth;
+  }
 }

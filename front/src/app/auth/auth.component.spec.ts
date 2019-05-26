@@ -1,25 +1,26 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { AuthComponent } from './auth.component';
-import {AppComponent} from "../app.component";
-import {HomeComponent} from "../home/home.component";
-import {RegisterComponent} from "../register/register.component";
-import {ProductComponent} from "../product/product.component";
-import {DialogSuccessComponent} from "../dialog-success/dialog-success.component";
-import {BrowserModule} from "@angular/platform-browser";
-import {AppRoutingModule} from "../app-routing.module";
-import {HttpClient, HttpClientModule} from "@angular/common/http";
-import {MatDatepickerModule, MatDialogModule, MatInputModule, MatNativeDateModule} from "@angular/material";
-import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
-import {FormsModule, ReactiveFormsModule} from "@angular/forms";
-import {TranslateLoader, TranslateModule} from "@ngx-translate/core";
-import {HttpLoaderFactory} from "../app.module";
-import {LoggerModule, NgxLoggerLevel} from "ngx-logger";
-import {ServicesDataService} from "../services/services-data.service";
-import {JwtModule} from "@auth0/angular-jwt";
-import {AuthProviderService} from "../services/auth-provider.service";
-import {LocalStorageService} from "ngx-webstorage";
-import {AuthGuard} from "../auth.guard";
+import {AppComponent} from '../app.component';
+import {HomeComponent} from '../home/home.component';
+import {RegisterComponent} from '../register/register.component';
+import {ProductComponent} from '../product/product.component';
+import {DialogSuccessComponent} from '../dialog-success/dialog-success.component';
+import {BrowserModule} from '@angular/platform-browser';
+import {AppRoutingModule} from '../app-routing.module';
+import {HttpClient, HttpClientModule} from '@angular/common/http';
+import {MatDatepickerModule, MatDialogModule, MatInputModule, MatNativeDateModule} from '@angular/material';
+import {MatSelectModule} from '@angular/material/select';
+import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
+import {FormsModule, ReactiveFormsModule} from '@angular/forms';
+import {TranslateLoader, TranslateModule} from '@ngx-translate/core';
+import {HttpLoaderFactory} from '../app.module';
+import {LoggerModule, NgxLoggerLevel} from 'ngx-logger';
+import {ServicesDataService} from '../services/services-data.service';
+import {JwtModule} from '@auth0/angular-jwt';
+import {AuthProviderService} from '../services/auth-provider.service';
+import {LocalStorageService} from 'ngx-webstorage';
+import {AuthGuard} from '../auth.guard';
 
 describe('AuthComponent', () => {
   let component: AuthComponent;
@@ -43,6 +44,7 @@ describe('AuthComponent', () => {
         MatInputModule,
         MatDatepickerModule,
         MatNativeDateModule,
+        MatSelectModule,
         BrowserAnimationsModule,
         FormsModule,
         MatDialogModule,
