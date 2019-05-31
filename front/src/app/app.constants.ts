@@ -6,6 +6,8 @@ export class AppConstants {
     public static readonly  USER_HASNT_BEEN_SAVED = 'User hasn\'t been saved, error: ';
     public static readonly  CALL_SERVICE = 'Call service save';
 
-    private AppConstants() {}
+    private AppConstants() {
+        // Private default constructor needed.
+    }
 
 }
