@@ -1,10 +1,10 @@
-import {Injectable} from '@angular/core';
-import {HttpClient, HttpResponse} from '@angular/common/http';
-import {LocalStorageService} from 'ngx-webstorage';
-import {Login} from '../../model/model.login';
-import {environment} from '../../environments/environment';
-import {Observable} from 'rxjs';
+import { HttpClient, HttpResponse } from '@angular/common/http';
+import { Injectable } from '@angular/core';
 import { JwtHelperService } from '@auth0/angular-jwt';
+import { LocalStorageService } from 'ngx-webstorage';
+import { Observable, BehaviorSubject } from 'rxjs';
+import { environment } from '../../environments/environment';
+import { Login } from '../../model/model.login';
 import { RoleName } from '../RoleName';
 
 @Injectable({
@@ -12,11 +12,13 @@ import { RoleName } from '../RoleName';
 })
 export class AuthProviderService {
   private resourceUrl = environment.serverUrl;
+  public admin: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+  public imageBlobUrl: BehaviorSubject<string | ArrayBuffer | null> = new BehaviorSubject<string>('');
 
   constructor(
       private http: HttpClient,
       private $localStorage: LocalStorageService,
-      private jwtHelper: JwtHelperService
+      private jwtHelper: JwtHelperService,
   ) {}
 
   authenticate(login: Login): Observable<HttpResponse<Object>> {
@@ -34,6 +36,8 @@ export class AuthProviderService {
   logout(): Observable<any> {
     return new Observable((observer) => {
       this.$localStorage.clear('authenticationToken');
+      this.admin.next(false);
+      this.imageBlobUrl.next('');
       observer.complete();
     });
   }
@@ -49,9 +53,18 @@ export class AuthProviderService {
   isAdmin(): boolean {
     const helper = new JwtHelperService();
     const decodedToken = helper.decodeToken(this.getToken());
-    if (null === decodedToken) {
+    if (!decodedToken) {
       return false;
     }
     return RoleName.ROLE_ADMIN === decodedToken.auth;
+  }
+
+  getPseudo(): string {
+    const helper = new JwtHelperService();
+    const decodedToken = helper.decodeToken(this.getToken());
+    if (!decodedToken) {
+      return null;
+    }
+    return decodedToken.sub;
   }
 }

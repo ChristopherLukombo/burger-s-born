@@ -1,5 +1,4 @@
-
-<form class="example-form" [formGroup]="registerForm" (ngSubmit)="save()">
+<form class="example-form" [formGroup]="registerForm" (ngSubmit)="registerUser()">
   <div class="alert alert-danger" role="alert" *ngIf="errorMessage">
     {{errorMessage}}
   </div>
@@ -22,7 +21,7 @@
 
   <div class="alert alert-danger" role="alert" *ngIf="(submitted && f.firstName.errors)">
     <div *ngIf="f.firstName.errors.required">
-        Le champs est obligatoire
+      Le champs est obligatoire
     </div>
     <div *ngIf="registerForm.get('firstName').errors?.serverError">
       Le champs {{registerForm.get('firstName').errors?.serverError}}
@@ -30,12 +29,12 @@
   </div>
 
   <mat-form-field class="example-full-width">
-    <input matInput placeholder="Nom de famille"  name="lastName" formControlName="lastName">
+    <input matInput placeholder="Nom de famille" name="lastName" formControlName="lastName">
   </mat-form-field>
 
   <div class="alert alert-danger" role="alert" *ngIf="(submitted && f.lastName.errors)">
     <div *ngIf="f.lastName.errors.required">
-        Le champs est obligatoire
+      Le champs est obligatoire
     </div>
     <div *ngIf="registerForm.get('lastName').errors?.serverError">
       Le champs {{registerForm.get('lastName').errors?.serverError}}
@@ -48,7 +47,7 @@
 
   <div class="alert alert-danger" role="alert" *ngIf="(submitted && f.email.errors)">
     <div *ngIf="f.email.errors.required">
-        Le champs est obligatoire
+      Le champs est obligatoire
     </div>
     <div *ngIf="f.email.errors.maxlength">
       Le champs doit contenir au maximun 100 caractères
@@ -70,7 +69,7 @@
 
   <div class="alert alert-danger" role="alert" *ngIf="(submitted && f.password.errors)">
     <div *ngIf="f.password.errors.required">
-        Le champs est obligatoire
+      Le champs est obligatoire
     </div>
     <div *ngIf="f.password.errors.maxlength">
       Le champs doit contenir au maximun 20 caractères
@@ -98,9 +97,9 @@
   </div>
 
   <mat-form-field>
-      <input matInput [matDatepicker]="picker" placeholder="Date de naissance" name="birthDay" formControlName="birthDay">
-      <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-      <mat-datepicker #picker startView="year" [startAt]="startDate"></mat-datepicker>
+    <input matInput [matDatepicker]="picker" placeholder="Date de naissance" name="birthDay" formControlName="birthDay">
+    <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+    <mat-datepicker #picker startView="year" [startAt]="startDate"></mat-datepicker>
   </mat-form-field>
 
   <div class="alert alert-danger" role="alert" *ngIf="(submitted && f.birthDay.errors)">
@@ -115,7 +114,7 @@
   <span *ngIf="authProviderService.isAuthenticated() && this.isAdmin">
     <mat-form-field>
       <mat-label>Rôle</mat-label>
-      <mat-select>
+      <mat-select name="role" formControlName="role">
         <mat-option *ngFor="let role of roles" [value]="role.value">
           {{role.viewValue}}
         </mat-option>
@@ -123,10 +122,15 @@
     </mat-form-field>
   </span>
 
+  <div *ngIf="authProviderService.isAuthenticated() && this.isAdmin">
+    <div class="alert alert-danger" role="alert" *ngIf="(submitted && f.role.errors)">
+      <div *ngIf="f.role.errors.required">
+        Le rôle est obligatoire
+      </div>
+    </div>
+  </div>
+
   <div style="text-align: center;">
     <button class="btn btn-primary" type="submit">Valider</button>
   </div>
-
 </form>
-
-
