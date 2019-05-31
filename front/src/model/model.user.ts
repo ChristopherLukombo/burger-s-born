@@ -11,7 +11,7 @@ export class User {
         public roleId?: number,
         public password?: string,
         public createDate?: Date
-    ) {} 
+    ) {}
 
 
 }

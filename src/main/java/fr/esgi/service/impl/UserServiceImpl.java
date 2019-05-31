@@ -1,5 +1,24 @@
 package fr.esgi.service.impl;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
+
+import javax.transaction.Transactional;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+
 import fr.esgi.config.Constants;
 import fr.esgi.config.ErrorMessage;
 import fr.esgi.dao.RoleRepository;
@@ -10,21 +29,6 @@ import fr.esgi.exception.BurgerSTerminalException;
 import fr.esgi.service.UserService;
 import fr.esgi.service.dto.UserDTO;
 import fr.esgi.service.mapper.UserMapper;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
-
-import javax.transaction.Transactional;
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.Optional;
 
 /**
  * Service Implementation for managing User.
@@ -33,7 +37,7 @@ import java.util.Optional;
 @Transactional
 public class UserServiceImpl implements UserService {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(UserServiceImpl.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(UserServiceImpl.class);
 
     private final PasswordEncoder passwordEncoder;
 
@@ -121,11 +125,50 @@ public class UserServiceImpl implements UserService {
                 final Path rootLocation = Paths.get(imagesDirectory + Constants.IMAGES  + Constants.DELIMITER + userId);
                 sendFileToFolder(file, rootLocation);
             } catch (IOException e) {
-                LOGGER.error(ErrorMessage.ERROR_DURING_SAVING_FILE, e);
                 throw new BurgerSTerminalException(ErrorMessage.ERROR_DURING_SAVING_FILE, e);
             }
         }
     }
+    
+    /**
+     * Download file from pseudo
+     * @param pseudo
+     * @return
+     * @throws BurgerSTerminalException 
+     */
+    public Map<String, byte[]> getImageURL(String pseudo) throws BurgerSTerminalException {
+    	final Optional<User> user = userRepository.findOneByPseudoIgnoreCase(pseudo);
+    	byte[] bytesArray = null;
+
+    	final Map<String, byte[]> content = new HashMap<>();
+
+    	if (user.isPresent()) {
+    		try {
+    			final int indexOfBackslash = imagesDirectory.indexOf(Constants.DOUBLE_BACKSLASH);
+    			
+    			final StringBuilder imageUrl = new StringBuilder();
+    			imageUrl.append(imagesDirectory);
+    			imageUrl.append(((indexOfBackslash > 0) ?  Constants.IMAGES.replace(Constants.DELIMITER, Constants.DOUBLE_BACKSLASH) : Constants.IMAGES));
+    			imageUrl.append((indexOfBackslash > 0) ? Constants.DOUBLE_BACKSLASH : Constants.DELIMITER);
+    			imageUrl.append(user.get().getId() + ((indexOfBackslash > 0) ? Constants.DOUBLE_BACKSLASH : Constants.DELIMITER));
+    			imageUrl.append(user.get().getImageUrl());
+    			final Path path = new File(imageUrl.toString()).toPath();
+    			bytesArray = readFile(imageUrl.toString());
+    			content.put(Files.probeContentType(path), bytesArray);
+
+    		} catch (IOException e) {
+    			throw new BurgerSTerminalException("Le fichier n'existe pas", e);
+    		}
+    	}
+    	return content;
+    }
+
+	private byte[] readFile(final String imageUrl) throws IOException {
+		byte[] bytesArray = null;
+		final File file = new File(imageUrl);
+		bytesArray = Files.readAllBytes(file.toPath());
+		return bytesArray;
+	}
 
     private void createFolder(Long userId) throws IOException {
         String pathname = imagesDirectory + Constants.IMAGES;
