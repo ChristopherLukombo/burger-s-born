@@ -1,5 +1,6 @@
 package fr.esgi.web.rest;
 
+import fr.esgi.config.Constants;
 import fr.esgi.config.ErrorMessage;
 import fr.esgi.exception.BurgerSTerminalException;
 import fr.esgi.service.UserService;
@@ -16,9 +17,11 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.Map;
 
 import static fr.esgi.config.Utils.getLang;
 
@@ -81,13 +84,19 @@ public class AccountResource {
         return ResponseEntity.created(new URI("/api/users/" + userDTO.getId()))
                 .build();
     }
-
+   
+    /**
+     * POST  /register/file/{userId} : update file from userId
+     * @param file
+     * @param userId
+     * @return String the status
+     * @throws BurgerSTerminalException
+     */
     @PostMapping("/register/file/{userId}")
     public ResponseEntity<String> uploadFile(
             @RequestPart("file") MultipartFile file,
             @PathVariable("userId") Long userId) throws BurgerSTerminalException {
         LOGGER.info("Call API service store ...");
-
         try {
             this.userService.store(file, userId);
         } catch (Exception e) {
@@ -95,11 +104,41 @@ public class AccountResource {
                     messageSource.getMessage(ErrorMessage.ERROR_FAIL_TO_UPLOAD, null, getLang("fr")) +
                             file.getOriginalFilename(), e);
         }
-
         return ResponseEntity.ok()
                 .body("Successfully uploaded : " + file.getOriginalFilename());
     }
 
+    /**
+     * GET  /users/imageURL/{pseudo} : retrieve image from pseudo.
+     * @param response
+     * @param pseudo
+     * @return byte[]
+     * @throws BurgerSTerminalException
+     */
+    @GetMapping(value = "/users/imageURL/{pseudo}", produces = {
+    		"image/jpg", "image/gif", "image/png", "image/tif"
+    })
+    public ResponseEntity<byte[]> getImageURL(
+    		final HttpServletResponse response,
+    		@PathVariable String pseudo) throws BurgerSTerminalException {
+    	LOGGER.info("Call API service getImageURL ...");
+    	final String contentType;
+    	byte[] imageURL = null;
+    	
+    	try {
+    		final Map.Entry<String, byte[]> entry = userService.getImageURL(pseudo).entrySet().iterator().next();
+    		contentType = entry.getKey();
+    		imageURL =  entry.getValue();
+    	} catch (BurgerSTerminalException e) {
+    		throw new BurgerSTerminalException(HttpStatus.INTERNAL_SERVER_ERROR.value(),
+    				"Erreur durant la lecture de l'image", e);
+    	}
+
+    	response.setHeader("Content-Disposition", "attachment; filename=" + "file." + contentType.split(Constants.DELIMITER)[1]);
+    	response.setContentType(contentType);
+
+    	return new ResponseEntity<>(imageURL, HttpStatus.OK);
+    }
 
     /**
      * GET  /authenticate : check if the user is authenticated, and return its login.
