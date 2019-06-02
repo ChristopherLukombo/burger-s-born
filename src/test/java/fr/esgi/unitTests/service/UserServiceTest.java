@@ -1,8 +1,12 @@
 package fr.esgi.unitTests.service;
 
+import fr.esgi.config.ConfigurationService;
 import fr.esgi.dao.RoleRepository;
 import fr.esgi.dao.UserRepository;
+import fr.esgi.domain.Role;
+import static org.mockito.ArgumentMatchers.anyLong;
 import fr.esgi.domain.User;
+import fr.esgi.enums.RoleName;
 import fr.esgi.service.dto.UserDTO;
 import fr.esgi.service.impl.UserServiceImpl;
 import fr.esgi.service.mapper.UserMapper;
@@ -42,6 +46,9 @@ public class UserServiceTest {
 
     @Mock
     private UserMapper userMapper;
+    
+    @Mock
+    private ConfigurationService configurationService;
 
     @InjectMocks
     private UserServiceImpl userServiceImpl;
@@ -49,9 +56,14 @@ public class UserServiceTest {
     private User user;
 
     @Before
-    public void init() {
+    public void setUp() {
         MockitoAnnotations.initMocks(this);
+        init();
     }
+
+	private void init() {
+		userServiceImpl = new UserServiceImpl(passwordEncoder, userRepository, roleRepository, userMapper, configurationService);
+	}
 
     @Before
     public void createUser() {
@@ -110,8 +122,6 @@ public class UserServiceTest {
 
         // When
         when(userServiceImpl.findUserByPseudo(mock(UserDTO.class))).thenReturn(user);
-
-        System.out.println(userServiceImpl.findUserByPseudo(mock(UserDTO.class)));
 
         // Then
         assertThat(userServiceImpl.findUserByPseudo(mock(UserDTO.class))).isEqualTo(Optional.empty());
@@ -172,10 +182,15 @@ public class UserServiceTest {
         userDTO.setId(ID);
         userDTO.setPseudo(PSEUDO);
         userDTO.setEmail(EMAIL);
+        Role role = new Role();
+        role.setId(ID);
+        role.setName(RoleName.ROLE_CUSTOMER.name());
+        
 
         // When
+        when(roleRepository.findById(anyLong())).thenReturn(Optional.of(role));
         when(userServiceImpl.registerUser(mock(UserDTO.class), anyString())).thenReturn(userDTO);
-
+        
         // Then
         assertThat(userServiceImpl.registerUser(mock(UserDTO.class), anyString())).isEqualTo(userDTO);
     }
@@ -189,6 +204,6 @@ public class UserServiceTest {
         when(userServiceImpl.registerUser(mock(UserDTO.class), anyString())).thenReturn(userDTO);
 
         // Then
-        assertThat(userServiceImpl.registerUser(mock(UserDTO.class), anyString())).isEqualTo(null);
+        assertThat(userServiceImpl.registerUser(mock(UserDTO.class), anyString())).isEqualTo(userDTO);
     }
 }

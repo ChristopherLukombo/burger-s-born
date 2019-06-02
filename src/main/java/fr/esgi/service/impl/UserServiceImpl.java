@@ -14,11 +14,11 @@ import javax.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import fr.esgi.config.ConfigurationService;
 import fr.esgi.config.Constants;
 import fr.esgi.config.ErrorMessage;
 import fr.esgi.dao.RoleRepository;
@@ -46,20 +46,20 @@ public class UserServiceImpl implements UserService {
     private final RoleRepository roleRepository;
 
     private final UserMapper userMapper;
-
-    @Value("${app.imagesDirectory}")
-    private String imagesDirectory;
+    
+    private final ConfigurationService configurationService;
 
     @Autowired
-    public UserServiceImpl(PasswordEncoder passwordEncoder, UserRepository userRepository, RoleRepository roleRepository,
-                           UserMapper userMapper) {
-        this.passwordEncoder = passwordEncoder;
-        this.userRepository = userRepository;
-        this.roleRepository = roleRepository;
-        this.userMapper = userMapper;
-    }
+    public UserServiceImpl(PasswordEncoder passwordEncoder, UserRepository userRepository,
+			RoleRepository roleRepository, UserMapper userMapper, ConfigurationService configurationService) {
+		this.passwordEncoder = passwordEncoder;
+		this.userRepository = userRepository;
+		this.roleRepository = roleRepository;
+		this.userMapper = userMapper;
+		this.configurationService = configurationService;
+	}
 
-    /**
+	/**
      * Save the user in database.
      * @param userDTO
      * @param password
@@ -122,7 +122,7 @@ public class UserServiceImpl implements UserService {
                 user.setImageUrl(file.getOriginalFilename());
                 userRepository.saveAndFlush(user);
                 createFolder(userId);
-                final Path rootLocation = Paths.get(imagesDirectory + Constants.IMAGES  + Constants.DELIMITER + userId);
+                final Path rootLocation = Paths.get(configurationService.getImagesDirectory() + Constants.IMAGES  + Constants.DELIMITER + userId);
                 sendFileToFolder(file, rootLocation);
             } catch (IOException e) {
                 throw new BurgerSTerminalException(ErrorMessage.ERROR_DURING_SAVING_FILE, e);
@@ -138,16 +138,16 @@ public class UserServiceImpl implements UserService {
      */
     public Map<String, byte[]> getImageURL(String pseudo) throws BurgerSTerminalException {
     	final Optional<User> user = userRepository.findOneByPseudoIgnoreCase(pseudo);
-    	byte[] bytesArray = null;
+    	byte[] bytesArray;
 
     	final Map<String, byte[]> content = new HashMap<>();
 
     	if (user.isPresent()) {
     		try {
-    			final int indexOfBackslash = imagesDirectory.indexOf(Constants.DOUBLE_BACKSLASH);
+    			final int indexOfBackslash = configurationService.getImagesDirectory().indexOf(Constants.DOUBLE_BACKSLASH);
     			
     			final StringBuilder imageUrl = new StringBuilder();
-    			imageUrl.append(imagesDirectory);
+    			imageUrl.append(configurationService.getImagesDirectory());
     			imageUrl.append(((indexOfBackslash > 0) ?  Constants.IMAGES.replace(Constants.DELIMITER, Constants.DOUBLE_BACKSLASH) : Constants.IMAGES));
     			imageUrl.append((indexOfBackslash > 0) ? Constants.DOUBLE_BACKSLASH : Constants.DELIMITER);
     			imageUrl.append(user.get().getId() + ((indexOfBackslash > 0) ? Constants.DOUBLE_BACKSLASH : Constants.DELIMITER));
@@ -164,14 +164,11 @@ public class UserServiceImpl implements UserService {
     }
 
 	private byte[] readFile(final String imageUrl) throws IOException {
-		byte[] bytesArray = null;
-		final File file = new File(imageUrl);
-		bytesArray = Files.readAllBytes(file.toPath());
-		return bytesArray;
+		return Files.readAllBytes(new File(imageUrl).toPath());
 	}
 
     private void createFolder(Long userId) throws IOException {
-        String pathname = imagesDirectory + Constants.IMAGES;
+        String pathname = configurationService.getImagesDirectory() + Constants.IMAGES;
         File folder = new File(pathname);
         // creation of first folder
         if (!folder.exists()) {

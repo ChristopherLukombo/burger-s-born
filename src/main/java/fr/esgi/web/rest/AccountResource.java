@@ -123,12 +123,12 @@ public class AccountResource {
     		@PathVariable String pseudo) throws BurgerSTerminalException {
     	LOGGER.info("Call API service getImageURL ...");
     	final String contentType;
-    	byte[] imageURL = null;
+    	byte[] imageURL;
     	
     	try {
     		final Map.Entry<String, byte[]> entry = userService.getImageURL(pseudo).entrySet().iterator().next();
     		contentType = entry.getKey();
-    		imageURL =  entry.getValue();
+    		imageURL = entry.getValue();
     	} catch (BurgerSTerminalException e) {
     		throw new BurgerSTerminalException(HttpStatus.INTERNAL_SERVER_ERROR.value(),
     				"Erreur durant la lecture de l'image", e);
