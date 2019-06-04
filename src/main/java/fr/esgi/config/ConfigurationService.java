@@ -14,9 +14,16 @@ public class ConfigurationService {
 
     @Value("#{'${app.authorizedURLs}'.split(',')}")
     private Set<String> corsAllowedOrigins;
+    
+    @Value("${app.imagesDirectory}")
+    private String imagesDirectory;
 
     public Set<String> getCorsAllowedOrigins() {
         return corsAllowedOrigins;
     }
+
+	public String getImagesDirectory() {
+		return imagesDirectory;
+	}
 
 }

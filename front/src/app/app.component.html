@@ -1,36 +1,15 @@
-<h3 style="text-align:center; margin: 20px;" translate>home.title</h3>
-
-<!-- Menu -->
+            <h4 style="text-align: center;">Menu</h4>
+<app-header></app-header>
 <div class="container">
     <hr>
-
     <div class="row">
         <div class="col-3">
-            <h4 style="text-align: center;">Menu</h4>
-            <div class="nav flex-column nav-pills" role="tablist" aria-orientation="vertical">
-                <a class="nav-link" routerLink="/home" routerLinkActive="active" role="tab">
-                    Accueil
-                </a>
-                <a class="nav-link" routerLink="/register" routerLinkActive="active" *ngIf="!authProviderService.isAuthenticated()" role="tab">
-                    Inscription
-                </a>
-                <a class="nav-link" routerLink="/auth" routerLinkActive="active" role="tab" *ngIf="!authProviderService.isAuthenticated()">
-                    Connexion
-                </a>
-                <a class="nav-link" routerLink="#" routerLinkActive="active" role="tab" (click)="logout()" *ngIf="authProviderService.isAuthenticated()">
-                    Deconnexion
-                </a>
-
-            </div>
+            <app-navbar></app-navbar>
         </div>
         <div class="col-9">
             <div class="tab-content">
                 <router-outlet></router-outlet>
             </div>
         </div>
-
-        <button class="btn btnLanguage" (click)="switchLanguage('fr')" [ngClass]="{activeLanguage: getLanguage() === 'fr',
-            inactiveLanguage: getLanguage() !== 'fr'}">FR
-        </button>
     </div>
 </div>

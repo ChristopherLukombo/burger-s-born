@@ -1,9 +1,9 @@
 package fr.esgi.service;
 
-import fr.esgi.domain.Product;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
+ 
+import fr.esgi.service.dto.ProductDTO;
 
 /**
  * Service Interface for managing Product.
@@ -16,6 +16,6 @@ public interface ProductService {
      * Returns products
      * @return List<Product>
      */
-    List<Product> findAll();
+	Page<ProductDTO> findAll(int page, int size);
 
 }

@@ -1,13 +1,8 @@
 package fr.esgi.service.dto;
 
-import fr.esgi.domain.Command;
 import fr.esgi.domain.Menu;
-import fr.esgi.domain.Product;
 
-import java.util.List;
 import java.util.Objects;
-
-import javax.persistence.ManyToMany;
 
 public class MenuDTO {
 
@@ -20,10 +15,7 @@ public class MenuDTO {
 	private Boolean available;
 	
 	private Long managerId;
-	
-	private List<Product> products;
 
-	
 	public MenuDTO() {
 		// Empty constructor needed for Jackson.
 	}
@@ -75,14 +67,32 @@ public class MenuDTO {
 	public void setManagerId(Long managerId) {
 		this.managerId = managerId;
 	}
-	
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+		MenuDTO menuDTO = (MenuDTO) o;
+		return Double.compare(menuDTO.price, price) == 0 &&
+				Objects.equals(id, menuDTO.id) &&
+				Objects.equals(name, menuDTO.name) &&
+				Objects.equals(available, menuDTO.available) &&
+				Objects.equals(managerId, menuDTO.managerId);
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(id, name, price, available, managerId);
+	}
 
 	@Override
 	public String toString() {
-		return "MenuDTO [id=" + id + ", name=" + name + ", price=" + price + ", available=" + available + ", managerId="
-				+ managerId + "]";
+		return "MenuDTO{" +
+				"id=" + id +
+				", name='" + name + '\'' +
+				", price=" + price +
+				", available=" + available +
+				", managerId=" + managerId +
+				'}';
 	}
-
-
-	
 }

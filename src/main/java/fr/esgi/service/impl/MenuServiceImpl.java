@@ -19,7 +19,6 @@ import fr.esgi.domain.Product;
 import fr.esgi.exception.BurgerSTerminalException;
 import fr.esgi.service.MenuService;
 import fr.esgi.service.dto.MenuDTO;
-import fr.esgi.service.dto.ProductDTO;
 import fr.esgi.service.mapper.MenuMapper;
 
 @Service

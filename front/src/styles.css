@@ -33,6 +33,7 @@ body {
     background: antiquewhite;
     line-height: 35px;
     font-family: "Source Sans Pro", sans-serif;
+    margin-left: 50px;
 }
 
 .activeLanguage {
@@ -52,4 +53,15 @@ body {
 
 .dialogSuccess {
     width: 97%;
+}
+
+#title {
+    text-align:center;
+    margin: 20px;
+}
+
+#avatar {
+    width: 80px;
+    height: 80px;
+    margin-left: 40px;
 }

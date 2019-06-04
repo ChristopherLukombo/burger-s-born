@@ -1,5 +1,5 @@
 import { HttpClient, HttpClientModule } from '@angular/common/http';
-import { TestBed } from '@angular/core/testing';
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatDatepickerModule, MatDialogModule, MatInputModule, MatNativeDateModule } from '@angular/material';
 import { MatSelectModule } from '@angular/material/select';
@@ -18,16 +18,22 @@ import { DialogSuccessComponent } from '../dialog-success/dialog-success.compone
 import { HeaderComponent } from '../header/header.component';
 import { HomeComponent } from '../home/home.component';
 import { NavbarComponent } from '../navbar/navbar.component';
-import { ProductComponent } from '../product/product.component';
 import { RegisterComponent } from '../register/register.component';
-import { AuthProviderService } from './auth-provider.service';
-import { ServicesDataService } from './services-data.service';
+import { AuthProviderService } from '../services/auth-provider.service';
+import { ServicesDataService } from '../services/services-data.service';
+import { ProductComponent } from './product.component';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 
 
-describe('ServicesDataService', () => {
-  beforeEach(() => TestBed.configureTestingModule({
-    declarations: [
+
+
+describe('ProductComponent', () => {
+  let component: ProductComponent;
+  let fixture: ComponentFixture<ProductComponent>;
+
+  beforeEach(async(() => {
+    TestBed.configureTestingModule({
+      declarations: [
         AppComponent,
         HomeComponent,
         RegisterComponent,
@@ -81,10 +87,17 @@ describe('ServicesDataService', () => {
         MatDatepickerModule,
       ],
       schemas: [ CUSTOM_ELEMENTS_SCHEMA ]
+    })
+    .compileComponents();
   }));
 
-  it('should be created', () => {
-    const service: ServicesDataService = TestBed.get(ServicesDataService);
-    expect(service).toBeTruthy();
+  beforeEach(() => {
+    fixture = TestBed.createComponent(ProductComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+  });
+
+  it('should create', () => {
+    expect(component).toBeTruthy();
   });
 });

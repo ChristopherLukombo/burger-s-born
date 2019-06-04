@@ -1,24 +1,29 @@
-import {TestBed} from '@angular/core/testing';
+import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { TestBed } from '@angular/core/testing';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatDatepickerModule, MatDialogModule, MatInputModule, MatNativeDateModule } from '@angular/material';
+import { MatSelectModule } from '@angular/material/select';
+import { BrowserModule } from '@angular/platform-browser';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { JwtModule } from '@auth0/angular-jwt';
+import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
+import { LoggerModule, NgxLoggerLevel } from 'ngx-logger';
+import { LocalStorageService } from 'ngx-webstorage';
+import { AppRoutingModule } from '../app-routing.module';
+import { AppComponent } from '../app.component';
+import { HttpLoaderFactory } from '../app.module';
+import { AuthGuard } from '../auth.guard';
+import { AuthComponent } from '../auth/auth.component';
+import { DialogSuccessComponent } from '../dialog-success/dialog-success.component';
+import { HeaderComponent } from '../header/header.component';
+import { HomeComponent } from '../home/home.component';
+import { NavbarComponent } from '../navbar/navbar.component';
+import { RegisterComponent } from '../register/register.component';
+import { ProductComponent } from './../product/product.component';
+import { AuthProviderService } from './auth-provider.service';
+import { ServicesDataService } from './services-data.service';
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 
-import {AuthProviderService} from './auth-provider.service';
-import {BrowserModule} from "@angular/platform-browser";
-import {AppRoutingModule} from "../app-routing.module";
-import {HttpClient, HttpClientModule} from "@angular/common/http";
-import {MatDatepickerModule, MatDialogModule, MatInputModule, MatNativeDateModule} from "@angular/material";
-import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
-import {FormsModule, ReactiveFormsModule} from "@angular/forms";
-import {TranslateLoader, TranslateModule} from "@ngx-translate/core";
-import {HttpLoaderFactory} from "../app.module";
-import {LoggerModule, NgxLoggerLevel} from "ngx-logger";
-import {JwtModule} from "@auth0/angular-jwt";
-import {AppComponent} from "../app.component";
-import {HomeComponent} from "../home/home.component";
-import {RegisterComponent} from "../register/register.component";
-import {AuthComponent} from "../auth/auth.component";
-import {DialogSuccessComponent} from "../dialog-success/dialog-success.component";
-import {ServicesDataService} from "./services-data.service";
-import {LocalStorageService} from "ngx-webstorage";
-import {AuthGuard} from "../auth.guard";
 
 describe('AuthProviderService', () => {
   beforeEach(() => TestBed.configureTestingModule({
@@ -27,7 +32,12 @@ describe('AuthProviderService', () => {
       HomeComponent,
       RegisterComponent,
       AuthComponent,
-      DialogSuccessComponent
+      DialogSuccessComponent,
+      ProductComponent,
+      NavbarComponent,
+      HeaderComponent,
+      NavbarComponent,
+      HeaderComponent
     ],
     imports: [
       ReactiveFormsModule,
@@ -37,6 +47,7 @@ describe('AuthProviderService', () => {
       MatInputModule,
       MatDatepickerModule,
       MatNativeDateModule,
+      MatSelectModule,
       BrowserAnimationsModule,
       FormsModule,
       MatDialogModule,
@@ -69,6 +80,7 @@ describe('AuthProviderService', () => {
       AuthGuard,
       MatDatepickerModule,
     ],
+    schemas: [ CUSTOM_ELEMENTS_SCHEMA ]
   }));
 
   it('should be created 1', () => {

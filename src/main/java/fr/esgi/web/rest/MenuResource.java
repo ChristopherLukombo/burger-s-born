@@ -1,12 +1,8 @@
 package fr.esgi.web.rest;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import javax.servlet.annotation.MultipartConfig;
-import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
-import javax.ws.rs.QueryParam;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,7 +18,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import fr.esgi.domain.Product;
 import fr.esgi.exception.BurgerSTerminalException;
 import fr.esgi.service.MenuService;
 import fr.esgi.service.dto.MenuDTO;
