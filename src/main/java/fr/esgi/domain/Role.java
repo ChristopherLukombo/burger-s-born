@@ -15,7 +15,9 @@ public class Role {
 
     private String name;
 
-    public Role() { }
+    public Role() {
+    	// Default constructor needed for Hibernate.
+    }
 
     public Long getId() {
         return id;
