@@ -37,8 +37,8 @@ export class ServicesDataService {
     }
 
     // Product
-    public findAllProduct(): Observable<HttpResponse<Object>> {
-        return this.http.get<HttpResponse<Object>>(this.resourceUrl + '/product?page=0&size=999', { observe: 'response' });
+    public findAllProduct(indexPage): Observable<HttpResponse<Object>> {
+        return this.http.get<HttpResponse<Object>>(this.resourceUrl + '/product?page='+ indexPage +'&size=4', { observe: 'response' });
     }
 
 }
