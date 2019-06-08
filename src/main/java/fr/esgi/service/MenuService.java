@@ -12,7 +12,6 @@ import fr.esgi.service.dto.ProductDTO;
 public interface MenuService {
 	
 	MenuDTO createMenu(MenuDTO menu,Long idManager,String...productNames);
-
 	MenuDTO findById(Long id) throws BurgerSTerminalException;
 	MenuDTO findByName(String name);
 	MenuDTO update(MenuDTO menu);
@@ -20,6 +19,7 @@ public interface MenuService {
 	
 	void addProducts(String menuName,String...productNames);
 	void removeProduct(String menuName,String...productNames);
+
 	void delete(Long id);
 	void deleteByName(String name);
 }

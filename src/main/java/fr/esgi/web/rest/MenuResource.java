@@ -22,8 +22,16 @@ import fr.esgi.exception.BurgerSTerminalException;
 import fr.esgi.service.MenuService;
 import fr.esgi.service.dto.MenuDTO;
 
+import org.springframework.web.bind.annotation.RestController;
+
+import fr.esgi.domain.Manager;
+import fr.esgi.domain.Menu;
+import fr.esgi.domain.Product;
+import fr.esgi.service.MenuService;
+import fr.esgi.service.ProductService;
+
 @RestController
-@RequestMapping("/api/menu")
+@RequestMapping("/api")
 public class MenuResource {
     private static final Logger LOGGER = LoggerFactory.getLogger(MenuResource.class);
 
@@ -31,6 +39,7 @@ public class MenuResource {
 
     @Autowired
 	public MenuResource(MenuService menuService) {
+		super();
 		this.menuService = menuService;
 	}
     
