@@ -4,9 +4,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import org.springframework.data.domain.Page;
 
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,6 +29,9 @@ import fr.esgi.service.mapper.MenuMapper;
 @Service
 @Transactional
 public class MenuServiceImpl implements MenuService {
+	
+	private static final Logger LOGGER = LoggerFactory.getLogger(MenuServiceImpl.class);
+
 
 	private MenuRepository menuRepo;
 
@@ -81,9 +89,11 @@ public class MenuServiceImpl implements MenuService {
 
 	@Override
 	@Transactional(readOnly=true)
-	public List<MenuDTO> getAll() {
-		return menuRepo.findAll().stream()
-		           .map(menuMapper::menuToMenuDTO).collect(Collectors.toList());
+	public Page<MenuDTO> findAll(int page,int size) {
+		 LOGGER.debug("Request to get all products");
+		
+		return menuRepo.findAll(PageRequest.of(page, size))
+		           .map(menuMapper::menuToMenuDTO);
 	}
 
 	@Override

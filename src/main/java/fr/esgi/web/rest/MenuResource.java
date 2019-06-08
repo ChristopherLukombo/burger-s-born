@@ -7,6 +7,7 @@ import javax.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -21,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 import fr.esgi.exception.BurgerSTerminalException;
 import fr.esgi.service.MenuService;
 import fr.esgi.service.dto.MenuDTO;
+import fr.esgi.service.dto.ProductDTO;
 
 import org.springframework.web.bind.annotation.RestController;
 
@@ -49,9 +51,15 @@ public class MenuResource {
     }
     
     @GetMapping("/menu/all")
-    public ResponseEntity<List<MenuDTO>> findAll() {
+    public ResponseEntity<Page<MenuDTO>> findAll(@RequestParam int page, @RequestParam("size") int size) throws BurgerSTerminalException {
     	LOGGER.debug("REST request to find all menus");
-        return ResponseEntity.ok(menuService.getAll());
+    	
+    	final Page<MenuDTO> menus = menuService.findAll(page, size);
+        if (null == menus || menus.isEmpty()) {
+            throw new BurgerSTerminalException(HttpStatus.NOT_FOUND.value(), "Menus non trouvé");
+        }
+        
+        return ResponseEntity.ok(menus);
     }
     
     @GetMapping("/find/menu/id")
