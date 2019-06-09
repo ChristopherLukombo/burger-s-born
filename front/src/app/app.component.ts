@@ -1,9 +1,11 @@
 import {Component, OnInit} from '@angular/core';
-import {TranslateService} from "@ngx-translate/core";
-import {CountryCode} from "./country-code.enum";
+import {TranslateService} from '@ngx-translate/core';
+import {CountryCode} from './country-code.enum';
 import {NGXLogger} from 'ngx-logger';
-import {AppConstants} from "./app.constants";
-import {environment} from "../environments/environment";
+import {AppConstants} from './app.constants';
+import {environment} from '../environments/environment';
+import {AuthProviderService} from './services/auth-provider.service';
+import {Router} from '@angular/router';
 
 @Component({
   selector: 'app-root',
@@ -13,20 +15,24 @@ import {environment} from "../environments/environment";
 export class AppComponent implements OnInit {
   private language: string;
 
+  isAdmin: boolean;
+
   constructor(
       private translateService: TranslateService,
-      private logger: NGXLogger
+      private logger: NGXLogger,
+      public authProviderService: AuthProviderService,
+      private router: Router
   ) {}
 
 
   ngOnInit(): void {
     this.language = CountryCode.FR;
-    this.translateService.setDefaultLang(CountryCode.EN);
     this.translateService.use(this.language);
+    this.isAdmin = this.authProviderService.isAdmin();
   }
 
   public switchLanguage(language: string): void {
-    if (false === environment.production) {
+    if (!environment.production) {
       this.logger.debug(AppConstants.LANGUAGE_CHANGE);
     }
     this.translateService.use(language);
@@ -35,5 +41,11 @@ export class AppComponent implements OnInit {
 
   public getLanguage(): string {
     return this.language;
+  }
+
+  public logout() {
+    this.authProviderService.logout()
+        .subscribe();
+    this.router.navigate(['/auth']);
   }
 }

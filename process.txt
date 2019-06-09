@@ -1,0 +1,45 @@
+/**
+ * Ce fichier détaille les manipulations à faire pour que le projet soit fonctionnel pour la prochaine personne.
+ */
+ 
+------------------------------------------------------------------------------------------------------------------------ 
+Exécuter le script "insert_roles.sql". 
+------------------------------------------------------------------------------------------------------------------------ 
+Ajouter la variable de conf suivante : 
+spring.output.ansi.enabled = DETECT 
+
+Supprimer la variable de conf dans VM arguments : -Dlogging.file. 
+Puis suivre la nouvelle procédure pour le fichier de logs dans le README.md.
+
+------------------------------------------------------------------------------------------------------------------------
+Ajouter les variables de configuration suivantes :
+
+# ACTUATOR
+management.server.port = 9000
+management.endpoints.web.exposure.include = health,info,metrics
+management.endpoint.shutdown.enabled = true
+info.app.version = 0.0.1
+
+# HEALTH ENDPOINT
+management.endpoint.health.show-details = always
+
+------------------------------------------------------------------------------------------------------------------------
+
+Ajouter l'URL suivante dans la variable de conf app.authorizedURLs
+
+http://myclassicelb-1083249681.us-east-2.elb.amazonaws.com:8080
+
+------------------------------------------------------------------------------------------------------------------------
+
+Faire un npm install
+
+Ajouter la variable de conf suivante :
+
+app.imagesDirectory=/home/christopher/Documents
+
+------------------------------------------------------------------------------------------------------------------------
+
+Ajouter la variable de conf suivante dans le fichier de configuration :
+
+spring.profiles.active = dev
+

@@ -4,11 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
-import fr.esgi.exception.BurgerSTerminalException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -18,7 +17,10 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import fr.esgi.dao.UserRepository;
+import fr.esgi.domain.Role;
 import fr.esgi.domain.User;
+import fr.esgi.enums.RoleName;
+import fr.esgi.exception.BurgerSTerminalException;
 
 /**
  * Authenticate a user from the database.
@@ -27,10 +29,11 @@ import fr.esgi.domain.User;
 @Component("userDetailsService")
 public class DomainUserDetailsService implements UserDetailsService {
 
-    private final Logger log = LoggerFactory.getLogger(DomainUserDetailsService.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(DomainUserDetailsService.class);
 
     private final UserRepository userRepository;
 
+    @Autowired
     public DomainUserDetailsService(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
@@ -38,9 +41,9 @@ public class DomainUserDetailsService implements UserDetailsService {
     @Override
     @Transactional
     public UserDetails loadUserByUsername(final String login) {
-        log.debug("Authenticating {}", login);
+        LOGGER.debug("Authenticating {}", login);
         String lowercaseLogin = login.toLowerCase(Locale.ENGLISH);
-        Optional<User> userByEmailFromDatabase = userRepository.findOneWithAuthoritiesByEmail(lowercaseLogin);
+        Optional<User> userByEmailFromDatabase = userRepository.findOneByEmailIgnoreCase(lowercaseLogin);
         return userByEmailFromDatabase.map(user -> {
             try {
                 return createSpringSecurityUser(lowercaseLogin, user);
@@ -48,7 +51,7 @@ public class DomainUserDetailsService implements UserDetailsService {
                 return null;
             }
         }).orElseGet(() -> {
-            Optional<User> userByLoginFromDatabase = userRepository.findOneWithAuthoritiesByLogin(lowercaseLogin);
+            Optional<User> userByLoginFromDatabase = userRepository.findOneByPseudoIgnoreCase(lowercaseLogin);
             return userByLoginFromDatabase.map(user -> {
                 try {
                     return createSpringSecurityUser(lowercaseLogin, user);
@@ -62,16 +65,21 @@ public class DomainUserDetailsService implements UserDetailsService {
     }
 
     private org.springframework.security.core.userdetails.User createSpringSecurityUser(String lowercaseLogin, User user) throws BurgerSTerminalException {
-        if (!user.getActivated()) {
+        if (!user.isActivated()) {
             throw new BurgerSTerminalException("User " + lowercaseLogin + " was not activated");
         }
 
-        // TODO: Gérer les rôles
-        List<GrantedAuthority> grantedAuthorities = new ArrayList<>();
-        grantedAuthorities.add(new SimpleGrantedAuthority("ROLE_CUSTOMER"));
+        final List<GrantedAuthority> grantedAuthorities = new ArrayList<>();
+        grantedAuthorities.add(new SimpleGrantedAuthority(getRole(user)));
 
-        return new org.springframework.security.core.userdetails.User(user.getLogin(),
+        return new org.springframework.security.core.userdetails.User(user.getPseudo(),
                 user.getPassword(),
                 grantedAuthorities);
+    }
+
+    private String getRole(User user) {
+    	return Optional.of(user).map(User::getRole)
+    			.map(Role::getName)
+    			.orElse(RoleName.ROLE_CUSTOMER.toString());
     }
 }

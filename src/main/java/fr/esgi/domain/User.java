@@ -2,14 +2,13 @@ package fr.esgi.domain;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import org.apache.commons.lang3.StringUtils;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
-import java.util.Locale;
+import java.time.LocalDate;
 import java.util.Objects;
 
 /**
@@ -21,14 +20,14 @@ import java.util.Objects;
 public class User {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
     @NotNull
     @Pattern(regexp = "^[_'.@A-Za-z0-9-]*$")
     @Size(min = 1, max = 50)
     @Column(length = 50, unique = true, nullable = false)
-    private String login;
+    private String pseudo;
 
     @JsonIgnore
     @NotNull
@@ -49,17 +48,22 @@ public class User {
     @Column(length = 100, unique = true)
     private String email;
 
+    @Column(name = "createDate")
+    private LocalDate createDate;
+
     @NotNull
     @Column(nullable = false)
     private boolean activated = false;
 
-    @Size(min = 2, max = 6)
-    @Column(name = "lang_key", length = 6)
-    private String langKey;
-
     @Size(max = 256)
     @Column(name = "image_url", length = 256)
     private String imageUrl;
+
+    @Column
+    private LocalDate birthDay;
+
+    @ManyToOne
+    private Role role;
 
     public User() { }
 
@@ -71,13 +75,12 @@ public class User {
         this.id = id;
     }
 
-    public String getLogin() {
-        return login;
+    public String getPseudo() {
+        return pseudo;
     }
 
-    // Lowercase the login before saving it in database
-    public void setLogin(String login) {
-        this.login = StringUtils.lowerCase(login, Locale.ENGLISH);
+    public void setPseudo(String pseudo) {
+        this.pseudo = pseudo;
     }
 
     public String getPassword() {
@@ -112,6 +115,22 @@ public class User {
         this.email = email;
     }
 
+    public LocalDate getCreateDate() {
+        return createDate;
+    }
+
+    public void setCreateDate(LocalDate createDate) {
+        this.createDate = createDate;
+    }
+
+    public boolean isActivated() {
+        return activated;
+    }
+
+    public void setActivated(boolean activated) {
+        this.activated = activated;
+    }
+
     public String getImageUrl() {
         return imageUrl;
     }
@@ -120,50 +139,59 @@ public class User {
         this.imageUrl = imageUrl;
     }
 
-    public boolean getActivated() {
-        return activated;
+    public LocalDate getBirthDay() {
+        return birthDay;
     }
 
-    public void setActivated(boolean activated) {
-        this.activated = activated;
-    }
-    public String getLangKey() {
-        return langKey;
+    public void setBirthDay(LocalDate birthDay) {
+        this.birthDay = birthDay;
     }
 
-    public void setLangKey(String langKey) {
-        this.langKey = langKey;
+    public Role getRole() {
+        return role;
+    }
+
+    public void setRole(Role role) {
+        this.role = role;
     }
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
         User user = (User) o;
-        return !(user.getId() == null || getId() == null) && Objects.equals(getId(), user.getId());
+        return activated == user.activated &&
+                Objects.equals(id, user.id) &&
+                Objects.equals(pseudo, user.pseudo) &&
+                Objects.equals(password, user.password) &&
+                Objects.equals(firstName, user.firstName) &&
+                Objects.equals(lastName, user.lastName) &&
+                Objects.equals(email, user.email) &&
+                Objects.equals(createDate, user.createDate) &&
+                Objects.equals(imageUrl, user.imageUrl) &&
+                Objects.equals(birthDay, user.birthDay) &&
+                Objects.equals(role, user.role);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(getId());
+        return Objects.hash(id, pseudo, password, firstName, lastName, email, createDate, activated, imageUrl, birthDay, role);
     }
 
     @Override
     public String toString() {
         return "User{" +
-            "login='" + login + '\'' +
-            ", firstName='" + firstName + '\'' +
-            ", lastName='" + lastName + '\'' +
-            ", email='" + email + '\'' +
-            ", imageUrl='" + imageUrl + '\'' +
-            ", activated='" + activated + '\'' +
-            ", langKey='" + langKey + '\'' +
-            "}";
+                "id=" + id +
+                ", pseudo='" + pseudo + '\'' +
+                ", password='" + password + '\'' +
+                ", firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", email='" + email + '\'' +
+                ", createDate=" + createDate +
+                ", activated=" + activated +
+                ", imageUrl='" + imageUrl + '\'' +
+                ", birthDay=" + birthDay +
+                ", role=" + role +
+                '}';
     }
-
 }

@@ -1,6 +1,6 @@
 /* You can add global styles to this file, and also import other style files */
 
-@import '~@angular/material/prebuilt-themes/deeppurple-amber.css';
+@import '~@angular/material/prebuilt-themes/indigo-pink.css';
 
 body {
     font-family: Roboto, Arial, sans-serif;
@@ -33,17 +33,35 @@ body {
     background: antiquewhite;
     line-height: 35px;
     font-family: "Source Sans Pro", sans-serif;
+    margin-left: 50px;
 }
 
 .activeLanguage {
-    background-color: #BDB76B !important;
+    color: white !important;
+    background-color: #bdbdbd !important;
 }
 
-.activeLanguage:hover {
-    cursor: default;
+.inactiveLanguage {
+    color: white !important;
+    background-color: #4285F4 !important;
 }
 
 .inactiveLanguage:hover {
-    background-color: #DFC11F !important;
-    cursor: pointer;
+    color: white !important;
+    background-color: #0d47a1 !important;
+}
+
+.dialogSuccess {
+    width: 97%;
+}
+
+#title {
+    text-align:center;
+    margin: 20px;
+}
+
+#avatar {
+    width: 80px;
+    height: 80px;
+    margin-left: 40px;
 }

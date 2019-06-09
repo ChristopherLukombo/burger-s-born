@@ -1,8 +1,13 @@
 package fr.esgi.service.dto;
 
 
+import java.time.LocalDate;
+import java.util.Objects;
 
-import javax.validation.constraints.*;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
 
 import fr.esgi.domain.User;
 
@@ -16,7 +21,7 @@ public class UserDTO {
     @NotBlank
     @Pattern(regexp = "^[_'.@A-Za-z0-9-]*$")
     @Size(min = 1, max = 50)
-    private String login;
+    private String pseudo;
 
     @Size(max = 50)
     private String firstName;
@@ -31,10 +36,14 @@ public class UserDTO {
     @Size(max = 256)
     private String imageUrl;
 
+    private LocalDate createDate;
+
     private boolean activated = false;
 
-    @Size(min = 2, max = 6)
-    private String langKey;
+    private LocalDate birthDay;
+
+    private Long roleId;
+
 
     public UserDTO() {
         // Empty constructor needed for Jackson.
@@ -42,13 +51,17 @@ public class UserDTO {
 
     public UserDTO(User user) {
         this.id = user.getId();
-        this.login = user.getLogin();
+        this.pseudo = user.getPseudo();
         this.firstName = user.getFirstName();
         this.lastName = user.getLastName();
         this.email = user.getEmail();
-        this.activated = user.getActivated();
+        this.activated = user.isActivated();
+        this.createDate = user.getCreateDate();
         this.imageUrl = user.getImageUrl();
-        this.langKey = user.getLangKey();
+        this.birthDay = user.getBirthDay();
+        if (null != user.getRole()) {
+            this.roleId = user.getRole().getId();
+        }
     }
 
     public Long getId() {
@@ -59,12 +72,12 @@ public class UserDTO {
         this.id = id;
     }
 
-    public String getLogin() {
-        return login;
+    public String getPseudo() {
+        return pseudo;
     }
 
-    public void setLogin(String login) {
-        this.login = login;
+    public void setPseudo(String pseudo) {
+        this.pseudo = pseudo;
     }
 
     public String getFirstName() {
@@ -107,25 +120,65 @@ public class UserDTO {
         this.activated = activated;
     }
 
-    public String getLangKey() {
-        return langKey;
+    public LocalDate getCreateDate() {
+        return createDate;
     }
 
-    public void setLangKey(String langKey) {
-        this.langKey = langKey;
+    public void setCreateDate(LocalDate createDate) {
+        this.createDate = createDate;
     }
 
+    public LocalDate getBirthDay() {
+        return birthDay;
+    }
+
+    public void setBirthDay(LocalDate birthDay) {
+        this.birthDay = birthDay;
+    }
+
+    public Long getRoleId() {
+        return roleId;
+    }
+
+    public void setRoleId(Long roleId) {
+        this.roleId = roleId;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        UserDTO userDTO = (UserDTO) o;
+        return activated == userDTO.activated &&
+                Objects.equals(id, userDTO.id) &&
+                Objects.equals(pseudo, userDTO.pseudo) &&
+                Objects.equals(firstName, userDTO.firstName) &&
+                Objects.equals(lastName, userDTO.lastName) &&
+                Objects.equals(email, userDTO.email) &&
+                Objects.equals(imageUrl, userDTO.imageUrl) &&
+                Objects.equals(createDate, userDTO.createDate) &&
+                Objects.equals(birthDay, userDTO.birthDay) &&
+                Objects.equals(roleId, userDTO.roleId);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, pseudo, firstName, lastName, email, imageUrl, createDate, activated, birthDay, roleId);
+    }
 
     @Override
     public String toString() {
         return "UserDTO{" +
-            "login='" + login + '\'' +
-            ", firstName='" + firstName + '\'' +
-            ", lastName='" + lastName + '\'' +
-            ", email='" + email + '\'' +
-            ", imageUrl='" + imageUrl + '\'' +
-            ", activated=" + activated +
-            ", langKey='" + langKey + '\'' +
-            "}";
+                "id=" + id +
+                ", pseudo='" + pseudo + '\'' +
+                ", firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", email='" + email + '\'' +
+                ", imageUrl='" + imageUrl + '\'' +
+                ", createDate=" + createDate +
+                ", activated=" + activated +
+                ", birthDay=" + birthDay +
+                ", roleId=" + roleId +
+                '}';
     }
 }
