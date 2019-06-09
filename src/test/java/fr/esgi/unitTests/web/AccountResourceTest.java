@@ -1,14 +1,22 @@
 package fr.esgi.unitTests.web;
 
-import fr.esgi.dao.RoleRepository;
-import fr.esgi.dao.UserRepository;
-import fr.esgi.domain.User;
-import fr.esgi.service.UserService;
-import fr.esgi.service.dto.UserDTO;
-import fr.esgi.service.impl.UserServiceImpl;
-import fr.esgi.service.mapper.UserMapper;
-import fr.esgi.web.ManagedUser;
-import fr.esgi.web.rest.AccountResource;
+import static fr.esgi.unitTests.web.TestUtil.convertObjectToJsonBytes;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
+
 import org.apache.commons.io.FileUtils;
 import org.junit.After;
 import org.junit.Before;
@@ -22,24 +30,20 @@ import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
-
-import static fr.esgi.unitTests.web.TestUtil.convertObjectToJsonBytes;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import fr.esgi.config.ConfigurationService;
+import fr.esgi.dao.RoleRepository;
+import fr.esgi.dao.UserRepository;
+import fr.esgi.domain.User;
+import fr.esgi.service.UserService;
+import fr.esgi.service.dto.UserDTO;
+import fr.esgi.service.impl.UserServiceImpl;
+import fr.esgi.service.mapper.UserMapper;
+import fr.esgi.web.ManagedUser;
+import fr.esgi.web.rest.AccountResource;
 
 @ActiveProfiles("test")
 @RunWith(SpringRunner.class)
@@ -69,6 +73,9 @@ public class AccountResourceTest {
 
     @Mock
     private MessageSource messageSource;
+    
+    @Mock
+    private ConfigurationService configurationService;
 
     @InjectMocks
     private AccountResource accountResource;
@@ -87,8 +94,7 @@ public class AccountResourceTest {
     }
 
     private void initMocks() {
-        userService = new UserServiceImpl(passwordEncoder, userRepository, roleRepository, userMapper);
-        ReflectionTestUtils.setField(userService, "imagesDirectory", ".");
+        userService = new UserServiceImpl(passwordEncoder, userRepository, roleRepository, userMapper, configurationService);
         accountResource = new AccountResource(userService, messageSource);
     }
 
@@ -153,6 +159,7 @@ public class AccountResourceTest {
         MockMultipartFile file = new MockMultipartFile("file", "filename.txt", "text/plain", "some xml".getBytes());
 
         // When
+        when(configurationService.getImagesDirectory()).thenReturn(".");
         when(userRepository.findById(anyLong())).thenReturn(Optional.of(user));
         mockMvc.perform(MockMvcRequestBuilders.multipart("/api/register/file/1")
                 .file(file))
