@@ -30,4 +30,11 @@ public interface ProductService {
      */
     ProductDTO addProduct(ProductDTO productDTO, Long id, Boolean available, String name, double price);
 
+    /**
+     * Save a Product in the Database.
+     * @param productDTO
+     * @return
+     */
+    ProductDTO addProduct(ProductDTO productDTO);
+
 }
