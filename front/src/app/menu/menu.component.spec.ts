@@ -42,7 +42,8 @@ describe('MenuComponent', () => {
           NavbarComponent,
           HeaderComponent,
           NavbarComponent,
-          HeaderComponent
+          HeaderComponent,
+          MenuComponent
       ],
       imports: [
         ReactiveFormsModule,
