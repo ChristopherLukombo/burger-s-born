@@ -80,4 +80,11 @@ public class ProductServiceImpl implements ProductService {
         return productMapper.productToProductDTO(newProduct);
     }
 
+
+	@Override
+	public ProductDTO addProduct(ProductDTO productDTO, Long id, Boolean available, String name, double price) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }
