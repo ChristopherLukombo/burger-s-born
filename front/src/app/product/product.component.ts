@@ -13,19 +13,25 @@ export class ProductComponent implements OnInit {
     errorMessage;
     successMessage;
     products;
+    totalElements;
+    pages;
+    selectedPage = 0;
 
     constructor(private servicesDataService: ServicesDataService) { }
 
     ngOnInit() {
-        this.findAll();
+        this.findAll(0);
     }
 
-    findAll() {
-
-        this.servicesDataService.findAllProduct()
+    findAll(indexPage) {
+        this.servicesDataService.findAllProduct(indexPage)
             .subscribe(data => {
+
                 this.products = data.body['content'];
-                console.log(this.products);
+                this.totalElements = data.body['totalElements'];
+                this.pages = Array(data.body['totalPages']).fill(0).map((x, i) => i+1);
+                this.selectedPage = indexPage;
+
             }, err => {
                 if (err instanceof HttpErrorResponse) {
                     if (403 === err.status) {

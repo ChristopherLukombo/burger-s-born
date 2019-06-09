@@ -23,6 +23,7 @@ import { AuthProviderService } from '../services/auth-provider.service';
 import { ServicesDataService } from '../services/services-data.service';
 import { AuthComponent } from './auth.component';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { MenuComponent } from '../menu/menu.component';
 
 
 describe('AuthComponent', () => {
@@ -41,7 +42,8 @@ describe('AuthComponent', () => {
         NavbarComponent,
         HeaderComponent,
         NavbarComponent,
-        HeaderComponent
+        HeaderComponent,
+        MenuComponent
       ],
       imports: [
         ReactiveFormsModule,

@@ -23,6 +23,7 @@ import { ProductComponent } from '../product/product.component';
 import { AuthProviderService } from '../services/auth-provider.service';
 import { ServicesDataService } from '../services/services-data.service';
 import { RegisterComponent } from './register.component';
+import { MenuComponent } from '../menu/menu.component';
 
 
 describe('RegisterComponent', () => {
@@ -42,7 +43,8 @@ describe('RegisterComponent', () => {
             NavbarComponent,
             HeaderComponent,
             NavbarComponent,
-            HeaderComponent
+            HeaderComponent,
+            MenuComponent
           ],
           imports: [
             ReactiveFormsModule,

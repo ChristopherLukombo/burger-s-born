@@ -23,6 +23,7 @@ import { AuthProviderService } from '../services/auth-provider.service';
 import { ServicesDataService } from '../services/services-data.service';
 import { DialogSuccessComponent } from './dialog-success.component';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { MenuComponent } from '../menu/menu.component';
 
 
 describe('DialogSuccessComponent', () => {
@@ -41,7 +42,8 @@ describe('DialogSuccessComponent', () => {
             NavbarComponent,
             HeaderComponent,
             NavbarComponent,
-            HeaderComponent
+            HeaderComponent,
+            MenuComponent
           ],
           imports: [
             ReactiveFormsModule,

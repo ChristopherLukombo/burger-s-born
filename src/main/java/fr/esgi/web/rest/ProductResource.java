@@ -6,6 +6,8 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import javax.validation.Valid;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +17,14 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+ 
 import fr.esgi.exception.BurgerSTerminalException;
 import fr.esgi.service.ProductService;
 import fr.esgi.service.dto.ProductDTO;
@@ -61,6 +71,20 @@ public class ProductResource {
         }
 
         return ResponseEntity.ok(products);
+    }
+    
+    
+    /**
+     * POST  /product : add new product.
+     *
+     * @param request the HTTP request
+     * @return created product
+     * @throws BurgerSTerminalException
+     */
+    @PostMapping("/product")
+    public ResponseEntity<ProductDTO> addProduct (@RequestBody @Valid ProductDTO productDTO, @RequestParam("id") Long id, @RequestParam("available") Boolean available, @RequestParam("name") String name, @RequestParam("price") double price) throws BurgerSTerminalException {
+        LOGGER.debug("REST request to add new product");        
+        return new ResponseEntity<ProductDTO>(productService.addProduct(productDTO, id, available, name, price),HttpStatus.OK);
     }
 
     @PostMapping(value = "/product/import/json", headers = "content-type=multipart/*")
