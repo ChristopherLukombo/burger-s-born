@@ -1,6 +1,7 @@
 package fr.esgi.service;
 
 import fr.esgi.exception.BurgerSTerminalException;
+import org.json.JSONArray;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -13,5 +14,5 @@ import java.io.IOException;
 @Service
 public interface DatabaseUpdatorService {
 
-    void importFile(MultipartFile fileToImport) throws BurgerSTerminalException, IOException;
+    public JSONArray importFile(MultipartFile fileToImport, String fileFormat);
 }

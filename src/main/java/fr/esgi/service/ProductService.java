@@ -18,4 +18,11 @@ public interface ProductService {
      */
 	Page<ProductDTO> findAll(int page, int size);
 
+    /**
+     * Save a Product in the Database.
+     * @param productDTO
+     * @return
+     */
+    ProductDTO addProduct(ProductDTO productDTO);
+
 }

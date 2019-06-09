@@ -1,7 +1,11 @@
 package fr.esgi.web.rest;
 
 import fr.esgi.domain.FileInfo;
+import fr.esgi.service.DatabaseUpdatorService;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +21,7 @@ import fr.esgi.service.dto.ProductDTO;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
+import java.util.ArrayList;
 
 
 /**
@@ -32,9 +37,12 @@ public class ProductResource {
 
     private final ProductService productService;
 
+    private final DatabaseUpdatorService databaseUpdatorService;
+
     @Autowired
-    public ProductResource(ProductService productService) {
+    public ProductResource(ProductService productService, DatabaseUpdatorService databaseUpdatorService) {
         this.productService = productService;
+        this.databaseUpdatorService = databaseUpdatorService;
     }
 
     /**
@@ -56,31 +64,33 @@ public class ProductResource {
     }
 
     @PostMapping(value = "/product/import/json", headers = "content-type=multipart/*")
-    public ResponseEntity<FileInfo> upload(@RequestParam("importfile") MultipartFile inputFile) {
+    public ResponseEntity upload(@RequestParam("importfile") MultipartFile inputFile) {
 
-        if ("json".equals(FilenameUtils.getExtension(inputFile.getOriginalFilename()))) {
-            FileInfo info = new FileInfo();
-            HttpHeaders headers = new HttpHeaders();
-            if (!inputFile.isEmpty()) {
-                try {
-                    String originalFilename = inputFile.getOriginalFilename();
-                    File destinationFile = new File("C:\\tmp\\" + originalFilename);
-                    inputFile.transferTo(destinationFile);
-                    info.setFileName(destinationFile.getPath());
-                    info.setFileSize(inputFile.getSize());
+        HttpHeaders headers = new HttpHeaders();
+        ArrayList<ProductDTO> productDTOS = new ArrayList<>();
+        JSONArray products = databaseUpdatorService.importFile(inputFile, "json");
 
-                    headers.add("File Uploaded Succesfully - ", originalFilename);
-                    return new ResponseEntity<FileInfo>(info, headers, HttpStatus.OK);
-                } catch (Exception e) {
-                    return new ResponseEntity<FileInfo>(HttpStatus.BAD_REQUEST);
-                }
-            } else {
-                return new ResponseEntity<FileInfo>(HttpStatus.BAD_REQUEST);
-            }
+        for (int i = 0; i < products.length(); i++) {
+            JSONObject obj = (JSONObject) products.get(i);
+            ProductDTO product = new ProductDTO();
+            product.setId(obj.getLong("id"));
+            product.setName(obj.getString("name"));
+            product.setPrice(obj.getDouble("price"));
+            product.setAvailable(obj.getBoolean("available"));
+            product.setCategoryId(obj.getLong("categoryId"));
+            product.setManagerId(obj.getLong("managerId"));
 
-        } else {
-            return new ResponseEntity<FileInfo>(HttpStatus.UNPROCESSABLE_ENTITY);
+            productDTOS.add(product);
         }
+
+        for (ProductDTO p : productDTOS) {
+            // HTTP 500 Quand élément déja existant
+            productService.addProduct(p);
+        }
+
+
+        headers.add("File Uploaded Succesfully - ", inputFile.getOriginalFilename());
+        return new ResponseEntity(headers, HttpStatus.OK);
 
 
     }
