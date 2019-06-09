@@ -58,6 +58,7 @@ public class ProductServiceImpl implements ProductService {
                 .map(productMapper::productToProductDTO);
     }
 
+    // TODO refactorer la methode
     @Override
     public ProductDTO addProduct(ProductDTO productDTO) {
         Product newProduct = new Product();

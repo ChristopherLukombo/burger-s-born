@@ -87,13 +87,24 @@ public class ProductResource {
         return new ResponseEntity<ProductDTO>(productService.addProduct(productDTO, id, available, name, price),HttpStatus.OK);
     }
 
+    // TODO Faire la javadoc
+    // Il est préférable d'utiliser l'annotation @RequestPart au lieu @RequestParam pour MultipartFile
+    // ResponseEntity Mettre Void comme type générique de la méthode.
+    // Peut être mettre cette méthode dans une nouvelle classe à voir
     @PostMapping(value = "/product/import/json", headers = "content-type=multipart/*")
     public ResponseEntity upload(@RequestParam("importfile") MultipartFile inputFile) {
 
         HttpHeaders headers = new HttpHeaders();
+        // Mettre l'interface List comme type statique  
+        // List<ProductDTO> productDTOS = new ArrayList<>();
         ArrayList<ProductDTO> productDTOS = new ArrayList<>();
         JSONArray products = databaseUpdatorService.importFile(inputFile, "json");
 
+        // TODO : trop de traitement ici 
+        // Il vaut mieux tout mettre dans le service 
+        // Si le produit existe déjà, tu propages une exception avec la classe Personnalisé
+        // Dans la méthode du controller, ajouter un try catch et  throw new BurgerSTerminalException(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Produit dejà existant");
+        // Eviter aussi les boucles avec index
         for (int i = 0; i < products.length(); i++) {
             JSONObject obj = (JSONObject) products.get(i);
             ProductDTO product = new ProductDTO();
@@ -107,13 +118,16 @@ public class ProductResource {
             productDTOS.add(product);
         }
 
+        // Mettre dans le service
         for (ProductDTO p : productDTOS) {
+        	// Et propager exception
             // HTTP 500 Quand élément déja existant
             productService.addProduct(p);
         }
 
 
         headers.add("File Uploaded Succesfully - ", inputFile.getOriginalFilename());
+        // TODO : retourner une ResponseEntity de cette manière : ResponseEntity.ok(products);
         return new ResponseEntity(headers, HttpStatus.OK);
 
 
