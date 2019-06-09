@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
 import { User } from '../../model/model.user';
 import { Product } from '../../model/model.product';
+import { Menu } from '../../model/model.menu';
 import { AuthProviderService } from './auth-provider.service';
 
 
@@ -43,6 +44,11 @@ export class ServicesDataService {
     // Product
     public findAllProduct(indexPage): Observable<HttpResponse<Object>> {
         return this.http.get<HttpResponse<Object>>(this.resourceUrl + '/product?page='+ indexPage +'&size=4', { observe: 'response' });
+    }
+
+    // Menu
+    public findAllMenus(): Observable<HttpResponse<Object>> {
+        return this.http.get<HttpResponse<Object>>(this.resourceUrl + '/menu/all?page=0&size=999', { observe: 'response' });
     }
 
 }
