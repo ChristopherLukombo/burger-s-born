@@ -1,0 +1,36 @@
+<h4>Les menus</h4>
+<br>
+
+<!-- Messages -->
+<div class="alert alert-success" role="alert" *ngIf="successMessage != null">
+  {{successMessage}}
+</div>
+<div class="alert alert-danger" role="alert" *ngIf="errorMessage != null">
+  {{errorMessage}}
+</div>
+
+
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th>Nom</th>
+      <th>Prix</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+  <tr *ngFor="let menu of menus">
+    <td>{{menu.name}}</td>
+    <td>{{menu.price | number : '1.2-2'}} €</td>
+
+    <td>
+      <button class="btn btn-primary" (click)="null" style="margin-right: 10px;"> Modifier </button>
+      <button class="btn btn-danger" (click)="null"> Supprimer </button>
+    </td>
+  </tr>
+  </tbody>
+</table>
+
+<div style="text-align: right;" *ngIf="menus != null">
+  Nombre total de produits : {{menus.length}}
+</div>

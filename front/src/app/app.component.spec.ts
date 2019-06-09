@@ -23,6 +23,7 @@ import { ProductComponent } from './product/product.component';
 import { RegisterComponent } from './register/register.component';
 import { AuthProviderService } from './services/auth-provider.service';
 import { ServicesDataService } from './services/services-data.service';
+import { MenuComponent } from './menu/menu.component';
 
 describe('AppComponent', () => {
     beforeEach(async(() => {
@@ -37,7 +38,8 @@ describe('AppComponent', () => {
                 NavbarComponent,
                 HeaderComponent,
                 NavbarComponent,
-                HeaderComponent
+                HeaderComponent,
+                MenuComponent
               ],
               imports: [
                 ReactiveFormsModule,

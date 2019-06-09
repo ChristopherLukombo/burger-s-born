@@ -13,6 +13,7 @@ public final class Constants {
     public static final String IMAGES = "/images";
     public static final String DELIMITER = "/";
     public static final String DOUBLE_BACKSLASH = "\\";
+    public static final String TEMP = "/tmp";
 
     private Constants() {
         // private constructor needed for Constants class.

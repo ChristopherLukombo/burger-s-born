@@ -1,3 +1,4 @@
+import { MenuComponent } from './../menu/menu.component';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { NavbarComponent } from './navbar.component';
 import { AppComponent } from '../app.component';
@@ -39,7 +40,8 @@ describe('NavbarComponent', () => {
         NavbarComponent,
         HeaderComponent,
         NavbarComponent,
-        HeaderComponent
+        HeaderComponent,
+        MenuComponent
       ],
       imports: [
         ReactiveFormsModule,

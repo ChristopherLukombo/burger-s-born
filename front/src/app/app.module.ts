@@ -24,6 +24,7 @@ import { AuthProviderService } from './services/auth-provider.service';
 import { ServicesDataService } from './services/services-data.service';
 import { HeaderComponent } from './header/header.component';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { MenuComponent } from './menu/menu.component';
 
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http, 'assets/i18n/', '.json');
@@ -41,7 +42,8 @@ export function tokenGetter() {
     DialogSuccessComponent,
     ProductComponent,
     NavbarComponent,
-    HeaderComponent
+    HeaderComponent,
+    MenuComponent
   ],
   exports: [
     DialogSuccessComponent,

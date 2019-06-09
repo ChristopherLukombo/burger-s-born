@@ -22,6 +22,7 @@ import { RegisterComponent } from '../register/register.component';
 import { AuthProviderService } from '../services/auth-provider.service';
 import { ServicesDataService } from '../services/services-data.service';
 import { HeaderComponent } from './header.component';
+import { MenuComponent } from '../menu/menu.component';
 
 describe('HeaderComponent', () => {
   let component: HeaderComponent;
@@ -39,7 +40,8 @@ describe('HeaderComponent', () => {
         NavbarComponent,
         HeaderComponent,
         NavbarComponent,
-        HeaderComponent
+        HeaderComponent,
+        MenuComponent
       ],
       imports: [
         ReactiveFormsModule,
