@@ -1,6 +1,9 @@
 package fr.esgi.dao;
 
 import fr.esgi.domain.Command;
+
+import java.util.Optional;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -11,5 +14,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface CommandRepository extends JpaRepository<Command, Long> {
 
+	Optional<Command> findByPaymentId(String paymentId);
 
 }

@@ -1,28 +1,33 @@
-import { MenuComponent } from './../menu/menu.component';
+import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { NavbarComponent } from './navbar.component';
-import { AppComponent } from '../app.component';
-import { HomeComponent } from '../home/home.component';
-import { RegisterComponent } from '../register/register.component';
-import { AuthComponent } from '../auth/auth.component';
-import { DialogSuccessComponent } from '../dialog-success/dialog-success.component';
-import { ProductComponent } from '../product/product.component';
-import { HeaderComponent } from '../header/header.component';
-import { ReactiveFormsModule, FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatDatepickerModule, MatStepperModule, MatDialogModule, MatInputModule, MatNativeDateModule } from '@angular/material';
+import { MatSelectModule } from '@angular/material/select';
 import { BrowserModule } from '@angular/platform-browser';
-import { AppRoutingModule } from '../app-routing.module';
-import { HttpClientModule, HttpClient } from '@angular/common/http';
-import { MatInputModule, MatDatepickerModule, MatNativeDateModule, MatSelectModule, MatDialogModule } from '@angular/material';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
-import { HttpLoaderFactory } from '../app.module';
-import { LoggerModule, NgxLoggerLevel } from 'ngx-logger';
 import { JwtModule } from '@auth0/angular-jwt';
-import { ServicesDataService } from '../services/services-data.service';
-import { AuthProviderService } from '../services/auth-provider.service';
+import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
+import { LoggerModule, NgxLoggerLevel } from 'ngx-logger';
 import { LocalStorageService } from 'ngx-webstorage';
+import { AppRoutingModule } from '../app-routing.module';
+import { AppComponent } from '../app.component';
+import { HttpLoaderFactory } from '../app.module';
 import { AuthGuard } from '../auth.guard';
+import { DialogSuccessComponent } from '../dialog-success/dialog-success.component';
+import { DialogRedirectionComponent } from '../dialog-redirection/dialog-redirection.component';
+import { HeaderComponent } from '../header/header.component';
+import { HomeComponent } from '../home/home.component';
+import { NavbarComponent } from '../navbar/navbar.component';
+import { StepOrderComponent } from '../step-order/step-order.component';
+import { ProductComponent } from '../product/product.component';
+import { RegisterComponent } from '../register/register.component';
+import { MatRadioModule} from '@angular/material/radio';
+import { AuthProviderService } from '../services/auth-provider.service';
+import { ServicesDataService } from '../services/services-data.service';
+import { AuthComponent } from '../auth/auth.component';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { MenuComponent } from '../menu/menu.component';
+import { ImporterComponent } from '../importer/importer.component';
 
 describe('NavbarComponent', () => {
   let component: NavbarComponent;
@@ -41,7 +46,10 @@ describe('NavbarComponent', () => {
         HeaderComponent,
         NavbarComponent,
         HeaderComponent,
-        MenuComponent
+        MenuComponent,
+        ImporterComponent,
+        StepOrderComponent,
+        DialogRedirectionComponent
       ],
       imports: [
         ReactiveFormsModule,
@@ -52,6 +60,8 @@ describe('NavbarComponent', () => {
         MatDatepickerModule,
         MatNativeDateModule,
         MatSelectModule,
+        MatStepperModule,
+        MatRadioModule,
         BrowserAnimationsModule,
         FormsModule,
         MatDialogModule,
@@ -86,7 +96,7 @@ describe('NavbarComponent', () => {
       ],
       schemas: [ CUSTOM_ELEMENTS_SCHEMA ]
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {

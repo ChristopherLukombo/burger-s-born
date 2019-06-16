@@ -10,6 +10,10 @@
   <a class="nav-link" routerLink="/product" routerLinkActive="active" role="tab">
     Produits
   </a>
+  <a class="nav-link" routerLink="/importer" routerLinkActive="active" role="tab"
+   *ngIf="authProviderService.isAuthenticated() &&  isAdmin">
+    Import
+  </a>
   <a class="nav-link" routerLink="/register" routerLinkActive="active" role="tab"
     *ngIf="(!authProviderService.isAuthenticated() || isAdmin)">
     Inscription

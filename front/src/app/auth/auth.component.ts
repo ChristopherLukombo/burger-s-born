@@ -60,7 +60,15 @@ export class AuthComponent implements OnInit {
     this.authProviderService.authenticate(this.login)
       .subscribe(data => {
         this.authenticateSuccess(data);
-        this.router.navigate(['home']);
+
+        this.authProviderService.connect.next(this.authProviderService.isAuthenticated());
+
+        if ('/steporder' === this.router.url) {
+          this.router.navigate(['steporder']);
+        } else if ('/auth' === this.router.url) {
+          this.router.navigate(['home']);
+        }
+
         this.authProviderService.admin.next(this.authProviderService.isAdmin());
         this.loadImage();
       }, err => {

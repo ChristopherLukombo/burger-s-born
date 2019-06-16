@@ -1,16 +1,16 @@
 package fr.esgi.service.impl;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import org.springframework.data.domain.Page;
-
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,10 +21,11 @@ import fr.esgi.dao.ProductRepository;
 import fr.esgi.domain.Manager;
 import fr.esgi.domain.Menu;
 import fr.esgi.domain.Product;
-import fr.esgi.exception.BurgerSTerminalException;
 import fr.esgi.service.MenuService;
 import fr.esgi.service.dto.MenuDTO;
+import fr.esgi.service.dto.ProductDTO;
 import fr.esgi.service.mapper.MenuMapper;
+import fr.esgi.service.mapper.ProductMapper;
 
 @Service
 @Transactional
@@ -33,21 +34,24 @@ public class MenuServiceImpl implements MenuService {
 	private static final Logger LOGGER = LoggerFactory.getLogger(MenuServiceImpl.class);
 
 
-	private MenuRepository menuRepo;
+	private final MenuRepository menuRepo;
 
-	private ManagerRepository managerRepo;
+	private final ManagerRepository managerRepo;
 
-	private ProductRepository productRepo;
+	private final ProductRepository productRepo;
 
 	private final MenuMapper menuMapper;
-
-	@Autowired
+	
+	private final ProductMapper productMapper;
+	
+    @Autowired
 	public MenuServiceImpl(MenuRepository menuRepo, ManagerRepository managerRepo, ProductRepository productRepo,
-			MenuMapper menuMapper) {
+			MenuMapper menuMapper, ProductMapper productMapper) {
 		this.menuRepo = menuRepo;
 		this.managerRepo = managerRepo;
 		this.productRepo = productRepo;
 		this.menuMapper = menuMapper;
+		this.productMapper = productMapper;
 	}
 
 	@Override
@@ -66,12 +70,9 @@ public class MenuServiceImpl implements MenuService {
 	}
 
 	@Override
-	public MenuDTO findById(Long id) throws BurgerSTerminalException {
-		final Optional<Menu> menu = menuRepo.findById(id);
-		if (menu.isPresent()) {
-			return menuMapper.menuToMenuDTO(menu.get());
-		}
-		throw new BurgerSTerminalException("Menu by id " + id + "does not exists");
+	public Optional<MenuDTO> findOne(Long id) {
+		return menuRepo.findById(id)
+				.map(menuMapper::menuToMenuDTO);
 	}
 
 	@Override
@@ -152,6 +153,36 @@ public class MenuServiceImpl implements MenuService {
 			}
 		}
 
+	}
+
+	@Transactional(readOnly = true)
+	@Override
+	public List<ProductDTO> findProductsByMenuId(Long id, String categoryName) {
+		Optional<List<Product>> map = menuRepo.findById(id)
+				.map(Menu::getProducts);
+		
+		
+		List<Product> list;
+		if (map.isPresent()) {
+			list = map.get();
+			if (null == list || list.isEmpty()) {
+				return Collections.emptyList();
+			}
+			return list.stream()
+					.filter(p -> categoryName.equalsIgnoreCase(p.getCategory().getName()))
+					.map(productMapper::productToProductDTO)
+					.collect(Collectors.toList());
+		} else {
+			return Collections.emptyList();
+		}
+	}
+	
+	@Transactional(readOnly = true)
+	@Override
+	public List<ProductDTO> findProductsByCategoryName(String categoryName) {
+		return productRepo.findAllByCategoryName(categoryName).stream()
+				.map(productMapper::productToProductDTO)
+				.collect(Collectors.toList());
 	}
 
 }

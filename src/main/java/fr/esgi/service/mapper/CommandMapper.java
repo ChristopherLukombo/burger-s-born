@@ -1,5 +1,6 @@
 package fr.esgi.service.mapper;
 
+import org.mapstruct.DecoratedWith;
 import org.mapstruct.InheritInverseConfiguration;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -14,6 +15,7 @@ import fr.esgi.service.dto.CommandDTO;
  * @author christopher
  */
 @Mapper(uses = { CommandDTO.class }, componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
+@DecoratedWith(CommandMapperDecorator.class)
 public interface CommandMapper {
 
     @Mappings({
