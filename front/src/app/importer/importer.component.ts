@@ -6,7 +6,7 @@ import {AppConstants} from '../app.constants';
 import {ServicesDataService} from '../services/services-data.service';
 import {TranslateService} from '@ngx-translate/core';
 import {HttpErrorResponse, HttpResponse} from '@angular/common/http';
-// import {errorObject} from 'rxjs/internal-compatibility';
+import {errorObject} from 'rxjs/internal-compatibility';
 
 @Component({
     selector: 'app-importer',
@@ -15,114 +15,114 @@ import {HttpErrorResponse, HttpResponse} from '@angular/common/http';
 })
 export class ImporterComponent implements OnInit {
 
-    // importForm: FormGroup;
-    // submitted = false;
+    importForm: FormGroup;
+    submitted = false;
 
-    // selectedFiles: FileList;
-    // currentFileToUpload: File;
+    selectedFiles: FileList;
+    currentFileToUpload: File;
 
-    // selectedElementIsValid = false;
-    // selectedElement: string;
-    // selectedFormat: string;
+    selectedElementIsValid = false;
+    selectedElement: string;
+    selectedFormat: string;
 
 
-    // // Error messages
-    // errorMessage: string;
-    // successMessage : string;
+    // Error messages
+    errorMessage: string;
+    successMessage : string;
 
     constructor(
-    //     private logger: NGXLogger,
-    //     private servicesDataService: ServicesDataService
+        private logger: NGXLogger,
+        private servicesDataService: ServicesDataService
     ) { }
 
     ngOnInit() {
-    //     this.importForm = new FormGroup({
-    //         'elementSelector': new FormControl('produit'),
-    //         'formatSelector' : new FormControl('application/json'),
-    //         'fileImport': new FormControl('', Validators.required)
-    //     })
+        this.importForm = new FormGroup({
+            'elementSelector': new FormControl('produit'),
+            'formatSelector' : new FormControl('application/json'),
+            'fileImport': new FormControl('', Validators.required)
+        })
     }
 
-    // private static checkExtension(file: File): boolean {
-    //     if (!file) {
-    //         return false;
-    //     }
-    //     const extensions = [
-    //         'application/json',
-    //         'application/vnd.ms-excel',
-    //         'text/csv'
-    //     ];
-    //     return -1 !== extensions.indexOf(file.type);
-    // }
+    private static checkExtension(file: File): boolean {
+        if (!file) {
+            return false;
+        }
+        const extensions = [
+            'application/json',
+            'application/vnd.ms-excel',
+            'text/csv'
+        ];
+        return -1 !== extensions.indexOf(file.type);
+    }
 
-    // selectFile(event): void {
-    //     document.getElementById("custom-file-label").innerText = event.target.files[0].name;
-    //     this.selectedFiles = event.target.files;
-    //     if(this.selectedFiles) {
-    //         this.currentFileToUpload = this.selectedFiles.item(0);
-    //         console.log("Current file information : \n"
-    //         + "fileName : " + this.currentFileToUpload.name + "\n"
-    //         + "type : " + this.currentFileToUpload.type);
-    //     }
-    // }
+    selectFile(event): void {
+        document.getElementById("custom-file-label").innerText = event.target.files[0].name;
+        this.selectedFiles = event.target.files;
+        if(this.selectedFiles) {
+            this.currentFileToUpload = this.selectedFiles.item(0);
+            console.log("Current file information : \n"
+            + "fileName : " + this.currentFileToUpload.name + "\n"
+            + "type : " + this.currentFileToUpload.type);
+        }
+    }
 
-    // public importFile(): void {
-    //     this.submitted = true;
+    public importFile(): void {
+        this.submitted = true;
 
-    //     // Stop here if the form is invalid
-    //     if (this.importForm.invalid) {
-    //         this.errorMessage = 'Fichier requis';
-    //         return;
-    //     }
+        // Stop here if the form is invalid
+        if (this.importForm.invalid) {
+            this.errorMessage = 'Fichier requis';
+            return;
+        }
 
-    //     if (this.currentFileToUpload) {
-    //         if (!ImporterComponent.checkExtension(this.currentFileToUpload)) {
-    //             this.errorMessage = 'Fichier non valide';
-    //             return;
-    //         }
-    //     }
+        if (this.currentFileToUpload) {
+            if (!ImporterComponent.checkExtension(this.currentFileToUpload)) {
+                this.errorMessage = 'Fichier non valide';
+                return;
+            }
+        }
 
-    //     if (environment.production) {
-    //         this.logger.debug(AppConstants.CALL_SERVICE_IMPORT, this.importForm.get('formatSelector').value);
-    //     }
+        if (environment.production) {
+            this.logger.debug(AppConstants.CALL_SERVICE_IMPORT, this.importForm.get('formatSelector').value);
+        }
 
-    //     this.servicesDataService.importFile(this.currentFileToUpload)
-    //         .subscribe((event) => {
-    //             if (event instanceof HttpResponse) {
-    //                 this.logger.debug(AppConstants.FILE_IMPORT_SUCCESS);
-    //                 this.handleSuccessImport(event);
-    //             }
-    //         }, error => {
-    //             this.logger.info(AppConstants.FILE_IMPORT_FAILED, error.message, error.status);
-    //             this.handleErrorImport(error);
-    //         });
+        this.servicesDataService.importFile(this.currentFileToUpload)
+            .subscribe((event) => {
+                if (event instanceof HttpResponse) {
+                    this.logger.debug(AppConstants.FILE_IMPORT_SUCCESS);
+                    this.handleSuccessImport(event);
+                }
+            }, error => {
+                this.logger.info(AppConstants.FILE_IMPORT_FAILED, error.message, error.status);
+                this.handleErrorImport(error);
+            });
 
-    //     this.selectedFiles = undefined;
-    // }
+        this.selectedFiles = undefined;
+    }
 
-    // private handleSuccessImport(event: HttpResponse<Object>) {
-    //     this.importForm.reset();
-    //     this.errorMessage = undefined;
-    //     this.successMessage = event.statusText;
-    // }
+    private handleSuccessImport(event: HttpResponse<Object>) {
+        this.importForm.reset();
+        this.errorMessage = undefined;
+        this.successMessage = event.statusText;
+    }
 
-    // private handleErrorImport(error: any) {
-    //     if (error instanceof HttpErrorResponse) {
-    //         if (422 === error.status) {
-    //             Object.keys(error.error).forEach(prop => {
-    //                 const formControl = this.importForm.get(prop);
-    //                 if (formControl) {
-    //                     formControl.setErrors({
-    //                         serverError: error.error[prop]
-    //                     });
-    //                 }
-    //             });
-    //         } else if (400 === error.status) {
-    //             this.errorMessage = error.error;
-    //         } else if (500 === error.status) {
-    //             this.errorMessage = error.error;
-    //         }
-    //     }
-    // }
+    private handleErrorImport(error: any) {
+        if (error instanceof HttpErrorResponse) {
+            if (422 === error.status) {
+                Object.keys(error.error).forEach(prop => {
+                    const formControl = this.importForm.get(prop);
+                    if (formControl) {
+                        formControl.setErrors({
+                            serverError: error.error[prop]
+                        });
+                    }
+                });
+            } else if (400 === error.status) {
+                this.errorMessage = error.error;
+            } else if (500 === error.status) {
+                this.errorMessage = error.error;
+            }
+        }
+    }
 
 }
