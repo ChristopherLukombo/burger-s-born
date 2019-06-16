@@ -13,6 +13,8 @@ public final class ErrorMessage {
     public static final String ERROR_DURING_SAVING_FILE = "Error during saving file";
     public static final String ERROR_NEW_USER_CANNOT_ALREADY_HAVE_AN_ID = "error.new.user.cannot.already.have.an.id";
     public static final String ERROR_FAIL_BATCH_IMPORT_PRODUCT= "error.batch.product.duplicate";
+    
+    public static final String ERROR_HAPPENED_DURING_PAYMENT_CREATION = "error.happened.during.payment.creation";
 
     private ErrorMessage() {}
 }

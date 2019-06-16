@@ -17,7 +17,19 @@ public class ConfigurationService {
     
     @Value("${app.imagesDirectory}")
     private String imagesDirectory;
+    
+    @Value("${app.paypal.clientId}")
+    private String paypalClientId;
 
+    @Value("${app.paypal.clientSecret}")
+    private String paypalClientSecret;
+    
+    @Value("${app.paypal.cancelUrl}")
+    private String paypalCancelUrl;
+    
+    @Value("${app.paypal.ReturnUrl}")
+    private String paypalReturnUrl;
+    
     public Set<String> getCorsAllowedOrigins() {
         return corsAllowedOrigins;
     }
@@ -26,4 +38,20 @@ public class ConfigurationService {
 		return imagesDirectory;
 	}
 
+	public String getPaypalClientId() {
+		return paypalClientId;
+	}
+
+	public String getPaypalClientSecret() {
+		return paypalClientSecret;
+	}
+
+	public String getPaypalCancelUrl() {
+		return paypalCancelUrl;
+	}
+
+	public String getPaypalReturnUrl() {
+		return paypalReturnUrl;
+	}
+	
 }
