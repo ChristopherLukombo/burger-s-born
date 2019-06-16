@@ -43,12 +43,12 @@ export class ServicesDataService {
 
     // Product
     public findAllProduct(indexPage): Observable<HttpResponse<Object>> {
-        return this.http.get<HttpResponse<Object>>(this.resourceUrl + '/product?page='+ indexPage +'&size=4', { observe: 'response' });
+        return this.http.get<HttpResponse<Object>>(this.resourceUrl + '/product?page=' + indexPage + '&size=4', { observe: 'response' });
     }
 
     // Menu
-    public findAllMenus(): Observable<HttpResponse<Object>> {
-        return this.http.get<HttpResponse<Object>>(this.resourceUrl + '/menu/all?page=0&size=999', { observe: 'response' });
+    public findAllMenus(indexPage): Observable<HttpResponse<Object>> {
+        return this.http.get<HttpResponse<Object>>(this.resourceUrl + '/menu/all?page=' + indexPage + '&size=4', { observe: 'response' });
     }
 
 }
