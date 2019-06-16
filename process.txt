@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Ce fichier détaille les manipulations à faire pour que le projet soit fonctionnel pour la prochaine personne.
  */
  
@@ -13,6 +13,16 @@ Puis suivre la nouvelle procédure pour le fichier de logs dans le README.md.
 
 ------------------------------------------------------------------------------------------------------------------------
 Ajouter les variables de configuration suivantes :
+
+# ===============================
+# = JPA / HIBERNATE
+# ===============================
+# Enable hibernate batching insert or update in the database
+spring.jpa.properties.hibernate.jdbc.batch_size = 5
+spring.jpa.properties.hibernate.order_inserts = true
+spring.jpa.properties.hibernate.order_updates = true
+spring.jpa.properties.hibernate.batch_versioned_data=true
+
 
 # ACTUATOR
 management.server.port = 9000
