@@ -13,22 +13,27 @@ export class MenuComponent implements OnInit {
   errorMessage;
   successMessage;
   menus;
+  totalElements;
+  pages;
+  selectedPage = 0;
   constructor(private servicesDataService: ServicesDataService) { }
 
   ngOnInit() {
-    this.findAll();
+    this.findAll(0);
   }
 
-  findAll() {
-    this.servicesDataService.findAllMenus()
+  findAll(indexPage) {
+    this.servicesDataService.findAllMenus(indexPage)
         .subscribe(data => {
+
           this.menus = data.body['content'];
-          console.log(this.menus);
+          this.totalElements = data.body['totalElements'];
+          this.pages = Array(data.body['totalPages']).fill(0).map((x, i) => i+1);
+          this.selectedPage = indexPage;
+
         }, err => {
           if (err instanceof HttpErrorResponse) {
             if (403 === err.status) {
-              console.log(err);
-
               this.errorMessage = 'Vous n\'êtes pas autorisé à effectuer cette action.';
             } else {
               this.errorMessage = 'Une erreur serveur s\'est produite.';

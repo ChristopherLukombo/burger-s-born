@@ -18,7 +18,7 @@ export interface RoleView {
 }
 
 const WIDTH = '50%';
-const HEIGHT = '10%';
+const HEIGHT = '15%';
 
 @Component({
     selector: 'app-register',

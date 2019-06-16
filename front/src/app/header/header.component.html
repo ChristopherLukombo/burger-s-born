@@ -4,3 +4,10 @@
 </button>
 <img [src]="imageBlobUrl" class="rounded-circle img-fluid" alt="Profile photo" id="avatar"
     *ngIf="authProviderService.isAuthenticated()">
+
+<div style="float: right; margin-right: 5%;">
+    <a class="nav-link" routerLink="/steporder" routerLinkActive="active" role="tab">
+        <i class="fa fa-shopping-basket" aria-hidden="true"></i>
+        Payer
+    </a>
+</div>
