@@ -2,11 +2,15 @@ package fr.esgi.domain;
 
 import javax.persistence.*;
 import javax.validation.constraints.Size;
+
+import java.io.Serializable;
 import java.util.List;
 import java.util.Objects;
 
 @Entity
-public class Menu {
+public class Menu implements Serializable {
+
+	private static final long serialVersionUID = 1L;
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
@@ -31,7 +35,9 @@ public class Menu {
 	@ManyToMany
 	private List<Command> commands;
 
-	public Menu() { }
+	public Menu() {
+		// Empty constructor needed for Hibernate.
+	}
 
 	public Long getId() {
 		return id;

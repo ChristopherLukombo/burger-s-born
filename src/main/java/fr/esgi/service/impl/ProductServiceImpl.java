@@ -18,6 +18,7 @@ import fr.esgi.service.ProductService;
 import fr.esgi.service.dto.ProductDTO;
 import fr.esgi.service.mapper.ProductMapper;
 
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -38,7 +39,7 @@ public class ProductServiceImpl implements ProductService {
  
     private final ProductMapper productMapper;
 
-    @Autowired(required = true)
+    @Autowired
     public ProductServiceImpl(ProductRepository productRepository, ProductMapper productMapper, CategoryRepository categoryRepository, ManagerRepository managerRepository) {
         this.managerRepository = managerRepository;
         this.categoryRepository = categoryRepository;
@@ -86,6 +87,11 @@ public class ProductServiceImpl implements ProductService {
 	public ProductDTO addProduct(ProductDTO productDTO, Long id, Boolean available, String name, double price) {
 		// TODO Auto-generated method stub
 		return null;
+	}
+	
+	@Override
+	public List<Product> findAllByMenuId(Long menuId) {
+		return productRepository.findAllByMenuId(menuId);
 	}
 
 }

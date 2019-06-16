@@ -2,6 +2,7 @@ package fr.esgi.service.dto;
 
 import fr.esgi.domain.Menu;
 
+import java.util.List;
 import java.util.Objects;
 
 public class MenuDTO {
@@ -15,6 +16,8 @@ public class MenuDTO {
 	private Boolean available;
 	
 	private Long managerId;
+	
+	private List<ProductDTO> productsDTO;
 
 	public MenuDTO() {
 		// Empty constructor needed for Jackson.
@@ -68,31 +71,60 @@ public class MenuDTO {
 		this.managerId = managerId;
 	}
 
-	@Override
-	public boolean equals(Object o) {
-		if (this == o) return true;
-		if (o == null || getClass() != o.getClass()) return false;
-		MenuDTO menuDTO = (MenuDTO) o;
-		return Double.compare(menuDTO.price, price) == 0 &&
-				Objects.equals(id, menuDTO.id) &&
-				Objects.equals(name, menuDTO.name) &&
-				Objects.equals(available, menuDTO.available) &&
-				Objects.equals(managerId, menuDTO.managerId);
+	public List<ProductDTO> getProductsDTO() {
+		return productsDTO;
+	}
+
+	public void setProductsDTO(List<ProductDTO> productsDTO) {
+		this.productsDTO = productsDTO;
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(id, name, price, available, managerId);
+		return Objects.hash(available, id, managerId, name, price);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		MenuDTO other = (MenuDTO) obj;
+		return Objects.equals(available, other.available) && Objects.equals(id, other.id)
+				&& Objects.equals(managerId, other.managerId) && Objects.equals(name, other.name)
+				&& Double.doubleToLongBits(price) == Double.doubleToLongBits(other.price);
 	}
 
 	@Override
 	public String toString() {
-		return "MenuDTO{" +
-				"id=" + id +
-				", name='" + name + '\'' +
-				", price=" + price +
-				", available=" + available +
-				", managerId=" + managerId +
-				'}';
+		StringBuilder builder = new StringBuilder();
+		builder.append("MenuDTO [");
+		if (id != null) {
+			builder.append("id=");
+			builder.append(id);
+			builder.append(", ");
+		}
+		if (name != null) {
+			builder.append("name=");
+			builder.append(name);
+			builder.append(", ");
+		}
+		builder.append("price=");
+		builder.append(price);
+		builder.append(", ");
+		if (available != null) {
+			builder.append("available=");
+			builder.append(available);
+			builder.append(", ");
+		}
+		if (managerId != null) {
+			builder.append("managerId=");
+			builder.append(managerId);
+		}
+		builder.append("]");
+		return builder.toString();
 	}
 }

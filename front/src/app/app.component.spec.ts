@@ -2,7 +2,7 @@ import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, TestBed } from '@angular/core/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatDatepickerModule, MatDialogModule, MatInputModule, MatNativeDateModule } from '@angular/material';
+import { MatDatepickerModule, MatDialogModule, MatInputModule, MatNativeDateModule, MatStepperModule } from '@angular/material';
 import { MatSelectModule } from '@angular/material/select';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -18,12 +18,16 @@ import { AuthComponent } from './auth/auth.component';
 import { DialogSuccessComponent } from './dialog-success/dialog-success.component';
 import { HeaderComponent } from './header/header.component';
 import { HomeComponent } from './home/home.component';
+import { MenuComponent } from './menu/menu.component';
 import { NavbarComponent } from './navbar/navbar.component';
 import { ProductComponent } from './product/product.component';
 import { RegisterComponent } from './register/register.component';
 import { AuthProviderService } from './services/auth-provider.service';
 import { ServicesDataService } from './services/services-data.service';
-import { MenuComponent } from './menu/menu.component';
+import { StepOrderComponent } from './step-order/step-order.component';
+import { STEPPER_GLOBAL_OPTIONS, CdkStepperModule } from '@angular/cdk/stepper';
+import { DialogRedirectionComponent } from './dialog-redirection/dialog-redirection.component';
+
 
 describe('AppComponent', () => {
     beforeEach(async(() => {
@@ -33,13 +37,15 @@ describe('AppComponent', () => {
                 HomeComponent,
                 RegisterComponent,
                 AuthComponent,
+                DialogRedirectionComponent,
                 DialogSuccessComponent,
                 ProductComponent,
                 NavbarComponent,
                 HeaderComponent,
                 NavbarComponent,
                 HeaderComponent,
-                MenuComponent
+                MenuComponent,
+                StepOrderComponent
               ],
               imports: [
                 ReactiveFormsModule,
@@ -50,6 +56,8 @@ describe('AppComponent', () => {
                 MatDatepickerModule,
                 MatNativeDateModule,
                 MatSelectModule,
+                MatStepperModule,
+                CdkStepperModule,
                 BrowserAnimationsModule,
                 FormsModule,
                 MatDialogModule,
@@ -81,6 +89,12 @@ describe('AppComponent', () => {
                 LocalStorageService,
                 AuthGuard,
                 MatDatepickerModule,
+                [
+                  {
+                    provide: STEPPER_GLOBAL_OPTIONS,
+                    useValue: { displayDefaultIndicatorType: false }
+                  }
+                ]
               ],
             schemas: [CUSTOM_ELEMENTS_SCHEMA]
         }).compileComponents();

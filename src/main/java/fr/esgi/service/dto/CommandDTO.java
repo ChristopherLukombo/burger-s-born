@@ -1,11 +1,15 @@
 package fr.esgi.service.dto;
 
 
-import fr.esgi.domain.Command;
-
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Objects;
 
+/**
+ * 
+ * A DTO representing a command.
+ *
+ */
 public class CommandDTO {
 
 	private Long id;
@@ -13,18 +17,17 @@ public class CommandDTO {
 	private String orderStatus;
 
 	private LocalDate date;
-	
+
 	private Long customerId;
 
+	private List<MenuDTO> menusDTO;
+	
+	private List<ProductDTO> productsDTO;
+	
+	private String paymentId;
+	
 	public CommandDTO() {
 		// Empty constructor needed for Jackson.
-	}
-
-	public CommandDTO(Command command) {
-		this.id = command.getId();
-		this.orderStatus = command.getOrderStatus();
-		this.date = command.getDate();
-		this.customerId = command.getCustomer().getId();
 	}
 
 	public Long getId() {
@@ -59,29 +62,89 @@ public class CommandDTO {
 		this.customerId = customerId;
 	}
 
+	public List<MenuDTO> getMenusDTO() {
+		return menusDTO;
+	}
+
+	public void setMenusDTO(List<MenuDTO> menusDTO) {
+		this.menusDTO = menusDTO;
+	}
+
+	public List<ProductDTO> getProductsDTO() {
+		return productsDTO;
+	}
+
+	public void setProductsDTO(List<ProductDTO> productsDTO) {
+		this.productsDTO = productsDTO;
+	}
+
+	public String getPaymentId() {
+		return paymentId;
+	}
+
+	public void setPaymentId(String paymentId) {
+		this.paymentId = paymentId;
+	}
+	
 	@Override
-	public boolean equals(Object o) {
-		if (this == o) return true;
-		if (o == null || getClass() != o.getClass()) return false;
-		CommandDTO that = (CommandDTO) o;
-		return Objects.equals(id, that.id) &&
-				Objects.equals(orderStatus, that.orderStatus) &&
-				Objects.equals(date, that.date) &&
-				Objects.equals(customerId, that.customerId);
+	public int hashCode() {
+		return Objects.hash(customerId, date, id, menusDTO, orderStatus, paymentId, productsDTO);
 	}
 
 	@Override
-	public int hashCode() {
-		return Objects.hash(id, orderStatus, date, customerId);
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		CommandDTO other = (CommandDTO) obj;
+		return Objects.equals(customerId, other.customerId) && Objects.equals(date, other.date)
+				&& Objects.equals(id, other.id) && Objects.equals(menusDTO, other.menusDTO)
+				&& Objects.equals(orderStatus, other.orderStatus) && Objects.equals(paymentId, other.paymentId)
+				&& Objects.equals(productsDTO, other.productsDTO);
 	}
 
 	@Override
 	public String toString() {
-		return "CommandDTO{" +
-				"id=" + id +
-				", orderStatus='" + orderStatus + '\'' +
-				", date=" + date +
-				", customerId=" + customerId +
-				'}';
+		StringBuilder builder = new StringBuilder();
+		builder.append("CommandDTO [");
+		if (id != null) {
+			builder.append("id=");
+			builder.append(id);
+			builder.append(", ");
+		}
+		if (orderStatus != null) {
+			builder.append("orderStatus=");
+			builder.append(orderStatus);
+			builder.append(", ");
+		}
+		if (date != null) {
+			builder.append("date=");
+			builder.append(date);
+			builder.append(", ");
+		}
+		if (customerId != null) {
+			builder.append("customerId=");
+			builder.append(customerId);
+			builder.append(", ");
+		}
+		if (menusDTO != null) {
+			builder.append("menusDTO=");
+			builder.append(menusDTO);
+			builder.append(", ");
+		}
+		if (productsDTO != null) {
+			builder.append("productsDTO=");
+			builder.append(productsDTO);
+			builder.append(", ");
+		}
+		if (paymentId != null) {
+			builder.append("paymentId=");
+			builder.append(paymentId);
+		}
+		builder.append("]");
+		return builder.toString();
 	}
 }

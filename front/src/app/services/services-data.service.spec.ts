@@ -1,7 +1,7 @@
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { TestBed } from '@angular/core/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatDatepickerModule, MatDialogModule, MatInputModule, MatNativeDateModule } from '@angular/material';
+import { MatDatepickerModule, MatDialogModule, MatInputModule, MatNativeDateModule, MatStepperModule } from '@angular/material';
 import { MatSelectModule } from '@angular/material/select';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -24,6 +24,9 @@ import { AuthProviderService } from './auth-provider.service';
 import { ServicesDataService } from './services-data.service';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { MenuComponent } from '../menu/menu.component';
+import { StepOrderComponent } from '../step-order/step-order.component';
+import { STEPPER_GLOBAL_OPTIONS, CdkStepperModule } from '@angular/cdk/stepper';
+import { DialogRedirectionComponent } from '../dialog-redirection/dialog-redirection.component';
 
 
 describe('ServicesDataService', () => {
@@ -33,13 +36,15 @@ describe('ServicesDataService', () => {
         HomeComponent,
         RegisterComponent,
         AuthComponent,
+        DialogRedirectionComponent,
         DialogSuccessComponent,
         ProductComponent,
         NavbarComponent,
         HeaderComponent,
         NavbarComponent,
         HeaderComponent,
-        MenuComponent
+        MenuComponent,
+        StepOrderComponent
       ],
       imports: [
         ReactiveFormsModule,
@@ -50,6 +55,8 @@ describe('ServicesDataService', () => {
         MatDatepickerModule,
         MatNativeDateModule,
         MatSelectModule,
+        MatStepperModule,
+        CdkStepperModule,
         BrowserAnimationsModule,
         FormsModule,
         MatDialogModule,
@@ -81,6 +88,12 @@ describe('ServicesDataService', () => {
         LocalStorageService,
         AuthGuard,
         MatDatepickerModule,
+        [
+          {
+            provide: STEPPER_GLOBAL_OPTIONS,
+            useValue: { displayDefaultIndicatorType: false }
+          }
+        ]
       ],
       schemas: [ CUSTOM_ELEMENTS_SCHEMA ]
   }));

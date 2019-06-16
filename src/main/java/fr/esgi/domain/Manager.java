@@ -3,11 +3,15 @@ package fr.esgi.domain;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
+
+import java.io.Serializable;
 import java.util.List;
 import java.util.Objects;
 
 @Entity
-public class Manager {
+public class Manager implements Serializable {
+
+	private static final long serialVersionUID = 1L;
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
@@ -24,7 +28,9 @@ public class Manager {
 	@ManyToOne
 	private User user;
 
-	public Manager() { }
+	public Manager() {
+		// Empty constructor need for Hibernate.
+	}
 
 	public Long getId() {
 		return id;

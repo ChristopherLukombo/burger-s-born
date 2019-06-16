@@ -13,6 +13,7 @@ import { RoleName } from '../RoleName';
 export class AuthProviderService {
   private resourceUrl = environment.serverUrl;
   public admin: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+  public connect: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
   public imageBlobUrl: BehaviorSubject<string | ArrayBuffer | null> = new BehaviorSubject<string>('');
 
   constructor(

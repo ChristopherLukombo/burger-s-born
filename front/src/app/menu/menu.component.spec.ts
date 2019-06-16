@@ -1,29 +1,32 @@
+import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatDatepickerModule, MatDialogModule, MatInputModule, MatNativeDateModule, MatSelectModule, MatStepperModule } from '@angular/material';
+import { BrowserModule } from '@angular/platform-browser';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { JwtModule } from '@auth0/angular-jwt';
+import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
+import { LoggerModule, NgxLoggerLevel } from 'ngx-logger';
+import { LocalStorageService } from 'ngx-webstorage';
+import { AppRoutingModule } from '../app-routing.module';
+import { AppComponent } from '../app.component';
+import { HttpLoaderFactory } from '../app.module';
+import { AuthGuard } from '../auth.guard';
+import { AuthComponent } from '../auth/auth.component';
+import { DialogSuccessComponent } from '../dialog-success/dialog-success.component';
+import { HeaderComponent } from '../header/header.component';
+import { HomeComponent } from '../home/home.component';
+import { NavbarComponent } from '../navbar/navbar.component';
+import { ProductComponent } from '../product/product.component';
+import { RegisterComponent } from '../register/register.component';
+import { AuthProviderService } from '../services/auth-provider.service';
+import { ServicesDataService } from '../services/services-data.service';
+import { StepOrderComponent } from '../step-order/step-order.component';
 import { MenuComponent } from './menu.component';
-import {AppComponent} from '../app.component';
-import {HomeComponent} from '../home/home.component';
-import {RegisterComponent} from '../register/register.component';
-import {AuthComponent} from '../auth/auth.component';
-import {DialogSuccessComponent} from '../dialog-success/dialog-success.component';
-import {ProductComponent} from '../product/product.component';
-import {NavbarComponent} from '../navbar/navbar.component';
-import {HeaderComponent} from '../header/header.component';
-import {FormsModule, ReactiveFormsModule} from '@angular/forms';
-import {BrowserModule} from '@angular/platform-browser';
-import {AppRoutingModule} from '../app-routing.module';
-import {HttpClient, HttpClientModule} from '@angular/common/http';
-import {MatDatepickerModule, MatDialogModule, MatInputModule, MatNativeDateModule, MatSelectModule} from '@angular/material';
-import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
-import {TranslateLoader, TranslateModule} from '@ngx-translate/core';
-import {HttpLoaderFactory} from '../app.module';
-import {LoggerModule, NgxLoggerLevel} from 'ngx-logger';
-import {JwtModule} from '@auth0/angular-jwt';
-import {ServicesDataService} from '../services/services-data.service';
-import {AuthProviderService} from '../services/auth-provider.service';
-import {LocalStorageService} from 'ngx-webstorage';
-import {AuthGuard} from '../auth.guard';
-import {CUSTOM_ELEMENTS_SCHEMA} from '@angular/core';
+import { STEPPER_GLOBAL_OPTIONS, CdkStepperModule } from '@angular/cdk/stepper';
+import { DialogRedirectionComponent } from '../dialog-redirection/dialog-redirection.component';
+
 
 describe('MenuComponent', () => {
   let component: MenuComponent;
@@ -37,13 +40,15 @@ describe('MenuComponent', () => {
           HomeComponent,
           RegisterComponent,
           AuthComponent,
+          DialogRedirectionComponent,
           DialogSuccessComponent,
           ProductComponent,
           NavbarComponent,
           HeaderComponent,
           NavbarComponent,
           HeaderComponent,
-          MenuComponent
+          MenuComponent,
+          StepOrderComponent
       ],
       imports: [
         ReactiveFormsModule,
@@ -54,6 +59,8 @@ describe('MenuComponent', () => {
         MatDatepickerModule,
         MatNativeDateModule,
         MatSelectModule,
+        MatStepperModule,
+        CdkStepperModule,
         BrowserAnimationsModule,
         FormsModule,
         MatDialogModule,
@@ -85,6 +92,12 @@ describe('MenuComponent', () => {
         LocalStorageService,
         AuthGuard,
         MatDatepickerModule,
+        [
+          {
+            provide: STEPPER_GLOBAL_OPTIONS,
+            useValue: { displayDefaultIndicatorType: false }
+          }
+        ]
       ],
       schemas: [ CUSTOM_ELEMENTS_SCHEMA ]
     })
