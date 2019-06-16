@@ -2,7 +2,7 @@ import { MenuComponent } from './../menu/menu.component';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatDatepickerModule, MatDialogModule, MatInputModule, MatNativeDateModule } from '@angular/material';
+import { MatDatepickerModule, MatDialogModule, MatInputModule, MatNativeDateModule, MatStepperModule, MatRadioModule } from '@angular/material';
 import { MatSelectModule } from '@angular/material/select';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -24,8 +24,9 @@ import { AuthProviderService } from '../services/auth-provider.service';
 import { ServicesDataService } from '../services/services-data.service';
 import { ProductComponent } from './product.component';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-
-
+import { StepOrderComponent } from '../step-order/step-order.component';
+import { STEPPER_GLOBAL_OPTIONS, CdkStepperModule } from '@angular/cdk/stepper';
+import { DialogRedirectionComponent } from '../dialog-redirection/dialog-redirection.component';
 
 
 describe('ProductComponent', () => {
@@ -34,61 +35,65 @@ describe('ProductComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [
-        AppComponent,
-        HomeComponent,
-        RegisterComponent,
-        AuthComponent,
-        DialogSuccessComponent,
-        ProductComponent,
-        NavbarComponent,
-        HeaderComponent,
-        NavbarComponent,
-        HeaderComponent,
-        MenuComponent
-      ],
-      imports: [
-        ReactiveFormsModule,
-        BrowserModule,
-        AppRoutingModule,
-        HttpClientModule,
-        MatInputModule,
-        MatDatepickerModule,
-        MatNativeDateModule,
-        MatSelectModule,
-        BrowserAnimationsModule,
-        FormsModule,
-        MatDialogModule,
-        TranslateModule.forRoot({
-          loader: {
-            provide: TranslateLoader,
-            useFactory: HttpLoaderFactory,
-            deps: [HttpClient]
-          }
-        }),
-        LoggerModule.forRoot(
-            {
-              level: NgxLoggerLevel.DEBUG,
-              serverLogLevel: NgxLoggerLevel.ERROR
-            }
-        ),
-        JwtModule.forRoot({
-          config: {
-            // ...
-            tokenGetter: () => {
-              return localStorage.getItem('authenticationToken');
-            }
-          }
-        })
-      ],
-      providers: [
-        ServicesDataService,
-        AuthProviderService,
-        LocalStorageService,
-        AuthGuard,
-        MatDatepickerModule,
-      ],
-      schemas: [ CUSTOM_ELEMENTS_SCHEMA ]
+        declarations: [
+            AppComponent,
+            HomeComponent,
+            RegisterComponent,
+            AuthComponent,
+            DialogSuccessComponent,
+            ProductComponent,
+            NavbarComponent,
+            HeaderComponent,
+            NavbarComponent,
+            HeaderComponent,
+            MenuComponent,
+            StepOrderComponent,
+            DialogRedirectionComponent
+          ],
+          imports: [
+            ReactiveFormsModule,
+            BrowserModule,
+            AppRoutingModule,
+            HttpClientModule,
+            MatInputModule,
+            MatDatepickerModule,
+            MatNativeDateModule,
+            MatSelectModule,
+            MatStepperModule,
+            MatRadioModule,
+            BrowserAnimationsModule,
+            FormsModule,
+            MatDialogModule,
+            TranslateModule.forRoot({
+              loader: {
+                provide: TranslateLoader,
+                useFactory: HttpLoaderFactory,
+                deps: [HttpClient]
+              }
+            }),
+            LoggerModule.forRoot(
+                {
+                  level: NgxLoggerLevel.DEBUG,
+                  serverLogLevel: NgxLoggerLevel.ERROR
+                }
+            ),
+            JwtModule.forRoot({
+              config: {
+                // ...
+                tokenGetter: () => {
+                  return localStorage.getItem('authenticationToken');
+                }
+              }
+            })
+          ],
+          providers: [
+            ServicesDataService,
+            AuthProviderService,
+            LocalStorageService,
+            AuthGuard,
+            MatDatepickerModule,
+          ],
+          schemas: [ CUSTOM_ELEMENTS_SCHEMA ]
     })
     .compileComponents();
   }));

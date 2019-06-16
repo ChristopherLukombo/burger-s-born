@@ -8,6 +8,8 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
+
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.Objects;
 
@@ -17,9 +19,11 @@ import java.util.Objects;
  * A user.
  */
 @Entity
-public class User {
+public class User implements Serializable {
 
-    @Id
+	private static final long serialVersionUID = 1L;
+
+	@Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
@@ -65,7 +69,9 @@ public class User {
     @ManyToOne
     private Role role;
 
-    public User() { }
+    public User() {
+    	// Empty constructor needed for Hibernate.
+    }
 
     public Long getId() {
         return id;

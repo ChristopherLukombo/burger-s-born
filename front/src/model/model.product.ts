@@ -7,7 +7,4 @@ export class Product {
         public categoryId?: number,
         public managerId?: number
     ) {}
-
-
 }
-

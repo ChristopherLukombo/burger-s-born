@@ -21,9 +21,9 @@ public interface CommandCompoMapper {
             @Mapping(source = "command.id", target = "commandId"),
             @Mapping(source = "employee.id", target = "employeeId"),
     })
-    CommandCompoDTO commandCompoToCommandCompoDTO(CommandCompo CommandCompo);
+    CommandCompoDTO commandCompoToCommandCompoDTO(CommandCompo commandCompo);
 
     @InheritInverseConfiguration
-    CommandCompo commandCompoDTOToCommandCompo(CommandCompoDTO CommandCompoDTO) ;
+    CommandCompo commandCompoDTOToCommandCompo(CommandCompoDTO commandCompoDTO) ;
 
 }

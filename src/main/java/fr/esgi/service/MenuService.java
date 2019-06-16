@@ -1,17 +1,19 @@
 package fr.esgi.service;
 
-import org.springframework.data.domain.Page;
+import java.util.List;
+import java.util.Optional;
 
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
-import fr.esgi.exception.BurgerSTerminalException;
 import fr.esgi.service.dto.MenuDTO;
+import fr.esgi.service.dto.ProductDTO;
 
 @Service
 public interface MenuService {
 	
 	MenuDTO createMenu(MenuDTO menu,Long idManager,String...productNames);
-	MenuDTO findById(Long id) throws BurgerSTerminalException;
+	Optional<MenuDTO> findOne(Long id);
 	MenuDTO findByName(String name);
 	MenuDTO update(MenuDTO menu);
 	Page<MenuDTO> findAll(int page,int size);
@@ -21,4 +23,8 @@ public interface MenuService {
 
 	void delete(Long id);
 	void deleteByName(String name);
+	
+    List<ProductDTO> findProductsByMenuId(Long id, String categoryName);
+    
+    List<ProductDTO> findProductsByCategoryName(String categoryName);
 }

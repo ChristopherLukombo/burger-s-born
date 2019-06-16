@@ -4,19 +4,23 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+
+import java.io.Serializable;
 import java.util.Objects;
 
 @Entity
-public class Role {
+public class Role implements Serializable {
 
-    @Id
+	private static final long serialVersionUID = 1L;
+
+	@Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
     private String name;
 
     public Role() {
-    	// Default constructor needed for Hibernate.
+    	// Empty constructor needed for Hibernate.
     }
 
     public Long getId() {

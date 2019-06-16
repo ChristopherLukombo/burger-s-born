@@ -1,8 +1,11 @@
 package fr.esgi.service;
 
+import java.util.List;
+
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
- 
+
+import fr.esgi.domain.Product;
 import fr.esgi.service.dto.ProductDTO;
 import fr.esgi.service.dto.UserDTO;
 
@@ -36,5 +39,7 @@ public interface ProductService {
      * @return
      */
     ProductDTO addProduct(ProductDTO productDTO);
+    
+    List<Product> findAllByMenuId(Long menuId);
 
 }

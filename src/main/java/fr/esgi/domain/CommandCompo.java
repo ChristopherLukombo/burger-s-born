@@ -35,7 +35,9 @@ public class CommandCompo implements Serializable {
     @ManyToOne
     private Employee employee;
 
-	public CommandCompo() { }
+	public CommandCompo() {
+		// Empty constructor needed for Hibernate.
+	}
 
 	public Long getId() {
 		return id;
