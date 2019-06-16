@@ -27,6 +27,7 @@ import { ServicesDataService } from '../services/services-data.service';
 import { AuthComponent } from './auth.component';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { MenuComponent } from '../menu/menu.component';
+import { ImporterComponent } from '../importer/importer.component';
 
 
 describe('AuthComponent', () => {
@@ -47,6 +48,7 @@ describe('AuthComponent', () => {
         NavbarComponent,
         HeaderComponent,
         MenuComponent,
+        ImporterComponent,
         StepOrderComponent,
         DialogRedirectionComponent
       ],

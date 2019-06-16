@@ -29,10 +29,9 @@ import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { MenuComponent } from '../menu/menu.component';
 import { ImporterComponent } from '../importer/importer.component';
 
-
-describe('DialogRedirectionComponent', () => {
-  let component: DialogRedirectionComponent;
-  let fixture: ComponentFixture<DialogRedirectionComponent>;
+describe('ImporterComponent', () => {
+  let component: ImporterComponent;
+  let fixture: ComponentFixture<ImporterComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -101,7 +100,7 @@ describe('DialogRedirectionComponent', () => {
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(DialogRedirectionComponent);
+    fixture = TestBed.createComponent(ImporterComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

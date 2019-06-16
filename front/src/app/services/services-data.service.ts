@@ -36,6 +36,18 @@ export class ServicesDataService {
         return this.http.request(req);
     }
 
+    importFile(file: File) {
+        const formdata: FormData = new FormData();
+        formdata.append('importfile', file);
+
+        const req = new HttpRequest('POST', this.resourceUrl + '/product/import/json', formdata, {
+            responseType: 'text',
+
+        });
+
+        return this.http.request(req);
+    }
+
     getImageURL(pseudo: string) {
         const headers = new HttpHeaders({ 'Authorization': 'Bearer ' + this.authProviderService.getToken() });
         return this.http.get(this.resourceUrl + '/users/imageURL/' + `${pseudo}`, { headers, responseType: 'blob' });

@@ -6,6 +6,7 @@ import { HomeComponent } from './home/home.component';
 import { MenuComponent } from './menu/menu.component';
 import { ProductComponent } from './product/product.component';
 import { RegisterComponent } from './register/register.component';
+import { ImporterComponent } from './importer/importer.component';
 import { StepOrderComponent } from './step-order/step-order.component';
 
 
@@ -15,6 +16,7 @@ const routes: Routes = [
   {path: 'auth', component: AuthComponent},
   {path: 'product', component: ProductComponent},
   {path: 'menu' , component: MenuComponent},
+  {path: 'importer', component: ImporterComponent},
   {path: 'steporder' , component: StepOrderComponent},
   // {path: 'register', canActivate: [AuthGuard], component: RegisterComponent},
   {path: '', redirectTo: '/home', pathMatch: 'full'}

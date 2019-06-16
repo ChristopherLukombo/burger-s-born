@@ -5,6 +5,8 @@ import fr.esgi.dao.ManagerRepository;
 import fr.esgi.domain.Category;
 import fr.esgi.domain.Manager;
 import fr.esgi.domain.Product;
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +21,7 @@ import fr.esgi.service.dto.ProductDTO;
 import fr.esgi.service.mapper.ProductMapper;
 
 import java.util.List;
+import java.util.ArrayList;
 import java.util.Optional;
 
 /**
@@ -72,7 +75,7 @@ public class ProductServiceImpl implements ProductService {
             newProduct.setCategory(category.get());
         }
         final Optional<Manager> manager = managerRepository.findById(productDTO.getManagerId());
-        if (category.isPresent()) {
+        if (manager.isPresent()) {
             newProduct.setManager(manager.get());
         }
 
@@ -82,8 +85,57 @@ public class ProductServiceImpl implements ProductService {
         return productMapper.productToProductDTO(newProduct);
     }
 
+    @Override
+    public List<ProductDTO> convertJsonToArray(JSONArray objects) {
+        ArrayList<ProductDTO> products = new ArrayList<>();
 
-	@Override
+        for (int i = 0; i < objects.length(); i++) {
+
+            JSONObject obj = (JSONObject) objects.get(i);
+
+            ProductDTO product = new ProductDTO();
+            product.setId(obj.getLong("id"));
+            product.setName(obj.getString("name"));
+            product.setPrice(obj.getDouble("price"));
+            product.setAvailable(obj.getBoolean("available"));
+            product.setCategoryId(obj.getLong("categoryId"));
+            product.setManagerId(obj.getLong("managerId"));
+
+            products.add(product);
+        }
+
+        return products;
+    }
+
+
+    private List<Product> convertToProductList(List<ProductDTO> productDTOS) {
+        List<Product> products = new ArrayList<>();
+
+        for ( ProductDTO dto: productDTOS ) {
+            Product product = new Product();
+            product.setName(dto.getName());
+            product.setPrice(dto.getPrice());
+            product.setAvailable(dto.isAvailable());
+            final Optional<Category> category = categoryRepository.findById(dto.getCategoryId());
+            category.ifPresent(product::setCategory);
+            final Optional<Manager> manager = managerRepository.findById(dto.getManagerId());
+            manager.ifPresent(product::setManager);
+
+            products.add(product);
+        }
+        return products;
+    }
+
+    @Override
+    public List<ProductDTO> addAll(List<ProductDTO> products) {
+
+        List<Product> convertedProducts = convertToProductList(products);
+        productRepository.saveAll(convertedProducts);
+        return products;
+    }
+
+
+    @Override
 	public ProductDTO addProduct(ProductDTO productDTO, Long id, Boolean available, String name, double price) {
 		// TODO Auto-generated method stub
 		return null;
