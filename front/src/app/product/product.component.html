@@ -41,7 +41,7 @@
         <div style="width: 100%; margin-top: 8px;">
             Nombre total de produits : {{totalElements}}
         </div>
-        
+
         <div style="display: inherit;" *ngIf="totalElements > 4">
             <li class="page-item" [ngClass]="{'disabled' : selectedPage == 0}">
                 <button class="page-link" (click)="findAll(selectedPage-1)">Précédent</button>
@@ -53,10 +53,12 @@
                 <button class="page-link" (click)="findAll(selectedPage+1)">Suivant</button>
             </li>
         </div>
-        
+
     </ul>
 </nav>
 
 <div style="text-align: center;">
-    <button class="btn btn-success" (click)="null"> Ajouter un produit </button>
+    <button class="btn btn-success" (click)="null" style="margin-right: 10px;"> Ajouter un produit </button>
+
+    <button class="btn btn-success" (click)="null"> Importer plusier produits </button>
 </div>

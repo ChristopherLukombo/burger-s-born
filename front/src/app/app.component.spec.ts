@@ -25,72 +25,72 @@ import { RegisterComponent } from './register/register.component';
 import { AuthProviderService } from './services/auth-provider.service';
 import { ServicesDataService } from './services/services-data.service';
 import { StepOrderComponent } from './step-order/step-order.component';
-import { STEPPER_GLOBAL_OPTIONS, CdkStepperModule } from '@angular/cdk/stepper';
+import { ImporterComponent } from './importer/importer.component';
 import { DialogRedirectionComponent } from './dialog-redirection/dialog-redirection.component';
-
 
 describe('AppComponent', () => {
     beforeEach(async(() => {
         TestBed.configureTestingModule({
-            declarations: [
-                AppComponent,
-                HomeComponent,
-                RegisterComponent,
-                AuthComponent,
-                DialogSuccessComponent,
-                ProductComponent,
-                NavbarComponent,
-                HeaderComponent,
-                NavbarComponent,
-                HeaderComponent,
-                MenuComponent,
-                StepOrderComponent,
-                DialogRedirectionComponent
-              ],
-              imports: [
-                ReactiveFormsModule,
-                BrowserModule,
-                AppRoutingModule,
-                HttpClientModule,
-                MatInputModule,
-                MatDatepickerModule,
-                MatNativeDateModule,
-                MatSelectModule,
-                MatStepperModule,
-                MatRadioModule,
-                BrowserAnimationsModule,
-                FormsModule,
-                MatDialogModule,
-                TranslateModule.forRoot({
-                  loader: {
-                    provide: TranslateLoader,
-                    useFactory: HttpLoaderFactory,
-                    deps: [HttpClient]
-                  }
-                }),
-                LoggerModule.forRoot(
-                    {
-                      level: NgxLoggerLevel.DEBUG,
-                      serverLogLevel: NgxLoggerLevel.ERROR
-                    }
-                ),
-                JwtModule.forRoot({
-                  config: {
-                    // ...
-                    tokenGetter: () => {
-                      return localStorage.getItem('authenticationToken');
-                    }
-                  }
-                })
-              ],
-              providers: [
-                ServicesDataService,
-                AuthProviderService,
-                LocalStorageService,
-                AuthGuard,
-                MatDatepickerModule,
-              ],
-              schemas: [ CUSTOM_ELEMENTS_SCHEMA ]
+          declarations: [
+            AppComponent,
+            HomeComponent,
+            RegisterComponent,
+            AuthComponent,
+            DialogSuccessComponent,
+            ProductComponent,
+            NavbarComponent,
+            HeaderComponent,
+            NavbarComponent,
+            HeaderComponent,
+            MenuComponent,
+            ImporterComponent,
+            StepOrderComponent,
+            DialogRedirectionComponent
+          ],
+          imports: [
+            ReactiveFormsModule,
+            BrowserModule,
+            AppRoutingModule,
+            HttpClientModule,
+            MatInputModule,
+            MatDatepickerModule,
+            MatNativeDateModule,
+            MatSelectModule,
+            MatStepperModule,
+            MatRadioModule,
+            BrowserAnimationsModule,
+            FormsModule,
+            MatDialogModule,
+            TranslateModule.forRoot({
+              loader: {
+                provide: TranslateLoader,
+                useFactory: HttpLoaderFactory,
+                deps: [HttpClient]
+              }
+            }),
+            LoggerModule.forRoot(
+                {
+                  level: NgxLoggerLevel.DEBUG,
+                  serverLogLevel: NgxLoggerLevel.ERROR
+                }
+            ),
+            JwtModule.forRoot({
+              config: {
+                // ...
+                tokenGetter: () => {
+                  return localStorage.getItem('authenticationToken');
+                }
+              }
+            })
+          ],
+          providers: [
+            ServicesDataService,
+            AuthProviderService,
+            LocalStorageService,
+            AuthGuard,
+            MatDatepickerModule,
+          ],
+          schemas: [ CUSTOM_ELEMENTS_SCHEMA ]
         }).compileComponents();
     }));
 

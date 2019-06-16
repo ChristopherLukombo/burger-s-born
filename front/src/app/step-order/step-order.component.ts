@@ -72,7 +72,7 @@ export class StepOrderComponent implements OnInit {
   }
 
   findAll() {
-    this.servicesDataService.findAllMenus()
+    this.servicesDataService.findAllMenus(0)
       .subscribe(data => {
         this.menus = data.body['content'];
         console.log(this.menus);

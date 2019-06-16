@@ -18,15 +18,16 @@ import { AuthGuard } from './auth.guard';
 import { AuthComponent } from './auth/auth.component';
 import { DialogRedirectionComponent } from './dialog-redirection/dialog-redirection.component';
 import { DialogSuccessComponent } from './dialog-success/dialog-success.component';
-import { HeaderComponent } from './header/header.component';
 import { HomeComponent } from './home/home.component';
-import { MenuComponent } from './menu/menu.component';
 import { NavbarComponent } from './navbar/navbar.component';
 import { ProductComponent } from './product/product.component';
 import { RegisterComponent } from './register/register.component';
 import { AuthProviderService } from './services/auth-provider.service';
 import { ServicesDataService } from './services/services-data.service';
 import { StepOrderComponent } from './step-order/step-order.component';
+import { ImporterComponent } from './importer/importer.component';
+import { MenuComponent } from './menu/menu.component';
+import { HeaderComponent } from './header/header.component';
 
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http, 'assets/i18n/', '.json');
@@ -46,7 +47,8 @@ export function tokenGetter() {
     ProductComponent,
     NavbarComponent,
     HeaderComponent,
-    NavbarComponent,
+    MenuComponent,
+    ImporterComponent,
     HeaderComponent,
     MenuComponent,
     StepOrderComponent

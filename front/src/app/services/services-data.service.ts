@@ -36,6 +36,18 @@ export class ServicesDataService {
         return this.http.request(req);
     }
 
+    importFile(file: File) {
+        const formdata: FormData = new FormData();
+        formdata.append('importfile', file);
+
+        const req = new HttpRequest('POST', this.resourceUrl + '/product/import/json', formdata, {
+            responseType: 'text',
+
+        });
+
+        return this.http.request(req);
+    }
+
     getImageURL(pseudo: string) {
         const headers = new HttpHeaders({ 'Authorization': 'Bearer ' + this.authProviderService.getToken() });
         return this.http.get(this.resourceUrl + '/users/imageURL/' + `${pseudo}`, { headers, responseType: 'blob' });
@@ -47,8 +59,8 @@ export class ServicesDataService {
     }
 
     // Menu
-    public findAllMenus(): Observable<HttpResponse<Object>> {
-        return this.http.get<HttpResponse<Object>>(this.resourceUrl + '/menu/all?page=0&size=999', { observe: 'response' });
+    public findAllMenus(indexPage): Observable<HttpResponse<Object>> {
+        return this.http.get<HttpResponse<Object>>(this.resourceUrl + '/menu/all?page=' + indexPage + '&size=4', { observe: 'response' });
     }
 
     public findAllProductBymenuId(categorieName: string, id: number): Observable<HttpResponse<Object>> {
