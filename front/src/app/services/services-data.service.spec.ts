@@ -1,7 +1,7 @@
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { TestBed } from '@angular/core/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatDatepickerModule, MatDialogModule, MatInputModule, MatNativeDateModule, MatStepperModule } from '@angular/material';
+import { MatDatepickerModule, MatDialogModule, MatInputModule, MatNativeDateModule, MatStepperModule, MatRadioModule } from '@angular/material';
 import { MatSelectModule } from '@angular/material/select';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -36,7 +36,6 @@ describe('ServicesDataService', () => {
         HomeComponent,
         RegisterComponent,
         AuthComponent,
-        DialogRedirectionComponent,
         DialogSuccessComponent,
         ProductComponent,
         NavbarComponent,
@@ -44,7 +43,8 @@ describe('ServicesDataService', () => {
         NavbarComponent,
         HeaderComponent,
         MenuComponent,
-        StepOrderComponent
+        StepOrderComponent,
+        DialogRedirectionComponent
       ],
       imports: [
         ReactiveFormsModule,
@@ -56,7 +56,7 @@ describe('ServicesDataService', () => {
         MatNativeDateModule,
         MatSelectModule,
         MatStepperModule,
-        CdkStepperModule,
+        MatRadioModule,
         BrowserAnimationsModule,
         FormsModule,
         MatDialogModule,
@@ -88,12 +88,6 @@ describe('ServicesDataService', () => {
         LocalStorageService,
         AuthGuard,
         MatDatepickerModule,
-        [
-          {
-            provide: STEPPER_GLOBAL_OPTIONS,
-            useValue: { displayDefaultIndicatorType: false }
-          }
-        ]
       ],
       schemas: [ CUSTOM_ELEMENTS_SCHEMA ]
   }));

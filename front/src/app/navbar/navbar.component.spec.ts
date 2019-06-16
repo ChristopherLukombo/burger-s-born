@@ -2,7 +2,7 @@ import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatDatepickerModule, MatDialogModule, MatInputModule, MatNativeDateModule, MatSelectModule, MatStepperModule } from '@angular/material';
+import { MatDatepickerModule, MatDialogModule, MatInputModule, MatNativeDateModule, MatSelectModule, MatStepperModule, MatRadioModule } from '@angular/material';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { JwtModule } from '@auth0/angular-jwt';
@@ -39,7 +39,6 @@ describe('NavbarComponent', () => {
         HomeComponent,
         RegisterComponent,
         AuthComponent,
-        DialogRedirectionComponent,
         DialogSuccessComponent,
         ProductComponent,
         NavbarComponent,
@@ -47,7 +46,8 @@ describe('NavbarComponent', () => {
         NavbarComponent,
         HeaderComponent,
         MenuComponent,
-        StepOrderComponent
+        StepOrderComponent,
+        DialogRedirectionComponent
       ],
       imports: [
         ReactiveFormsModule,
@@ -59,7 +59,7 @@ describe('NavbarComponent', () => {
         MatNativeDateModule,
         MatSelectModule,
         MatStepperModule,
-        CdkStepperModule,
+        MatRadioModule,
         BrowserAnimationsModule,
         FormsModule,
         MatDialogModule,
@@ -71,10 +71,10 @@ describe('NavbarComponent', () => {
           }
         }),
         LoggerModule.forRoot(
-            {
-              level: NgxLoggerLevel.DEBUG,
-              serverLogLevel: NgxLoggerLevel.ERROR
-            }
+          {
+            level: NgxLoggerLevel.DEBUG,
+            serverLogLevel: NgxLoggerLevel.ERROR
+          }
         ),
         JwtModule.forRoot({
           config: {
@@ -91,16 +91,10 @@ describe('NavbarComponent', () => {
         LocalStorageService,
         AuthGuard,
         MatDatepickerModule,
-        [
-          {
-            provide: STEPPER_GLOBAL_OPTIONS,
-            useValue: { displayDefaultIndicatorType: false }
-          }
-        ]
       ],
-      schemas: [ CUSTOM_ELEMENTS_SCHEMA ]
+      schemas: [CUSTOM_ELEMENTS_SCHEMA]
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {

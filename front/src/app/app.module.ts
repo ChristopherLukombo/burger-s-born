@@ -1,9 +1,9 @@
-import { CdkStepperModule, STEPPER_GLOBAL_OPTIONS } from '@angular/cdk/stepper';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatDialogModule, MatInputModule, MatNativeDateModule, MatStepperModule } from '@angular/material';
+import { MatDialogModule, MatStepperModule, MatInputModule, MatNativeDateModule } from '@angular/material';
 import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatRadioModule } from '@angular/material/radio';
 import { MatSelectModule } from '@angular/material/select';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -16,6 +16,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { AuthGuard } from './auth.guard';
 import { AuthComponent } from './auth/auth.component';
+import { DialogRedirectionComponent } from './dialog-redirection/dialog-redirection.component';
 import { DialogSuccessComponent } from './dialog-success/dialog-success.component';
 import { HeaderComponent } from './header/header.component';
 import { HomeComponent } from './home/home.component';
@@ -26,8 +27,6 @@ import { RegisterComponent } from './register/register.component';
 import { AuthProviderService } from './services/auth-provider.service';
 import { ServicesDataService } from './services/services-data.service';
 import { StepOrderComponent } from './step-order/step-order.component';
-import {MatRadioModule} from '@angular/material/radio';
-import { DialogRedirectionComponent } from './dialog-redirection/dialog-redirection.component';
 
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http, 'assets/i18n/', '.json');
@@ -43,12 +42,14 @@ export function tokenGetter() {
     RegisterComponent,
     AuthComponent,
     DialogSuccessComponent,
+    DialogRedirectionComponent,
     ProductComponent,
     NavbarComponent,
     HeaderComponent,
+    NavbarComponent,
+    HeaderComponent,
     MenuComponent,
-    StepOrderComponent,
-    DialogRedirectionComponent,
+    StepOrderComponent
   ],
   exports: [
     DialogSuccessComponent,
@@ -71,7 +72,6 @@ export function tokenGetter() {
     MatNativeDateModule,
     MatSelectModule,
     MatStepperModule,
-    CdkStepperModule,
     MatRadioModule,
     BrowserAnimationsModule,
     FormsModule,
@@ -100,13 +100,7 @@ export function tokenGetter() {
     AuthProviderService,
     LocalStorageService,
     AuthGuard,
-    MatDatepickerModule,
-    [
-      {
-        provide: STEPPER_GLOBAL_OPTIONS,
-        useValue: { displayDefaultIndicatorType: false }
-      }
-    ]
+    MatDatepickerModule
   ],
   schemas: [ CUSTOM_ELEMENTS_SCHEMA ],
   bootstrap: [AppComponent]
