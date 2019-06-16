@@ -41,7 +41,6 @@ public class ProductResource {
     private final MessageSource messageSource;
 
 
-
     @Autowired
     public ProductResource(ProductService productService, DatabaseUpdatorService databaseUpdatorService, MessageSource messageSource) {
         this.productService = productService;
@@ -66,8 +65,8 @@ public class ProductResource {
 
         return ResponseEntity.ok(products);
     }
-    
-    
+
+
     /**
      * POST  /product : add new product.
      *
@@ -76,31 +75,35 @@ public class ProductResource {
      * @throws BurgerSTerminalException
      */
     @PostMapping("/product")
-    public ResponseEntity<ProductDTO> addProduct (@RequestBody @Valid ProductDTO productDTO, @RequestParam("id") Long id, @RequestParam("available") Boolean available, @RequestParam("name") String name, @RequestParam("price") double price) throws BurgerSTerminalException {
-        LOGGER.debug("REST request to add new product");        
-        return new ResponseEntity<ProductDTO>(productService.addProduct(productDTO, id, available, name, price),HttpStatus.OK);
+    public ResponseEntity<ProductDTO> addProduct(@RequestBody @Valid ProductDTO productDTO, @RequestParam("id") Long id, @RequestParam("available") Boolean available, @RequestParam("name") String name, @RequestParam("price") double price) throws BurgerSTerminalException {
+        LOGGER.debug("REST request to add new product");
+        return new ResponseEntity<ProductDTO>(productService.addProduct(productDTO, id, available, name, price), HttpStatus.OK);
     }
 
     /**
-     *
      * POST : /product/import/json : Add or Update products from a JSON file
      *
      * @param inputFile
-     * @return ??
+     * @return String the status
+     * @throws BurgerSTerminalException
      */
     @PostMapping(value = "/product/import/json", headers = "content-type=multipart/*")
-    public ResponseEntity upload(@RequestPart("importfile") MultipartFile inputFile) throws BurgerSTerminalException{
+    public ResponseEntity<String> upload(
+            @RequestPart("importfile") MultipartFile inputFile) throws BurgerSTerminalException {
 
         JSONArray objects = databaseUpdatorService.importFile(inputFile, "json");
         List<ProductDTO> productDTOS = productService.convertJsonToArray(objects);
 
         try {
-            productDTOS = productService.addAll(productDTOS);
-        } catch ( DataIntegrityViolationException e) {
-            throw new BurgerSTerminalException(HttpStatus.INTERNAL_SERVER_ERROR.value(), messageSource.getMessage(ErrorMessage.ERROR_FAIL_BATCH_IMPORT_PRODUCT, null, getLang("fr")));
+            productService.addAll(productDTOS);
+        } catch (DataIntegrityViolationException e) {
+            throw new BurgerSTerminalException(HttpStatus.INTERNAL_SERVER_ERROR.value(),
+                    messageSource.getMessage(ErrorMessage.ERROR_FAIL_BATCH_IMPORT_PRODUCT, null, getLang("fr")) +
+                            inputFile.getOriginalFilename(), e);
         }
 
-        return ResponseEntity.ok(productDTOS);
+        return ResponseEntity.ok()
+                .body("Successfully uploaded : " + inputFile.getOriginalFilename());
     }
 
 

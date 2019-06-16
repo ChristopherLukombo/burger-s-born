@@ -1,0 +1,45 @@
+<h4>Import</h4>
+<br>
+
+<form class="example-form" [formGroup]="importForm" (ngSubmit)="importFile()">
+
+    <!-- Messages -->
+    <div class="alert alert-success" role="alert" *ngIf="successMessage != null">
+        {{successMessage}}
+    </div>
+    <div class="alert alert-danger" role="alert" *ngIf="errorMessage != null">
+        {{errorMessage}}
+    </div>
+
+    <!-- Select type of element to import -->
+    <mat-form-field class="example-full-width">
+        <mat-label>élément a importer</mat-label>
+        <mat-select [(value)]="selectedElement" formControlName="elementSelector">
+            <mat-option value="produit">Produit</mat-option>
+            <mat-option value="menu" disabled="true">Menu</mat-option>
+        </mat-select>
+    </mat-form-field>
+
+    <!-- Select file extension-->
+    <mat-form-field class="example-full-width">
+        <mat-label>extension de fichier d'import</mat-label>
+        <mat-select [(value)]="selectedFormat" formControlName="formatSelector">
+            <mat-option value="application/json">JSON</mat-option>
+            <mat-option value="text/csv" disabled="true">CSV</mat-option>
+        </mat-select>
+    </mat-form-field>
+
+
+    <div class="form-group">
+        <div class="custom-file">
+            <input type="file" class="custom-file-input" id="fileImport" formControlName="fileImport" (change)="selectFile($event)">
+            <label class="custom-file-label" id="custom-file-label" for="fileImport">Choose file</label>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <button type="submit" class="btn btn-outline-success mb-2">Import
+        </button>
+
+    </div>
+</form>
