@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import {ServicesDataService} from '../services/services-data.service';
 import {HttpErrorResponse} from '@angular/common/http';
 import { Menu } from '../../model/model.menu';
+import {Router} from '@angular/router';
 
 
 @Component({
@@ -16,7 +17,10 @@ export class MenuComponent implements OnInit {
   totalElements;
   pages;
   selectedPage = 0;
-  constructor(private servicesDataService: ServicesDataService) { }
+  constructor(
+      private servicesDataService: ServicesDataService,
+      private router: Router
+  ) { }
 
   ngOnInit() {
     this.findAll(0);
@@ -40,6 +44,10 @@ export class MenuComponent implements OnInit {
             }
           }
         });
+  }
+
+  onNavigateToNewMenu() {
+      this.router.navigate(['newMenu']);
   }
 
 }
