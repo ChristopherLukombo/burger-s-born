@@ -1,11 +1,13 @@
-import {Component, OnInit} from '@angular/core';
-import {TranslateService} from '@ngx-translate/core';
-import {CountryCode} from './country-code.enum';
-import {NGXLogger} from 'ngx-logger';
-import {AppConstants} from './app.constants';
-import {environment} from '../environments/environment';
-import {AuthProviderService} from './services/auth-provider.service';
-import {Router} from '@angular/router';
+import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
+import { TranslateService } from '@ngx-translate/core';
+import { NGXLogger } from 'ngx-logger';
+import { environment } from '../environments/environment';
+import { Paypal } from './../model/model.paypal';
+import { AppConstants } from './app.constants';
+import { CountryCode } from './country-code.enum';
+import { AuthProviderService } from './services/auth-provider.service';
+import { ServicesDataService } from './services/services-data.service';
 
 @Component({
   selector: 'app-root',
@@ -21,7 +23,8 @@ export class AppComponent implements OnInit {
       private translateService: TranslateService,
       private logger: NGXLogger,
       public authProviderService: AuthProviderService,
-      private router: Router
+      private router: Router,
+      private servicesDataService: ServicesDataService,
   ) {}
 
 
@@ -29,6 +32,7 @@ export class AppComponent implements OnInit {
     this.language = CountryCode.FR;
     this.translateService.use(this.language);
     this.isAdmin = this.authProviderService.isAdmin();
+    this.completePayment();
   }
 
   public switchLanguage(language: string): void {
@@ -47,5 +51,24 @@ export class AppComponent implements OnInit {
     this.authProviderService.logout()
         .subscribe();
     this.router.navigate(['/auth']);
+  }
+
+  completePayment() {
+    const url = new URL(window.location.href);
+    const paymentId = url.searchParams.get('paymentId');
+    const payerID = url.searchParams.get('PayerID');
+
+    if (!paymentId || !payerID) {
+      return;
+    }
+    const paypal = new Paypal();
+    paypal.paymentId = paymentId;
+    paypal.payerID = payerID;
+    this.servicesDataService.completePayment(paypal)
+    .subscribe(data => {
+      this.logger.debug('Completed payment!');
+    }, err => {
+      this.logger.error('Error payment could n\'t be completed');
+    });
   }
 }

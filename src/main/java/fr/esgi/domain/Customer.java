@@ -1,11 +1,20 @@
 package fr.esgi.domain;
 
-import javax.persistence.*;
-import javax.validation.constraints.Size;
+import java.io.Serializable;
 import java.util.Objects;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.ManyToOne;
+import javax.validation.constraints.Size;
+
 @Entity
-public class Customer {
+public class Customer implements Serializable {
+
+	private static final long serialVersionUID = 1L;
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
@@ -27,7 +36,9 @@ public class Customer {
 	@ManyToOne
 	private User user;
 
-	public Customer() { }
+	public Customer() {
+		// Empty constructor needed for Hibernate.
+	}
 
 	public Long getId() {
 		return id;

@@ -4,7 +4,8 @@ import fr.esgi.domain.Product;
 import org.json.JSONArray;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
- 
+
+import fr.esgi.domain.Product;
 import fr.esgi.service.dto.ProductDTO;
 import fr.esgi.service.dto.UserDTO;
 
@@ -41,6 +42,8 @@ public interface ProductService {
      * @return ProductDTO added product
      */
     ProductDTO addProduct(ProductDTO productDTO);
+    
+    List<Product> findAllByMenuId(Long menuId);
 
     /**
      * Convert a JSONArray frome the imported file to a ArrayList of ProductDTO

@@ -1,12 +1,12 @@
 import {Component, Injector, OnInit} from '@angular/core';
-import {FormControl, FormGroup, Validators} from "@angular/forms";
-import {environment} from "../../environments/environment";
-import {NGXLogger} from "ngx-logger";
-import {AppConstants} from "../app.constants";
-import {ServicesDataService} from "../services/services-data.service";
-import {TranslateService} from "@ngx-translate/core";
-import {HttpErrorResponse, HttpResponse} from "@angular/common/http";
-import {errorObject} from "rxjs/internal-compatibility";
+import {FormControl, FormGroup, Validators} from '@angular/forms';
+import {environment} from '../../environments/environment';
+import {NGXLogger} from 'ngx-logger';
+import {AppConstants} from '../app.constants';
+import {ServicesDataService} from '../services/services-data.service';
+import {TranslateService} from '@ngx-translate/core';
+import {HttpErrorResponse, HttpResponse} from '@angular/common/http';
+import {errorObject} from 'rxjs/internal-compatibility';
 
 @Component({
     selector: 'app-importer',
@@ -16,12 +16,12 @@ import {errorObject} from "rxjs/internal-compatibility";
 export class ImporterComponent implements OnInit {
 
     importForm: FormGroup;
-    submitted: boolean = false;
+    submitted = false;
 
     selectedFiles: FileList;
     currentFileToUpload: File;
 
-    selectedElementIsValid: boolean = false;
+    selectedElementIsValid = false;
     selectedElement: string;
     selectedFormat: string;
 

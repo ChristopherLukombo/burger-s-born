@@ -1,0 +1,127 @@
+<div *ngIf="!isAuthenticated">
+  <app-auth></app-auth>
+</div>
+<button mat-raised-button (click)="isEditable = !isEditable" *ngIf="isAuthenticated">
+  {{!isEditable ? 'Activer le mode édition' : 'Désactiver le mode édition'}}
+</button>
+
+<mat-horizontal-stepper linear #stepper *ngIf="isAuthenticated">
+  <!-- Menus-->
+  <mat-step [stepControl]="firstFormGroup" [editable]="isEditable">
+    <form [formGroup]="firstFormGroup">
+      <div *ngIf="isAuthenticated">
+        <ng-template matStepLabel>Menus</ng-template>
+        <div>
+          <h4>Les menus</h4>
+          <br>
+          <!-- Messages -->
+          <div class="alert alert-success" role="alert" *ngIf="successMessage != null">
+            {{successMessage}}
+          </div>
+          <div class="alert alert-danger" role="alert" *ngIf="errorMessage != null">
+            {{errorMessage}}
+          </div>
+          <table class="table table-striped" *ngIf="!see">
+            <thead>
+              <tr>
+                <th>Nom</th>
+                <th>Prix</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let menu of menus">
+                <td>{{menu.name}}</td>
+                <td>{{menu.price | number : '1.2-2'}} €</td>
+                <td>
+                  <button class="btn btn-danger" (click)="seeMenu(menu)"> Choisir ce menu </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <div style="text-align: right;" *ngIf="menus != null">
+            Nombre total de produits : {{menus.length}}
+          </div>
+
+          <div *ngIf="see">
+            <table class="table table-striped">
+              <thead>
+                <tr>
+                  <th>id</th>
+                  <th>Name</th>
+                  <th>Prix</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let product of products">
+                  <td>{{product.id}}</td>
+                  <td>{{product.name}}</td>
+                  <td>{{product.price | number : '1.2-2'}} €</td>
+                  <td>
+                    <input type="radio" value="{{product.id}}" formControlName="firstCtrl" required>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+            <div>
+                <button class="btn btn-danger" mat-button (click)="validateProduct(stepper)">valider le produit</button>
+                <br/><br/>
+            </div>
+
+          </div>
+
+          <div>
+            <button class="btn btn-danger" (click)="return()" *ngIf="see"> Retour </button>
+          </div>
+        </div>
+        <div>
+        </div>
+      </div>
+
+    </form>
+  </mat-step>
+    <!-- Desserts -->
+  <mat-step [stepControl]="secondFormGroup" [editable]="isEditable">
+    <form [formGroup]="secondFormGroup">
+      <ng-template matStepLabel>Desserts</ng-template>
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th>id</th>
+            <th>Name</th>
+            <th>Prix</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let product of products">
+            <td>{{product.id}}</td>
+            <td>{{product.name}}</td>
+            <td>{{product.price | number : '1.2-2'}} €</td>
+            <td>
+              <input type="radio" value="{{product.id}}" formControlName="secondCtrl">
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div>
+        <button mat-button matStepperPrevious>Back</button>
+        <button mat-button matStepperNext (click)="takeDessert()">Next</button>
+      </div>
+    </form>
+  </mat-step>
+  <!-- Paiement -->
+  <mat-step>
+    <ng-template matStepLabel>Paiement</ng-template>
+
+    <button class="btn btn-danger" (click)="createPayment()">Payer avec PayPal</button>
+    <br/><br/>
+    <div>
+      <button class="btn btn-danger" mat-button matStepperPrevious>Précédent</button>
+      <br/><br/>
+      <button class="btn btn-danger" mat-button (click)="firstFormGroup.reset();stepper.reset();this.see = false;">Reset</button>
+    </div>
+  </mat-step>
+</mat-horizontal-stepper>
