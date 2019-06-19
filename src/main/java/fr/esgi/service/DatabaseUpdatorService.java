@@ -14,5 +14,5 @@ import java.io.IOException;
 @Service
 public interface DatabaseUpdatorService {
 
-    public JSONArray importFile(MultipartFile fileToImport, String fileFormat);
+    public JSONArray importFile(MultipartFile fileToImport, String fileFormat)  throws BurgerSTerminalException;
 }
