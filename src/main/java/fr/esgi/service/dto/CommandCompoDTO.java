@@ -11,11 +11,7 @@ public class CommandCompoDTO implements Serializable {
 
 	private Long id;
 
-	private double price;
-
 	private String state;
-
-	private double quantity;
 	
 	private Long commandId;
     
@@ -27,9 +23,7 @@ public class CommandCompoDTO implements Serializable {
 
 	public CommandCompoDTO(CommandCompo commandCompo) {
 		this.id = commandCompo.getId();
-		this.price = commandCompo.getPrice();
 		this.state = commandCompo.getState();
-		this.quantity = commandCompo.getQuantity();
 		this.commandId = commandCompo.getCommand().getId();
 		this.employeeId = commandCompo.getEmployee().getId();
 	}
@@ -42,28 +36,12 @@ public class CommandCompoDTO implements Serializable {
 		this.id = id;
 	}
 
-	public double getPrice() {
-		return price;
-	}
-
-	public void setPrice(double price) {
-		this.price = price;
-	}
-
 	public String getState() {
 		return state;
 	}
 
 	public void setState(String state) {
 		this.state = state;
-	}
-
-	public double getQuantity() {
-		return quantity;
-	}
-
-	public void setQuantity(double quantity) {
-		this.quantity = quantity;
 	}
 
 	public Long getCommandId() {
@@ -83,32 +61,48 @@ public class CommandCompoDTO implements Serializable {
 	}
 
 	@Override
-	public boolean equals(Object o) {
-		if (this == o) return true;
-		if (o == null || getClass() != o.getClass()) return false;
-		CommandCompoDTO that = (CommandCompoDTO) o;
-		return Double.compare(that.price, price) == 0 &&
-				Double.compare(that.quantity, quantity) == 0 &&
-				Objects.equals(id, that.id) &&
-				Objects.equals(state, that.state) &&
-				Objects.equals(commandId, that.commandId) &&
-				Objects.equals(employeeId, that.employeeId);
+	public int hashCode() {
+		return Objects.hash(commandId, employeeId, id, state);
 	}
 
 	@Override
-	public int hashCode() {
-		return Objects.hash(id, price, state, quantity, commandId, employeeId);
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		CommandCompoDTO other = (CommandCompoDTO) obj;
+		return Objects.equals(commandId, other.commandId) && Objects.equals(employeeId, other.employeeId)
+				&& Objects.equals(id, other.id) && Objects.equals(state, other.state);
 	}
 
 	@Override
 	public String toString() {
-		return "CommandCompoDTO{" +
-				"id=" + id +
-				", price=" + price +
-				", state='" + state + '\'' +
-				", quantity=" + quantity +
-				", commandId=" + commandId +
-				", employeeId=" + employeeId +
-				'}';
+		StringBuilder builder = new StringBuilder();
+		builder.append("CommandCompoDTO [");
+		if (id != null) {
+			builder.append("id=");
+			builder.append(id);
+			builder.append(", ");
+		}
+		if (state != null) {
+			builder.append("state=");
+			builder.append(state);
+			builder.append(", ");
+		}
+		if (commandId != null) {
+			builder.append("commandId=");
+			builder.append(commandId);
+			builder.append(", ");
+		}
+		if (employeeId != null) {
+			builder.append("employeeId=");
+			builder.append(employeeId);
+		}
+		builder.append("]");
+		return builder.toString();
 	}
+	
 }

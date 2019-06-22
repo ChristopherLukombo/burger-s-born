@@ -15,6 +15,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import fr.esgi.config.Constants;
 import fr.esgi.dao.ManagerRepository;
 import fr.esgi.dao.MenuRepository;
 import fr.esgi.dao.ProductRepository;
@@ -27,8 +28,8 @@ import fr.esgi.service.dto.ProductDTO;
 import fr.esgi.service.mapper.MenuMapper;
 import fr.esgi.service.mapper.ProductMapper;
 
-@Service
 @Transactional
+@Service("MenuService")
 public class MenuServiceImpl implements MenuService {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(MenuServiceImpl.class);
@@ -183,6 +184,20 @@ public class MenuServiceImpl implements MenuService {
 		return productRepo.findAllByCategoryName(categoryName).stream()
 				.map(productMapper::productToProductDTO)
 				.collect(Collectors.toList());
+	}
+
+	 /**
+     * Returns the four trends menus.
+     * @return the list of entities
+     */
+	@Transactional(readOnly = true)
+	@Override
+	public List<MenuDTO> findAllTrendsMenus() {
+		List<MenuDTO> menusDTO = menuRepo.findAllTrendsMenus(Constants.PAID, 4).stream()
+				.map(menuMapper::menuToMenuDTO)
+				.collect(Collectors.toList());
+		Collections.shuffle(menusDTO);
+		return menusDTO;
 	}
 
 }

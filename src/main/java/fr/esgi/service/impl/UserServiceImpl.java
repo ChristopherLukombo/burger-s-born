@@ -9,13 +9,15 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
-import javax.transaction.Transactional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import fr.esgi.config.ConfigurationService;
@@ -184,5 +186,22 @@ public class UserServiceImpl implements UserService {
     private void sendFileToFolder(MultipartFile file, Path path) throws IOException {
         Files.copy(file.getInputStream(), path.resolve(file.getOriginalFilename()));
     }
+
+    /**
+     * Returns the current user.
+     */
+    @Transactional(readOnly = true)
+	@Override
+	public Optional<UserDTO> findCurrentUser() {
+		Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+ 		String username;
+ 		if (principal instanceof UserDetails) {
+ 		   username = ((UserDetails)principal).getUsername();
+ 		} else {
+ 		   username = principal.toString();
+ 		}
+ 		return userRepository.findOneByPseudoIgnoreCase(username)
+ 				.map(userMapper::userToUserDTO);
+	}
 
 }

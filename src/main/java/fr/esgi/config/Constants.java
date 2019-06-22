@@ -27,6 +27,7 @@ public final class Constants {
     public static final String SANDBOX = "sandbox";
     public static final String WAITTING = "Waitting";
     public static final String PAID = "Paid";
+    public static final String REFUND = "REFUND";
 
     private Constants() {
         // private constructor needed for Constants class.

@@ -54,9 +54,18 @@ public class CategoryDTO {
 
 	@Override
 	public String toString() {
-		return "CategoryDTO{" +
-				"id=" + id +
-				", name='" + name + '\'' +
-				'}';
+		StringBuilder builder = new StringBuilder();
+		builder.append("CategoryDTO [");
+		if (id != null) {
+			builder.append("id=");
+			builder.append(id);
+			builder.append(", ");
+		}
+		if (name != null) {
+			builder.append("name=");
+			builder.append(name);
+		}
+		builder.append("]");
+		return builder.toString();
 	}
 }
