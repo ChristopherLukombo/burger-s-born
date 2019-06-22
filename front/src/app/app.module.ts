@@ -28,6 +28,7 @@ import { StepOrderComponent } from './step-order/step-order.component';
 import { ImporterComponent } from './importer/importer.component';
 import { MenuComponent } from './menu/menu.component';
 import { HeaderComponent } from './header/header.component';
+import { OrdersComponent } from './orders/orders.component';
 
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http, 'assets/i18n/', '.json');
@@ -51,7 +52,8 @@ export function tokenGetter() {
     ImporterComponent,
     HeaderComponent,
     MenuComponent,
-    StepOrderComponent
+    StepOrderComponent,
+    OrdersComponent
   ],
   exports: [
     DialogSuccessComponent,

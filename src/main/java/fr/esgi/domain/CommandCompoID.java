@@ -26,12 +26,25 @@ public class CommandCompoID implements Serializable {
         return Objects.hash(id, command, employee);
     }
 
-    @Override
-    public String toString() {
-        return "CommandCompoID{" +
-                "id=" + id +
-                ", command=" + command +
-                ", employee=" + employee +
-                '}';
-    }
+	@Override
+	public String toString() {
+		StringBuilder builder = new StringBuilder();
+		builder.append("CommandCompoID [");
+		if (id != null) {
+			builder.append("id=");
+			builder.append(id);
+			builder.append(", ");
+		}
+		if (command != null) {
+			builder.append("command=");
+			builder.append(command);
+			builder.append(", ");
+		}
+		if (employee != null) {
+			builder.append("employee=");
+			builder.append(employee);
+		}
+		builder.append("]");
+		return builder.toString();
+	}
 }

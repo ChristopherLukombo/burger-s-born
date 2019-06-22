@@ -39,9 +39,6 @@
               </tr>
             </tbody>
           </table>
-          <div style="text-align: right;" *ngIf="menus != null">
-            Nombre total de produits : {{menus.length}}
-          </div>
 
           <div *ngIf="see">
             <table class="table table-striped">
@@ -50,7 +47,7 @@
                   <th>id</th>
                   <th>Name</th>
                   <th>Prix</th>
-                  <th>Actions</th>
+                  <th>Action</th>
                 </tr>
               </thead>
               <tbody>
@@ -64,9 +61,13 @@
                 </tr>
               </tbody>
             </table>
+            <div style="text-align: right;" *ngIf="menus != null && see">
+              Nombre total de menus : {{menus.length}}
+            </div>
             <div>
-                <button class="btn btn-danger" mat-button (click)="validateProduct(stepper)">valider le produit</button>
-                <br/><br/>
+              <button class="btn btn-danger" mat-button (click)="validateProduct(stepper)">Valider la sélection du
+                produit</button>
+              <br /><br />
             </div>
 
           </div>
@@ -81,7 +82,7 @@
 
     </form>
   </mat-step>
-    <!-- Desserts -->
+  <!-- Desserts -->
   <mat-step [stepControl]="secondFormGroup" [editable]="isEditable">
     <form [formGroup]="secondFormGroup">
       <ng-template matStepLabel>Desserts</ng-template>
@@ -91,7 +92,7 @@
             <th>id</th>
             <th>Name</th>
             <th>Prix</th>
-            <th>Actions</th>
+            <th>Action</th>
           </tr>
         </thead>
         <tbody>
@@ -105,6 +106,9 @@
           </tr>
         </tbody>
       </table>
+      <div style="text-align: right;" *ngIf="products != null && see">
+          Nombre total de produits : {{products.length}}
+      </div>
 
       <div>
         <button mat-button matStepperPrevious>Back</button>
@@ -117,11 +121,12 @@
     <ng-template matStepLabel>Paiement</ng-template>
 
     <button class="btn btn-danger" (click)="createPayment()">Payer avec PayPal</button>
-    <br/><br/>
+    <br /><br />
     <div>
       <button class="btn btn-danger" mat-button matStepperPrevious>Précédent</button>
-      <br/><br/>
-      <button class="btn btn-danger" mat-button (click)="firstFormGroup.reset();stepper.reset();this.see = false;">Reset</button>
+      <br /><br />
+      <button class="btn btn-danger" mat-button
+        (click)="firstFormGroup.reset();stepper.reset();this.see = false;">Reset</button>
     </div>
   </mat-step>
 </mat-horizontal-stepper>

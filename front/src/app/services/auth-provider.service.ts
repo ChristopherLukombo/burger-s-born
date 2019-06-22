@@ -1,4 +1,4 @@
-import { HttpClient, HttpResponse } from '@angular/common/http';
+import { HttpClient, HttpResponse, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { JwtHelperService } from '@auth0/angular-jwt';
 import { LocalStorageService } from 'ngx-webstorage';
@@ -26,8 +26,21 @@ export class AuthProviderService {
     return this.http.post<HttpResponse<Object>>(this.resourceUrl + '/authenticate', login, {observe: 'response'});
   }
 
-  storeAuthenticationToken(jwt) {
+  getCurrentUser(): Observable<HttpResponse<Object>> {
+    const headers = new HttpHeaders({ 'Authorization': 'Bearer ' + this.getToken() });
+    return this.http.get<HttpResponse<Object>>(this.resourceUrl + '/currentUser', {headers, observe: 'response'});
+  }
+
+  storeAuthenticationToken(jwt: string) {
     this.$localStorage.store('authenticationToken', jwt);
+  }
+
+  storeIdCustomer(idCustomer: number) {
+    this.$localStorage.store('id_customer', idCustomer);
+  }
+
+  getIdCustomer() {
+    return this.$localStorage.retrieve('id_customer');
   }
 
   getToken() {
@@ -37,6 +50,7 @@ export class AuthProviderService {
   logout(): Observable<any> {
     return new Observable((observer) => {
       this.$localStorage.clear('authenticationToken');
+      this.$localStorage.clear('id_customer');
       this.admin.next(false);
       this.imageBlobUrl.next('');
       observer.complete();

@@ -21,13 +21,14 @@ import { NavbarComponent } from '../navbar/navbar.component';
 import { StepOrderComponent } from '../step-order/step-order.component';
 import { ProductComponent } from '../product/product.component';
 import { RegisterComponent } from '../register/register.component';
-import { MatRadioModule} from '@angular/material/radio';
+import { MatRadioModule } from '@angular/material/radio';
 import { AuthProviderService } from '../services/auth-provider.service';
 import { ServicesDataService } from '../services/services-data.service';
 import { AuthComponent } from './auth.component';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { MenuComponent } from '../menu/menu.component';
 import { ImporterComponent } from '../importer/importer.component';
+import { OrdersComponent } from '../orders/orders.component';
 
 
 describe('AuthComponent', () => {
@@ -42,15 +43,16 @@ describe('AuthComponent', () => {
         RegisterComponent,
         AuthComponent,
         DialogSuccessComponent,
+        DialogRedirectionComponent,
         ProductComponent,
-        NavbarComponent,
-        HeaderComponent,
         NavbarComponent,
         HeaderComponent,
         MenuComponent,
         ImporterComponent,
+        HeaderComponent,
+        MenuComponent,
         StepOrderComponent,
-        DialogRedirectionComponent
+        OrdersComponent
       ],
       imports: [
         ReactiveFormsModule,
@@ -74,10 +76,10 @@ describe('AuthComponent', () => {
           }
         }),
         LoggerModule.forRoot(
-            {
-              level: NgxLoggerLevel.DEBUG,
-              serverLogLevel: NgxLoggerLevel.ERROR
-            }
+          {
+            level: NgxLoggerLevel.DEBUG,
+            serverLogLevel: NgxLoggerLevel.ERROR
+          }
         ),
         JwtModule.forRoot({
           config: {
@@ -95,9 +97,9 @@ describe('AuthComponent', () => {
         AuthGuard,
         MatDatepickerModule,
       ],
-      schemas: [ CUSTOM_ELEMENTS_SCHEMA ]
+      schemas: [CUSTOM_ELEMENTS_SCHEMA]
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {

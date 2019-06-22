@@ -15,6 +15,8 @@ public final class ErrorMessage {
     public static final String ERROR_FAIL_BATCH_IMPORT_PRODUCT= "error.batch.product.duplicate";
     
     public static final String ERROR_HAPPENED_DURING_PAYMENT_CREATION = "error.happened.during.payment.creation";
+    
+    public static final String USER_DOES_NOT_EXISTS = "error.user.does.not.exists";
 
     private ErrorMessage() {}
 }

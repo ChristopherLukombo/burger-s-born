@@ -184,20 +184,63 @@ public class User implements Serializable {
         return Objects.hash(id, pseudo, password, firstName, lastName, email, createDate, activated, imageUrl, birthDay, role);
     }
 
-    @Override
-    public String toString() {
-        return "User{" +
-                "id=" + id +
-                ", pseudo='" + pseudo + '\'' +
-                ", password='" + password + '\'' +
-                ", firstName='" + firstName + '\'' +
-                ", lastName='" + lastName + '\'' +
-                ", email='" + email + '\'' +
-                ", createDate=" + createDate +
-                ", activated=" + activated +
-                ", imageUrl='" + imageUrl + '\'' +
-                ", birthDay=" + birthDay +
-                ", role=" + role +
-                '}';
-    }
+	@Override
+	public String toString() {
+		StringBuilder builder = new StringBuilder();
+		builder.append("User [");
+		if (id != null) {
+			builder.append("id=");
+			builder.append(id);
+			builder.append(", ");
+		}
+		if (pseudo != null) {
+			builder.append("pseudo=");
+			builder.append(pseudo);
+			builder.append(", ");
+		}
+		if (password != null) {
+			builder.append("password=");
+			builder.append(password);
+			builder.append(", ");
+		}
+		if (firstName != null) {
+			builder.append("firstName=");
+			builder.append(firstName);
+			builder.append(", ");
+		}
+		if (lastName != null) {
+			builder.append("lastName=");
+			builder.append(lastName);
+			builder.append(", ");
+		}
+		if (email != null) {
+			builder.append("email=");
+			builder.append(email);
+			builder.append(", ");
+		}
+		if (createDate != null) {
+			builder.append("createDate=");
+			builder.append(createDate);
+			builder.append(", ");
+		}
+		builder.append("activated=");
+		builder.append(activated);
+		builder.append(", ");
+		if (imageUrl != null) {
+			builder.append("imageUrl=");
+			builder.append(imageUrl);
+			builder.append(", ");
+		}
+		if (birthDay != null) {
+			builder.append("birthDay=");
+			builder.append(birthDay);
+			builder.append(", ");
+		}
+		if (role != null) {
+			builder.append("role=");
+			builder.append(role);
+		}
+		builder.append("]");
+		return builder.toString();
+	}
 }

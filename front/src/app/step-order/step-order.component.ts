@@ -10,6 +10,7 @@ import { DialogRedirectionComponent } from './../dialog-redirection/dialog-redir
 import { AuthProviderService } from './../services/auth-provider.service';
 import { MatStepper } from '@angular/material/stepper';
 import { Command } from 'src/model/model.command';
+import { NGXLogger } from 'ngx-logger';
 
 const WIDTH = '50%';
 const HEIGHT = '15%';
@@ -49,6 +50,7 @@ export class StepOrderComponent implements OnInit {
     public authProviderService: AuthProviderService,
     private servicesDataService: ServicesDataService,
     public dialog: MatDialog,
+    private logger: NGXLogger,
   ) { }
 
   ngOnInit() {
@@ -75,11 +77,11 @@ export class StepOrderComponent implements OnInit {
     this.servicesDataService.findAllMenus(0)
       .subscribe(data => {
         this.menus = data.body['content'];
-        console.log(this.menus);
+        this.logger.log(this.menus);
       }, err => {
         if (err instanceof HttpErrorResponse) {
           if (403 === err.status) {
-            console.log(err);
+            this.logger.error(err);
 
             this.errorMessage = 'Vous n\'êtes pas autorisé à effectuer cette action.';
           } else {
@@ -100,10 +102,10 @@ export class StepOrderComponent implements OnInit {
     this.menuSelected = menu;
     this.servicesDataService.findAllProductBymenuId('plat', menu.id)
       .subscribe(data => {
-        console.log(data.body);
+        this.logger.log(data.body);
         this.products = data.body;
       }, err => {
-        console.log(err);
+        this.logger.log(err);
       });
   }
 
@@ -160,6 +162,8 @@ export class StepOrderComponent implements OnInit {
     this.menuSelected.productsDTO = prods;
     menus.push(this.menuSelected);
     command.menusDTO = menus;
+
+    command.customerId = this.authProviderService.getIdCustomer();
 
     this.servicesDataService.createPayment(command)
       .subscribe(data => {

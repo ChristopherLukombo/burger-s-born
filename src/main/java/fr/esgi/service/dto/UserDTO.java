@@ -166,19 +166,58 @@ public class UserDTO {
         return Objects.hash(id, pseudo, firstName, lastName, email, imageUrl, createDate, activated, birthDay, roleId);
     }
 
-    @Override
-    public String toString() {
-        return "UserDTO{" +
-                "id=" + id +
-                ", pseudo='" + pseudo + '\'' +
-                ", firstName='" + firstName + '\'' +
-                ", lastName='" + lastName + '\'' +
-                ", email='" + email + '\'' +
-                ", imageUrl='" + imageUrl + '\'' +
-                ", createDate=" + createDate +
-                ", activated=" + activated +
-                ", birthDay=" + birthDay +
-                ", roleId=" + roleId +
-                '}';
-    }
+	@Override
+	public String toString() {
+		StringBuilder builder = new StringBuilder();
+		builder.append("UserDTO [");
+		if (id != null) {
+			builder.append("id=");
+			builder.append(id);
+			builder.append(", ");
+		}
+		if (pseudo != null) {
+			builder.append("pseudo=");
+			builder.append(pseudo);
+			builder.append(", ");
+		}
+		if (firstName != null) {
+			builder.append("firstName=");
+			builder.append(firstName);
+			builder.append(", ");
+		}
+		if (lastName != null) {
+			builder.append("lastName=");
+			builder.append(lastName);
+			builder.append(", ");
+		}
+		if (email != null) {
+			builder.append("email=");
+			builder.append(email);
+			builder.append(", ");
+		}
+		if (imageUrl != null) {
+			builder.append("imageUrl=");
+			builder.append(imageUrl);
+			builder.append(", ");
+		}
+		if (createDate != null) {
+			builder.append("createDate=");
+			builder.append(createDate);
+			builder.append(", ");
+		}
+		builder.append("activated=");
+		builder.append(activated);
+		builder.append(", ");
+		if (birthDay != null) {
+			builder.append("birthDay=");
+			builder.append(birthDay);
+			builder.append(", ");
+		}
+		if (roleId != null) {
+			builder.append("roleId=");
+			builder.append(roleId);
+		}
+		builder.append("]");
+		return builder.toString();
+	}
 }
