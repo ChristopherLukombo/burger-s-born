@@ -146,4 +146,20 @@ public class MenuResource {
 		return ResponseEntity.ok(menus);
 	}
 	
+	/**
+	 * GET  /menus/trends : get the four trends menus.
+	 * 
+	 * @return the ResponseEntity with status 200 (OK)
+	 * @throws BurgerSTerminalException if there is no menus.
+	 */
+	@GetMapping("/menus/trends")
+	public ResponseEntity<List<MenuDTO>> getAllTrendsMenus() throws BurgerSTerminalException {
+		LOGGER.debug("REST request to get all trends menus");
+		List<MenuDTO> menusDTO = menuService.findAllTrendsMenus();
+		if (menusDTO.isEmpty()) {
+			throw new BurgerSTerminalException(
+					HttpStatus.NOT_FOUND.value(), "There are no menus.");
+		}
+		return ResponseEntity.ok(menusDTO);
+	}
 }

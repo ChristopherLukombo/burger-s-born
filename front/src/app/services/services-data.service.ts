@@ -105,4 +105,10 @@ export class ServicesDataService {
             { headers, observe: 'response' });
     }
 
+    getAllTrendsMenus(): Observable<HttpResponse<Object>> {
+        return this.http.get<HttpResponse<Object>>(
+            this.resourceUrl + '/menus/trends',
+            { observe: 'response' });
+    }
+
 }
