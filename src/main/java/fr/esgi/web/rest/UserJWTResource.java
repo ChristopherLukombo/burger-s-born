@@ -1,9 +1,7 @@
 package fr.esgi.web.rest;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import fr.esgi.security.jwt.JWTConfigurer;
-import fr.esgi.security.jwt.TokenProvider;
-import fr.esgi.web.Login;
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -17,7 +15,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.validation.Valid;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+import fr.esgi.security.jwt.JWTConfigurer;
+import fr.esgi.security.jwt.TokenProvider;
+import fr.esgi.service.CustomerService;
+import fr.esgi.web.Login;
 
 /**
  * UserJWTController to authenticate users.
@@ -30,14 +33,18 @@ public class UserJWTResource {
     private final TokenProvider tokenProvider;
 
     private final AuthenticationManager authenticationManager;
-
+    
+    private final CustomerService customerService;
+    
     @Autowired
-    public UserJWTResource(TokenProvider tokenProvider, AuthenticationManager authenticationManager) {
-        this.tokenProvider = tokenProvider;
-        this.authenticationManager = authenticationManager;
-    }
+	public UserJWTResource(TokenProvider tokenProvider, AuthenticationManager authenticationManager,
+			CustomerService customerService) {
+		this.tokenProvider = tokenProvider;
+		this.authenticationManager = authenticationManager;
+		this.customerService = customerService;
+	}
 
-    /**
+	/**
      * Authenticate the user and return the token which identify him.
      * @param login
      * @return JWTToken
@@ -47,14 +54,15 @@ public class UserJWTResource {
 
         UsernamePasswordAuthenticationToken authenticationToken =
             new UsernamePasswordAuthenticationToken(login.getUsername(), login.getPassword());
-
+ 
         Authentication authentication = this.authenticationManager.authenticate(authenticationToken);
         SecurityContextHolder.getContext().setAuthentication(authentication);
         boolean rememberMe = (login.isRememberMe() == null) ? false : login.isRememberMe();
         String jwt = tokenProvider.createToken(authentication, rememberMe);
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.add(JWTConfigurer.AUTHORIZATION_HEADER, "Bearer " + jwt);
-        return new ResponseEntity<>(new JWTToken(jwt), httpHeaders, HttpStatus.OK);
+       
+        return new ResponseEntity<>(new JWTToken(jwt, customerService.findByUserName(login.getUsername())), httpHeaders, HttpStatus.OK);
     }
 
     /**
@@ -63,12 +71,14 @@ public class UserJWTResource {
     static class JWTToken {
 
         private String idToken;
+        private Long idCustomer;
 
-        JWTToken(String idToken) {
-            this.idToken = idToken;
-        }
+        JWTToken(String idToken, Long idCustomer) {
+			this.idToken = idToken;
+			this.idCustomer = idCustomer;
+		}
 
-        @JsonProperty("id_token")
+		@JsonProperty("id_token")
         String getIdToken() {
             return idToken;
         }
@@ -76,5 +86,14 @@ public class UserJWTResource {
         void setIdToken(String idToken) {
             this.idToken = idToken;
         }
+
+        @JsonProperty("id_customer")
+        Long getIdCustomer() {
+			return idCustomer;
+		}
+
+	    void setIdCustomer(Long idCustomer) {
+			this.idCustomer = idCustomer;
+		}
     }
 }

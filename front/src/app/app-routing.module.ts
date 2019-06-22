@@ -8,6 +8,7 @@ import { ProductComponent } from './product/product.component';
 import { RegisterComponent } from './register/register.component';
 import { ImporterComponent } from './importer/importer.component';
 import { StepOrderComponent } from './step-order/step-order.component';
+import { OrdersComponent } from './orders/orders.component';
 
 
 const routes: Routes = [
@@ -18,6 +19,7 @@ const routes: Routes = [
   {path: 'menu' , component: MenuComponent},
   {path: 'importer', component: ImporterComponent},
   {path: 'steporder' , component: StepOrderComponent},
+  {path: 'orders' , component: OrdersComponent},
   // {path: 'register', canActivate: [AuthGuard], component: RegisterComponent},
   {path: '', redirectTo: '/home', pathMatch: 'full'}
 ];

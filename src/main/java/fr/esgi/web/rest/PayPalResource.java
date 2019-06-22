@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -36,7 +37,7 @@ public class PayPalResource {
 	}
 
     /**
-     * POST  /commands : make a payment.
+     * POST  /make/payment : make a payment.
      * @param commandDTO
      * @return
      * @throws BurgerSTerminalException 
@@ -53,7 +54,7 @@ public class PayPalResource {
 	}
 
 	/**
-	 * POST  /commands : complete a payment.
+	 * POST  /complete/payment : complete a payment.
 	 * @param paypal
 	 * @return
 	 * @throws BurgerSTerminalException 
@@ -66,6 +67,22 @@ public class PayPalResource {
 					"Une erreur s'est produite dans la validation du paiement");
 		}
 		return ResponseEntity.ok().body(completedPayment.toString());
+	}
+	
+	/**
+	 * POST  /refund/payment : refund a user.
+	 * @param commandId
+	 * @return
+	 * @throws BurgerSTerminalException 
+	 */
+	@PostMapping("/refund/payment/{commandId}")
+	public ResponseEntity<Object> refundPayment(@PathVariable Long commandId) throws BurgerSTerminalException {
+		Map<String, Object> refundPayment = payPalService.refundPayment(commandId);
+		if (null == refundPayment) {
+			throw new BurgerSTerminalException(HttpStatus.INTERNAL_SERVER_ERROR.value(),
+					"Une erreur s'est produite lors du remboursement");
+		}
+		return ResponseEntity.ok().build();
 	}
 
 }

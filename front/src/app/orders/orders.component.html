@@ -1,0 +1,55 @@
+<h4>Les commandes</h4>
+<br>
+
+<!-- Messages -->
+<div class="alert alert-success" role="alert" *ngIf="successMessage != null">
+  {{successMessage}}
+</div>
+<div class="alert alert-danger" role="alert" *ngIf="errorMessage != null">
+  {{errorMessage}}
+</div>
+
+<table class="table table-striped" *ngIf="commands">
+  <thead>
+    <tr>
+      <th>Id</th>
+      <th>Date</th>
+      <th>Statut</th>
+      <th>Prix</th>
+      <th>Action</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let command of commands">
+      <td>{{command.id}}</td>
+      <td>{{command.date | date: 'dd/MM/yyyy'}}</td>
+      <td>{{mapStatus(command.orderStatus)}}</td>
+      <td>{{command.price | number : '1.2-2'}} €</td>
+      <td>
+        <button class="btn btn-danger" (click)="cancel(command.id)" *ngIf="isDisplay(command.date)">
+          Annuler
+        </button>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<nav aria-label="Page navigation example" *ngIf="commands != null">
+  <ul class="pagination justify-content-end">
+    <div style="width: 100%; margin-top: 8px;">
+      Nombre total de commandes : {{totalElements}}
+    </div>
+
+    <div style="display: inherit;" *ngIf="totalElements > 4">
+      <li class="page-item" [ngClass]="{'disabled' : selectedPage == 0}">
+        <button class="page-link" (click)="getAll(selectedPage-1)">Précédent</button>
+      </li>
+      <li class="page-item" [ngClass]="{'disabled' : selectedPage == page-1}" *ngFor="let page of pages">
+        <button class="page-link" (click)="getAll(page-1)">{{page}}</button>
+      </li>
+      <li class="page-item" [ngClass]="{'disabled' : selectedPage == pages[pages.length-1]-1}">
+        <button class="page-link" (click)="getAll(selectedPage+1)">Suivant</button>
+      </li>
+    </div>
+  </ul>
+</nav>

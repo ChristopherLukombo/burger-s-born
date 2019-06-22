@@ -17,8 +17,6 @@ public class CustomerDTO {
 
 	private String city;
 
-	private Long commandId;
-
 	private Long userId;
 
 	public CustomerDTO() {
@@ -30,7 +28,6 @@ public class CustomerDTO {
 		this.address = customer.getAddress();
 		this.zipCode = customer.getZipCode();
 		this.city = customer.getCity();
-		this.commandId = customer.getCommand().getId();
 		this.userId = customer.getUser().getId();
 	}
 
@@ -66,14 +63,6 @@ public class CustomerDTO {
 		this.city = city;
 	}
 
-	public Long getCommandId() {
-		return commandId;
-	}
-
-	public void setCommandId(Long commandId) {
-		this.commandId = commandId;
-	}
-
 	public Long getUserId() {
 		return userId;
 	}
@@ -83,32 +72,50 @@ public class CustomerDTO {
 	}
 
 	@Override
-	public boolean equals(Object o) {
-		if (this == o) return true;
-		if (o == null || getClass() != o.getClass()) return false;
-		CustomerDTO that = (CustomerDTO) o;
-		return zipCode == that.zipCode &&
-				Objects.equals(id, that.id) &&
-				Objects.equals(address, that.address) &&
-				Objects.equals(city, that.city) &&
-				Objects.equals(commandId, that.commandId) &&
-				Objects.equals(userId, that.userId);
+	public int hashCode() {
+		return Objects.hash(address, city, id, userId, zipCode);
 	}
 
 	@Override
-	public int hashCode() {
-		return Objects.hash(id, address, zipCode, city, commandId, userId);
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		CustomerDTO other = (CustomerDTO) obj;
+		return Objects.equals(address, other.address) && Objects.equals(city, other.city)
+				&& Objects.equals(id, other.id) && Objects.equals(userId, other.userId) && zipCode == other.zipCode;
 	}
 
 	@Override
 	public String toString() {
-		return "CustomerDTO{" +
-				"id=" + id +
-				", address='" + address + '\'' +
-				", zipCode=" + zipCode +
-				", city='" + city + '\'' +
-				", commandId=" + commandId +
-				", userId=" + userId +
-				'}';
+		StringBuilder builder = new StringBuilder();
+		builder.append("CustomerDTO [");
+		if (id != null) {
+			builder.append("id=");
+			builder.append(id);
+			builder.append(", ");
+		}
+		if (address != null) {
+			builder.append("address=");
+			builder.append(address);
+			builder.append(", ");
+		}
+		builder.append("zipCode=");
+		builder.append(zipCode);
+		builder.append(", ");
+		if (city != null) {
+			builder.append("city=");
+			builder.append(city);
+			builder.append(", ");
+		}
+		if (userId != null) {
+			builder.append("userId=");
+			builder.append(userId);
+		}
+		builder.append("]");
+		return builder.toString();
 	}
 }

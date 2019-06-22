@@ -23,6 +23,9 @@ public interface CommandMapper {
             @Mapping(source = "orderStatus", target = "orderStatus"),
             @Mapping(source = "date", target = "date"),
             @Mapping(source = "customer.id", target = "customerId"),
+            @Mapping(source = "paymentId", target = "paymentId"),
+            @Mapping(source = "price", target = "price"),
+            @Mapping(source = "saleId", target = "saleId"),
     })
     CommandDTO commandToCommandDTO(Command command);
 
