@@ -27,4 +27,10 @@ public interface MenuService {
     List<ProductDTO> findProductsByMenuId(Long id, String categoryName);
     
     List<ProductDTO> findProductsByCategoryName(String categoryName);
+    
+    /**
+     * Returns the four trends menus.
+     * @return the list of entities
+     */
+	List<MenuDTO> findAllTrendsMenus();
 }
