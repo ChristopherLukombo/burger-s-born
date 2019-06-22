@@ -24,8 +24,11 @@ public class CommandMapperDecorator implements CommandMapper {
 		commandDTO.setDate(command.getDate());
 		commandDTO.setCustomerId(commandCustomerId(command));
 		commandDTO.setPaymentId(command.getPaymentId());
+		commandDTO.setSaleId(command.getSaleId());
+		commandDTO.setPrice(command.getPrice());
 		commandDTO.setMenusDTO(getMenusDTO(command));
 		commandDTO.setProductsDTO(getProductDTO(command));
+		
 		return commandDTO;
 	}
 
@@ -95,6 +98,8 @@ public class CommandMapperDecorator implements CommandMapper {
 		command.setMenus(getMenus(commandDTO));
 		command.setProducts(getProducts(commandDTO));
 		command.setPaymentId(commandDTO.getPaymentId());
+		command.setSaleId(commandDTO.getSaleId());
+		command.setPrice(commandDTO.getPrice());
 		command.setCustomer(customer);
 		return command;
 	}

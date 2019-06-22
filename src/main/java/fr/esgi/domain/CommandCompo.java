@@ -17,16 +17,8 @@ public class CommandCompo implements Serializable {
 
 	@NotNull
 	@Column
-	private double price;
-
-	@NotNull
-	@Column
 	private String state;
 
-	@NotNull
-	@Column
-	private double quantity;
-	
     @Id
     @ManyToOne
 	private Command command;
@@ -47,28 +39,12 @@ public class CommandCompo implements Serializable {
 		this.id = id;
 	}
 
-	public double getPrice() {
-		return price;
-	}
-
-	public void setPrice(double price) {
-		this.price = price;
-	}
-
 	public String getState() {
 		return state;
 	}
 
 	public void setState(String state) {
 		this.state = state;
-	}
-
-	public double getQuantity() {
-		return quantity;
-	}
-
-	public void setQuantity(double quantity) {
-		this.quantity = quantity;
 	}
 
 	public Command getCommand() {
@@ -88,32 +64,48 @@ public class CommandCompo implements Serializable {
 	}
 
 	@Override
-	public boolean equals(Object o) {
-		if (this == o) return true;
-		if (o == null || getClass() != o.getClass()) return false;
-		CommandCompo that = (CommandCompo) o;
-		return Double.compare(that.price, price) == 0 &&
-				Double.compare(that.quantity, quantity) == 0 &&
-				Objects.equals(id, that.id) &&
-				Objects.equals(state, that.state) &&
-				Objects.equals(command, that.command) &&
-				Objects.equals(employee, that.employee);
+	public int hashCode() {
+		return Objects.hash(command, employee, id, state);
 	}
 
 	@Override
-	public int hashCode() {
-		return Objects.hash(id, price, state, quantity, command, employee);
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		CommandCompo other = (CommandCompo) obj;
+		return Objects.equals(command, other.command) && Objects.equals(employee, other.employee)
+				&& Objects.equals(id, other.id) && Objects.equals(state, other.state);
 	}
 
 	@Override
 	public String toString() {
-		return "CommandCompo{" +
-				"id=" + id +
-				", price=" + price +
-				", state='" + state + '\'' +
-				", quantity=" + quantity +
-				", command=" + command +
-				", employee=" + employee +
-				'}';
+		StringBuilder builder = new StringBuilder();
+		builder.append("CommandCompo [");
+		if (id != null) {
+			builder.append("id=");
+			builder.append(id);
+			builder.append(", ");
+		}
+		if (state != null) {
+			builder.append("state=");
+			builder.append(state);
+			builder.append(", ");
+		}
+		if (command != null) {
+			builder.append("command=");
+			builder.append(command);
+			builder.append(", ");
+		}
+		if (employee != null) {
+			builder.append("employee=");
+			builder.append(employee);
+		}
+		builder.append("]");
+		return builder.toString();
 	}
+	
 }

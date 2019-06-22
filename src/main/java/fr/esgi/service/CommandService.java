@@ -1,8 +1,9 @@
 package fr.esgi.service;
 
-import java.util.List;
 import java.util.Optional;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import fr.esgi.service.dto.CommandDTO;
@@ -46,11 +47,12 @@ public interface CommandService {
 	CommandDTO update(CommandDTO commandDTO);
 
 	/**
-	 * Get all the commands.
+	 * Get all the commands by customerId.
+	 * @param customerId 
 	 *
-	 * @return the list of entities
+	 * @return the page of entities
 	 */
-	List<CommandDTO> findAll();
+	Page<CommandDTO> findAllByCustomerId(Pageable pageable, Long customerId);
 
 	/**
 	 * Delete the "id" command.
