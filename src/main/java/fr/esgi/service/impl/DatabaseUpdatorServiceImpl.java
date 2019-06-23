@@ -10,6 +10,7 @@ import fr.esgi.service.dto.ProductDTO;
 import fr.esgi.service.mapper.ProductMapper;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.io.IOUtils;
 import org.aspectj.util.FileUtil;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -22,6 +23,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 
 @Service("DatabaseUpdatorService")
@@ -33,49 +36,32 @@ public class DatabaseUpdatorServiceImpl implements DatabaseUpdatorService {
      */
     private static Logger LOGGER = LoggerFactory.getLogger(DatabaseUpdatorService.class);
 
-    private ProductRepository productRepository;
-
-    private ProductMapper productMapper;
-
-    // Pas sur que ça soit necessaire du coup
-    // si on stocke pas dans un fichier
-    private final ConfigurationService configurationService;
-
-    private final ProductService productService;
-
     // Mettre l'annotation @Autowired au dessus du constructeur
-    
-    public DatabaseUpdatorServiceImpl(ConfigurationService configurationService, ProductService productService) {
-        this.configurationService = configurationService;
-        this.productService = productService;
-    }
+
+    public DatabaseUpdatorServiceImpl() { }
 
     // JavaDoc
     @Override
-    public JSONArray importFile(MultipartFile fileToImport, String fileFormat) {
-         // Tester la condition inverse pour propager une exception FAST et cela évite de retourner un null et réduit la compléxité
-    	 // throw new BurgerSTerminalException(HttpStatus.NOT_FOUND.value(), "Produits non trouvé");
-        if (fileFormat.equals(FilenameUtils.getExtension(fileToImport.getOriginalFilename())) && !fileToImport.isEmpty() ) {
-        	  // Pas besoin de stocker dans un répertoire
-            // La classe MultipartFile peut retourner un InputStream avec la méthode getInputStream tu peux lire le fichier ligne par ligne.
-        	// A discuter pour plus d'infos
-                File destinationFile = new File("C:\\tmp\\" + fileToImport.getOriginalFilename());
-                try {
-                    fileToImport.transferTo(destinationFile);
-                    String datas = FileUtils.readFileToString(destinationFile, "UTF-8");
-                    JSONArray objects = new JSONArray(datas);
+    public JSONArray importFile(MultipartFile fileToImport, String fileFormat) throws BurgerSTerminalException {
 
-                    return destinationFile.delete() ? objects : null;
+        if (fileFormat.isEmpty()) {
+            throw new BurgerSTerminalException(HttpStatus.BAD_REQUEST.value(), "Le fichier d'import est vide)");
+        }
 
-                } catch (IOException e) {
-                    LOGGER.debug("Error while importing file " + fileToImport.getOriginalFilename() +  " :  " + e.getMessage());
-                    // Supprimer le log et propager exception au lieu de loguer car quand l'exception est propagé elle sera automatiquement logué.
-                    return null;
-                }
-
+        if (!fileFormat.equals(FilenameUtils.getExtension(fileToImport.getOriginalFilename()))) {
+            throw new BurgerSTerminalException((HttpStatus.BAD_REQUEST.value()), "Format de fichier invalide");
         } else {
-            LOGGER.debug("Error while importing file " + fileToImport.getOriginalFilename() + " , wrong file format");
-            return null;
+
+            try {
+                InputStream targetStream = fileToImport.getInputStream();
+                String datas = IOUtils.toString(targetStream, StandardCharsets.UTF_8.name());
+                targetStream.close();
+
+                return new JSONArray(datas);
+            } catch (IOException e) {
+                throw new BurgerSTerminalException(HttpStatus.BAD_REQUEST.value(), "Erreur lors de la récupération du JSON");
+            }
+
         }
     }
 }

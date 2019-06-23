@@ -2,7 +2,7 @@ import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatDatepickerModule, MatDialogModule, MatInputModule, MatNativeDateModule, MatStepperModule } from '@angular/material';
+import { MatCheckboxModule, MatDatepickerModule, MatDialogModule, MatInputModule, MatNativeDateModule, MatStepperModule } from '@angular/material';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatSelectModule } from '@angular/material/select';
 import { BrowserModule } from '@angular/platform-browser';
@@ -29,6 +29,7 @@ import { AuthProviderService } from '../services/auth-provider.service';
 import { ServicesDataService } from '../services/services-data.service';
 import { StepOrderComponent } from '../step-order/step-order.component';
 import { OrdersComponent } from './../orders/orders.component';
+import { CreateMenuComponent } from '../create-menu/create-menu.component';
 
 describe('HeaderComponent', () => {
   let component: HeaderComponent;
@@ -51,6 +52,7 @@ describe('HeaderComponent', () => {
         HeaderComponent,
         MenuComponent,
         StepOrderComponent,
+        CreateMenuComponent,
         OrdersComponent
       ],
       imports: [
@@ -64,6 +66,7 @@ describe('HeaderComponent', () => {
         MatSelectModule,
         MatStepperModule,
         MatRadioModule,
+        MatCheckboxModule,
         BrowserAnimationsModule,
         FormsModule,
         MatDialogModule,

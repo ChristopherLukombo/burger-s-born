@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -180,10 +181,10 @@ public class MenuServiceImpl implements MenuService {
 	
 	@Transactional(readOnly = true)
 	@Override
-	public List<ProductDTO> findProductsByCategoryName(String categoryName) {
-		return productRepo.findAllByCategoryName(categoryName).stream()
-				.map(productMapper::productToProductDTO)
-				.collect(Collectors.toList());
+	public Page<ProductDTO> findProductsByCategoryName(Pageable pageable, String categoryName) {
+		LOGGER.debug("Request to find all products by categoryName: {}", categoryName);
+		return productRepo.findAllByCategoryName(pageable, categoryName)
+				.map(productMapper::productToProductDTO);
 	}
 
 	 /**
