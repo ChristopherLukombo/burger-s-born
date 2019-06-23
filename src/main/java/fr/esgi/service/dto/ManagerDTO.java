@@ -54,9 +54,18 @@ public class ManagerDTO {
 
 	@Override
 	public String toString() {
-		return "ManagerDTO{" +
-				"id=" + id +
-				", userId=" + userId +
-				'}';
+		StringBuilder builder = new StringBuilder();
+		builder.append("ManagerDTO [");
+		if (id != null) {
+			builder.append("id=");
+			builder.append(id);
+			builder.append(", ");
+		}
+		if (userId != null) {
+			builder.append("userId=");
+			builder.append(userId);
+		}
+		builder.append("]");
+		return builder.toString();
 	}
 }

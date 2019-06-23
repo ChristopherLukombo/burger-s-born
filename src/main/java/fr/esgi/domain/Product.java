@@ -146,16 +146,48 @@ public class Product implements Serializable {
 
 	@Override
 	public String toString() {
-		return "Product{" +
-				"id=" + id +
-				", name='" + name + '\'' +
-				", ingredients=" + ingredients +
-				", price=" + price +
-				", available=" + available +
-				", category=" + category +
-				", menus=" + menus +
-				", manager=" + manager +
-				", commands=" + commands +
-				'}';
+		StringBuilder builder = new StringBuilder();
+		builder.append("Product [");
+		if (id != null) {
+			builder.append("id=");
+			builder.append(id);
+			builder.append(", ");
+		}
+		if (name != null) {
+			builder.append("name=");
+			builder.append(name);
+			builder.append(", ");
+		}
+		if (ingredients != null) {
+			builder.append("ingredients=");
+			builder.append(ingredients);
+			builder.append(", ");
+		}
+		builder.append("price=");
+		builder.append(price);
+		builder.append(", available=");
+		builder.append(available);
+		builder.append(", ");
+		if (category != null) {
+			builder.append("category=");
+			builder.append(category);
+			builder.append(", ");
+		}
+		if (menus != null) {
+			builder.append("menus=");
+			builder.append(menus);
+			builder.append(", ");
+		}
+		if (manager != null) {
+			builder.append("manager=");
+			builder.append(manager);
+			builder.append(", ");
+		}
+		if (commands != null) {
+			builder.append("commands=");
+			builder.append(commands);
+		}
+		builder.append("]");
+		return builder.toString();
 	}
 }

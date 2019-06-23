@@ -27,4 +27,12 @@ public interface PayPalService {
 	 * @return status
 	 */
 	Map<String, Object> completePayment(Paypal paypal);
+	
+	/**
+	 * Refund a user.
+	 * @param commandId
+	 * @return status
+	 */
+	Map<String, Object> refundPayment(Long commandId);
+	
 }

@@ -1,11 +1,16 @@
 package fr.esgi.web.rest;
 
-import fr.esgi.config.Constants;
-import fr.esgi.config.ErrorMessage;
-import fr.esgi.exception.BurgerSTerminalException;
-import fr.esgi.service.UserService;
-import fr.esgi.service.dto.UserDTO;
-import fr.esgi.web.ManagedUser;
+import static fr.esgi.config.Utils.getLang;
+
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.Map;
+import java.util.Optional;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
+
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,17 +18,22 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.validation.Valid;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.Map;
-
-import static fr.esgi.config.Utils.getLang;
+import fr.esgi.config.Constants;
+import fr.esgi.config.ErrorMessage;
+import fr.esgi.exception.BurgerSTerminalException;
+import fr.esgi.service.UserService;
+import fr.esgi.service.dto.UserDTO;
+import fr.esgi.web.ManagedUser;
 
 /**
  * REST controller for managing the current user's account.
@@ -33,7 +43,9 @@ import static fr.esgi.config.Utils.getLang;
 @RequestMapping("/api")
 public class AccountResource {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(AccountResource.class);
+	private static final String FR = "fr";
+
+	private static final Logger LOGGER = LoggerFactory.getLogger(AccountResource.class);
 
     private final UserService userService;
 
@@ -57,7 +69,7 @@ public class AccountResource {
     @PostMapping("/register")
     public ResponseEntity<Object> registerAccount(
             @RequestBody @Valid ManagedUser managedUser,
-            @RequestParam(required = false, defaultValue = "fr") String lang
+            @RequestParam(required = false, defaultValue = FR) String lang
     ) throws BurgerSTerminalException, URISyntaxException {
         if (null != managedUser.getId()) {
             throw new BurgerSTerminalException(HttpStatus.BAD_REQUEST.value(),
@@ -101,7 +113,7 @@ public class AccountResource {
             this.userService.store(file, userId);
         } catch (Exception e) {
             throw new BurgerSTerminalException(HttpStatus.INTERNAL_SERVER_ERROR.value(),
-                    messageSource.getMessage(ErrorMessage.ERROR_FAIL_TO_UPLOAD, null, getLang("fr")) +
+                    messageSource.getMessage(ErrorMessage.ERROR_FAIL_TO_UPLOAD, null, getLang(FR)) +
                             file.getOriginalFilename(), e);
         }
         return ResponseEntity.ok()
@@ -115,8 +127,9 @@ public class AccountResource {
      * @return byte[]
      * @throws BurgerSTerminalException
      */
-    @GetMapping(value = "/users/imageURL/{pseudo}", produces = {
-    		"image/jpg", "image/gif", "image/png", "image/tif"
+    @GetMapping(value = "/users/imageURL/{pseudo}",
+    		produces = {
+    				"image/jpg", "image/gif", "image/png", "image/tif"
     })
     public ResponseEntity<byte[]> getImageURL(
     		final HttpServletResponse response,
@@ -151,6 +164,19 @@ public class AccountResource {
         LOGGER.debug("REST request to check if the current user is authenticated");
         return new ResponseEntity<>(request.getRemoteUser(), HttpStatus.OK);
     }
+    
+    /**
+     * Returns the current user.
+     */
+	@GetMapping("/currentUser")
+	public ResponseEntity<UserDTO> getCurrentUser() throws BurgerSTerminalException {
+ 		Optional<UserDTO> currentUser = userService.findCurrentUser();
+ 		if (currentUser.isPresent()) {
+ 			return ResponseEntity.ok().body(currentUser.get());
+ 		}
+ 		throw new BurgerSTerminalException(HttpStatus.INTERNAL_SERVER_ERROR.value(),
+				messageSource.getMessage(ErrorMessage.USER_DOES_NOT_EXISTS, null, getLang(FR)));
+	}
 
     private static boolean checkPasswordLength(String password) {
         return !StringUtils.isEmpty(password) &&

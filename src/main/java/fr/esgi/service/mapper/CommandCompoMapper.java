@@ -16,7 +16,6 @@ public interface CommandCompoMapper {
 
     @Mappings({
             @Mapping(source = "id", target = "id"),
-            @Mapping(source = "price", target = "price"),
             @Mapping(source = "state", target = "state"),
             @Mapping(source = "command.id", target = "commandId"),
             @Mapping(source = "employee.id", target = "employeeId"),

@@ -1,7 +1,7 @@
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatDialogModule, MatStepperModule, MatInputModule, MatNativeDateModule } from '@angular/material';
+import { MatCheckboxModule, MatDialogModule, MatInputModule, MatNativeDateModule, MatStepperModule } from '@angular/material';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatSelectModule } from '@angular/material/select';
@@ -18,16 +18,18 @@ import { AuthGuard } from './auth.guard';
 import { AuthComponent } from './auth/auth.component';
 import { DialogRedirectionComponent } from './dialog-redirection/dialog-redirection.component';
 import { DialogSuccessComponent } from './dialog-success/dialog-success.component';
+import { HeaderComponent } from './header/header.component';
 import { HomeComponent } from './home/home.component';
+import { ImporterComponent } from './importer/importer.component';
+import { MenuComponent } from './menu/menu.component';
 import { NavbarComponent } from './navbar/navbar.component';
+import { OrdersComponent } from './orders/orders.component';
 import { ProductComponent } from './product/product.component';
 import { RegisterComponent } from './register/register.component';
 import { AuthProviderService } from './services/auth-provider.service';
 import { ServicesDataService } from './services/services-data.service';
 import { StepOrderComponent } from './step-order/step-order.component';
-import { ImporterComponent } from './importer/importer.component';
-import { MenuComponent } from './menu/menu.component';
-import { HeaderComponent } from './header/header.component';
+import { CreateMenuComponent } from './create-menu/create-menu.component';
 
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http, 'assets/i18n/', '.json');
@@ -51,7 +53,9 @@ export function tokenGetter() {
     ImporterComponent,
     HeaderComponent,
     MenuComponent,
-    StepOrderComponent
+    StepOrderComponent,
+    CreateMenuComponent,
+    OrdersComponent
   ],
   exports: [
     DialogSuccessComponent,
@@ -74,6 +78,7 @@ export function tokenGetter() {
     MatNativeDateModule,
     MatSelectModule,
     MatStepperModule,
+    MatCheckboxModule,
     MatRadioModule,
     BrowserAnimationsModule,
     FormsModule,

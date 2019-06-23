@@ -6,6 +6,7 @@ export class Command {
         public id?: number,
         public orderStatus?: string,
         public date?: Date,
+        public price?: number,
         public customerId?: boolean,
         public menusDTO?: Array<Menu>,
         public productsDTO?: Array<Product>,

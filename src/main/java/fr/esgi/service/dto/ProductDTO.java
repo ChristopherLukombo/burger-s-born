@@ -99,13 +99,33 @@ public class ProductDTO {
 
 	@Override
 	public String toString() {
-		return "ProductDTO{" +
-				"id=" + id +
-				", name='" + name + '\'' +
-				", price=" + price +
-				", available=" + available +
-				", categoryId=" + categoryId +
-				", managerId=" + managerId +
-				'}';
+		StringBuilder builder = new StringBuilder();
+		builder.append("ProductDTO [");
+		if (id != null) {
+			builder.append("id=");
+			builder.append(id);
+			builder.append(", ");
+		}
+		if (name != null) {
+			builder.append("name=");
+			builder.append(name);
+			builder.append(", ");
+		}
+		builder.append("price=");
+		builder.append(price);
+		builder.append(", available=");
+		builder.append(available);
+		builder.append(", ");
+		if (categoryId != null) {
+			builder.append("categoryId=");
+			builder.append(categoryId);
+			builder.append(", ");
+		}
+		if (managerId != null) {
+			builder.append("managerId=");
+			builder.append(managerId);
+		}
+		builder.append("]");
+		return builder.toString();
 	}
 }
