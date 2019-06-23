@@ -6,6 +6,7 @@ import { Command } from '../../model/model.command';
 import { User } from '../../model/model.user';
 import { Paypal } from '../../model/model.paypal';
 import { AuthProviderService } from './auth-provider.service';
+import {Menu} from '../../model/model.menu';
 
 
 @Injectable()
@@ -15,7 +16,7 @@ export class ServicesDataService {
     constructor(private http: HttpClient, private authProviderService: AuthProviderService) { }
 
 
-    // Register
+    /******************************REGISTRER**********************************************************/
     save(user: User, lang: string): Observable<HttpResponse<Object>> {
         const params = new HttpParams().set('lang', lang);
         // let headers = new HttpHeaders().set('Content-Type', 'application/json');
@@ -53,13 +54,13 @@ export class ServicesDataService {
         return this.http.get(this.resourceUrl + '/users/imageURL/' + `${pseudo}`, { headers, responseType: 'blob' });
     }
 
-    // Product
-    public findAllProduct(indexPage: number): Observable<HttpResponse<Object>> {
+    /***************************************Product**********************************************************/
+    public findAllProduct(indexPage): Observable<HttpResponse<Object>> {
         return this.http.get<HttpResponse<Object>>(this.resourceUrl + '/product?page=' + indexPage + '&size=4', { observe: 'response' });
     }
 
-    // Menu
-    public findAllMenus(indexPage: number): Observable<HttpResponse<Object>> {
+    /*****************************************MENU**********************************************************/
+    public findAllMenus(indexPage): Observable<HttpResponse<Object>> {
         return this.http.get<HttpResponse<Object>>(this.resourceUrl + '/menu/all?page=' + indexPage + '&size=4', { observe: 'response' });
     }
 
@@ -68,6 +69,15 @@ export class ServicesDataService {
         return this.http.get<HttpResponse<Object>>(
             this.resourceUrl + '/menus/products/?categorieName=' + `${categorieName}` + '&id=' + `${id}`,
          {headers, observe: 'response' });
+    }
+
+    public registerMenu(menu: Menu, id: string, lang: string): Observable<HttpResponse<Object>> {
+        const params = new HttpParams();
+        params
+            .append('lang', lang)
+            .append('&id', id);
+       return this.http.post<HttpResponse<Object>>(this.resourceUrl + '/new/menu', menu, { params, observe: 'response' });
+
     }
 
     findProductsByCategoryName(indexPage: number, categorieName: string): Observable<HttpResponse<Object>> {

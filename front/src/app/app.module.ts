@@ -29,6 +29,7 @@ import { RegisterComponent } from './register/register.component';
 import { AuthProviderService } from './services/auth-provider.service';
 import { ServicesDataService } from './services/services-data.service';
 import { StepOrderComponent } from './step-order/step-order.component';
+import { CreateMenuComponent } from './create-menu/create-menu.component';
 
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http, 'assets/i18n/', '.json');
@@ -53,6 +54,7 @@ export function tokenGetter() {
     HeaderComponent,
     MenuComponent,
     StepOrderComponent,
+    CreateMenuComponent,
     OrdersComponent
   ],
   exports: [

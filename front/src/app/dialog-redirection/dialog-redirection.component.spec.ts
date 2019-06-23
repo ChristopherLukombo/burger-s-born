@@ -16,6 +16,7 @@ import { AppComponent } from '../app.component';
 import { HttpLoaderFactory } from '../app.module';
 import { AuthGuard } from '../auth.guard';
 import { AuthComponent } from '../auth/auth.component';
+import { CreateMenuComponent } from '../create-menu/create-menu.component';
 import { DialogRedirectionComponent } from '../dialog-redirection/dialog-redirection.component';
 import { DialogSuccessComponent } from '../dialog-success/dialog-success.component';
 import { HeaderComponent } from '../header/header.component';
@@ -52,6 +53,7 @@ describe('DialogRedirectionComponent', () => {
         HeaderComponent,
         MenuComponent,
         StepOrderComponent,
+        CreateMenuComponent,
         OrdersComponent
       ],
       imports: [

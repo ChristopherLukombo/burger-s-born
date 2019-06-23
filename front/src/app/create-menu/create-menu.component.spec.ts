@@ -23,17 +23,18 @@ import { HomeComponent } from '../home/home.component';
 import { ImporterComponent } from '../importer/importer.component';
 import { MenuComponent } from '../menu/menu.component';
 import { NavbarComponent } from '../navbar/navbar.component';
+import { OrdersComponent } from '../orders/orders.component';
 import { ProductComponent } from '../product/product.component';
 import { RegisterComponent } from '../register/register.component';
 import { AuthProviderService } from '../services/auth-provider.service';
 import { ServicesDataService } from '../services/services-data.service';
 import { StepOrderComponent } from '../step-order/step-order.component';
-import { OrdersComponent } from './../orders/orders.component';
 import { CreateMenuComponent } from '../create-menu/create-menu.component';
 
-describe('MenuComponent', () => {
-  let component: MenuComponent;
-  let fixture: ComponentFixture<MenuComponent>;
+describe('CreateMenuComponent', () => {
+  let component: CreateMenuComponent;
+  let fixture: ComponentFixture<CreateMenuComponent>;
+
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -105,7 +106,7 @@ describe('MenuComponent', () => {
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(MenuComponent);
+    fixture = TestBed.createComponent(CreateMenuComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

@@ -29,6 +29,7 @@ import { RegisterComponent } from '../register/register.component';
 import { AuthProviderService } from '../services/auth-provider.service';
 import { ServicesDataService } from '../services/services-data.service';
 import { StepOrderComponent } from '../step-order/step-order.component';
+import { CreateMenuComponent } from '../create-menu/create-menu.component';
 
 
 describe('ProductComponent', () => {
@@ -52,6 +53,7 @@ describe('ProductComponent', () => {
         HeaderComponent,
         MenuComponent,
         StepOrderComponent,
+        CreateMenuComponent,
         OrdersComponent
       ],
       imports: [

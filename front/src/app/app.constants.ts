@@ -9,6 +9,12 @@ export class AppConstants {
     public static readonly CALL_SERVICE = 'Call service save';
     public static readonly CALL_SERVICE_IMPORT = 'Call service import for';
 
+    /*********MENU*********/
+
+    public static readonly MENU_SAVE_SUCCESSFULLY = 'Menu saved successfully !';
+    public static readonly MENU_HASNT_BEEN_SAVED = 'Menu hasn\'t been saved, error: ';
+
+
     private AppConstants() {
         // Private default constructor needed.
     }
