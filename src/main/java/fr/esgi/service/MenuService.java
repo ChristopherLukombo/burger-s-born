@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import fr.esgi.service.dto.MenuDTO;
@@ -26,7 +27,7 @@ public interface MenuService {
 	
     List<ProductDTO> findProductsByMenuId(Long id, String categoryName);
     
-    List<ProductDTO> findProductsByCategoryName(String categoryName);
+    Page<ProductDTO> findProductsByCategoryName(Pageable pageable, String categoryName);
     
     /**
      * Returns the four trends menus.

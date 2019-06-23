@@ -9,6 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -141,9 +142,16 @@ public class MenuResource {
 	}
 	
 	@GetMapping("/products/category")
-	public ResponseEntity<List<ProductDTO>> findProductsByCategoryName(@RequestParam  String categorieName) {
-		List<ProductDTO> menus = menuService.findProductsByCategoryName(categorieName);
-		return ResponseEntity.ok(menus);
+	public ResponseEntity<Page<ProductDTO>> findProductsByCategoryName(
+			@RequestParam("page") int page,
+			@RequestParam("size") int size,
+			@RequestParam("categorieName") String categorieName) throws BurgerSTerminalException {
+		Page<ProductDTO> products = menuService.findProductsByCategoryName(PageRequest.of(page, size), categorieName);
+		if (products.isEmpty()) {
+			throw new BurgerSTerminalException(
+					HttpStatus.NOT_FOUND.value(), "Il n'a pas de produits.");
+		}
+		return ResponseEntity.ok(products);
 	}
 	
 	/**
@@ -158,7 +166,7 @@ public class MenuResource {
 		List<MenuDTO> menusDTO = menuService.findAllTrendsMenus();
 		if (menusDTO.isEmpty()) {
 			throw new BurgerSTerminalException(
-					HttpStatus.NOT_FOUND.value(), "There are no menus.");
+					HttpStatus.NOT_FOUND.value(), "Il n'y a pas de menus.");
 		}
 		return ResponseEntity.ok(menusDTO);
 	}

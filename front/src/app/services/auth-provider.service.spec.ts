@@ -2,7 +2,7 @@ import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatDatepickerModule, MatDialogModule, MatInputModule, MatNativeDateModule, MatStepperModule } from '@angular/material';
+import { MatCheckboxModule, MatDatepickerModule, MatDialogModule, MatInputModule, MatNativeDateModule, MatStepperModule } from '@angular/material';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatSelectModule } from '@angular/material/select';
 import { BrowserModule } from '@angular/platform-browser';
@@ -60,6 +60,7 @@ describe('AuthProviderService', () => {
       MatSelectModule,
       MatStepperModule,
       MatRadioModule,
+      MatCheckboxModule,
       BrowserAnimationsModule,
       FormsModule,
       MatDialogModule,
@@ -95,7 +96,7 @@ describe('AuthProviderService', () => {
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
   }));
 
-  it('should be created 1', () => {
+  it('should be created', () => {
     const service: AuthProviderService = TestBed.get(AuthProviderService);
     expect(service).toBeTruthy();
   });
