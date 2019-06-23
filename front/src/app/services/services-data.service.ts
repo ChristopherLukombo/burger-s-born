@@ -70,10 +70,10 @@ export class ServicesDataService {
          {headers, observe: 'response' });
     }
 
-    findProductsByCategoryName(categorieName: string): Observable<HttpResponse<Object>> {
+    findProductsByCategoryName(indexPage: number, categorieName: string): Observable<HttpResponse<Object>> {
         const headers = new HttpHeaders({ 'Authorization': 'Bearer ' + this.authProviderService.getToken() });
         return this.http.get<HttpResponse<Object>>(
-            this.resourceUrl + '/products/category?categorieName=' + `${categorieName}`,
+            this.resourceUrl + '/products/category?page=' + `${indexPage}` + '&size=4&categorieName=' + `${categorieName}`,
          {headers, observe: 'response' });
     }
 

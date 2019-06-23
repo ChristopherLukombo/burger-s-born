@@ -5,6 +5,7 @@ export class Product {
         public name?: string,
         public price?: number,
         public categoryId?: number,
-        public managerId?: number
+        public managerId?: number,
+        public isSelected?: boolean
     ) {}
 }

@@ -31,9 +31,16 @@ export class StepOrderComponent implements OnInit {
   successMessage: string;
   menus;
 
+  totalElements;
+  pages;
+  pages2;
+  selectedPage = 0;
+
+  selectedPage2 = 0;
+
   see = false;
 
-  products;
+  products: Array<Product>;
 
   active_fish: string;
   menuId: number;
@@ -44,6 +51,8 @@ export class StepOrderComponent implements OnInit {
   dessert;
 
   platSelected: Product;
+
+  productsSelected: Array<Product> = [];
 
   constructor(
     private _formBuilder: FormBuilder,
@@ -61,7 +70,7 @@ export class StepOrderComponent implements OnInit {
     this.secondFormGroup = this._formBuilder.group({
       secondCtrl: [null]
     });
-    this.findAll();
+    this.findAll(0);
   }
 
   get f() { return this.firstFormGroup.controls; }
@@ -73,11 +82,14 @@ export class StepOrderComponent implements OnInit {
     });
   }
 
-  findAll() {
-    this.servicesDataService.findAllMenus(0)
+  findAll(indexPage) {
+    this.servicesDataService.findAllMenus(indexPage)
       .subscribe(data => {
-        this.menus = data.body['content'];
         this.logger.log(this.menus);
+        this.menus = data.body['content'];
+        this.totalElements = data.body['totalElements'];
+        this.pages = Array(data.body['totalPages']).fill(0).map((x, i) => i + 1);
+        this.selectedPage = indexPage;
       }, err => {
         if (err instanceof HttpErrorResponse) {
           if (403 === err.status) {
@@ -103,15 +115,15 @@ export class StepOrderComponent implements OnInit {
     this.servicesDataService.findAllProductBymenuId('plat', menu.id)
       .subscribe(data => {
         this.logger.log(data.body);
-        this.products = data.body;
+        this.products = data.body as Array<Product>;
       }, err => {
-        this.logger.log(err);
+        this.logger.error(err);
       });
   }
 
   validateProduct(stepper: MatStepper) {
-
-    if (this.firstFormGroup.get('firstCtrl').value === '') {
+    if (this.firstFormGroup.get('firstCtrl').value === '' ||
+      this.firstFormGroup.get('firstCtrl').value === null) {
       return;
     }
 
@@ -122,25 +134,32 @@ export class StepOrderComponent implements OnInit {
       }
     }
 
-      this.servicesDataService.findProductsByCategoryName('dessert')
-      .subscribe(data => {
-        // TODO Récupérer les frites
-        // this.firstFormGroup.get('firstCtrl').value;
-        stepper.next();
-        this.products = data.body as Array<Product>;
-      }, err => {
-        console.log(err);
-      });
+      this.findAllProductsByCategoryName(stepper, true, 0);
   }
 
 
+  private findAllProductsByCategoryName(stepper: MatStepper, next: boolean, indexPage: number) {
+    this.servicesDataService.findProductsByCategoryName(indexPage, 'dessert')
+      .subscribe(data => {
+
+        // TODO Récupérer les frites
+        if (true === next) {
+          stepper.next();
+        }
+
+        // this.products = data.body as Array<Product>;
+        this.products = data.body['content'];
+        this.totalElements = data.body['totalElements'];
+        this.pages2 = Array(data.body['totalPages']).fill(0).map((x, i) => i + 1);
+        this.selectedPage2 = indexPage;
+      }, err => {
+        this.logger.error(err);
+      });
+  }
+
   takeDessert() {
-    const id = +this.secondFormGroup.get('secondCtrl').value;
-    for (let i = 0; i < this.products.length; i++) {
-      if (this.products[i].id === id) {
-        this.desserts.push(this.products[i]);
-        break;
-      }
+    for (let i = 0; i < this.productsSelected.length; i++) {
+      this.desserts.push(this.productsSelected[i]);
     }
   }
 
@@ -173,7 +192,7 @@ export class StepOrderComponent implements OnInit {
           this.openDialogRedirection();
         }
       }, error => {
-        console.error(error);
+        this.logger.error(error);
       });
 
   }
@@ -188,4 +207,8 @@ export class StepOrderComponent implements OnInit {
     );
   }
 
+  getCheckboxes() {
+    this.productsSelected = this.products.filter(x => x.isSelected === true)
+    .map(x => x);
+  }
 }
