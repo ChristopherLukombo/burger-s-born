@@ -39,9 +39,27 @@
               </tr>
             </tbody>
           </table>
-          <div style="text-align: right;" *ngIf="menus != null">
-            Nombre total de produits : {{menus.length}}
-          </div>
+
+          <nav aria-label="Page navigation example" *ngIf="menus != null && !see">
+            <ul class="pagination justify-content-end">
+              <div style="width: 100%; margin-top: 8px;">
+                Nombre total de menu : {{totalElements}}
+              </div>
+
+              <div style="display: inherit;" *ngIf="totalElements > 4">
+                <li class="page-item" [ngClass]="{'disabled' : selectedPage == 0}">
+                  <button class="page-link" (click)="findAll(selectedPage-1)">Précédent</button>
+                </li>
+                <li class="page-item" [ngClass]="{'disabled' : selectedPage == page-1}" *ngFor="let page of pages">
+                  <button class="page-link" (click)="findAll(page-1)">{{page}}</button>
+                </li>
+                <li class="page-item" [ngClass]="{'disabled' : selectedPage == pages[pages.length-1]-1}">
+                  <button class="page-link" (click)="findAll(selectedPage+1)">Suivant</button>
+                </li>
+              </div>
+
+            </ul>
+          </nav>
 
           <div *ngIf="see">
             <table class="table table-striped">
@@ -50,7 +68,7 @@
                   <th>id</th>
                   <th>Name</th>
                   <th>Prix</th>
-                  <th>Actions</th>
+                  <th>Action</th>
                 </tr>
               </thead>
               <tbody>
@@ -65,8 +83,9 @@
               </tbody>
             </table>
             <div>
-                <button class="btn btn-danger" mat-button (click)="validateProduct(stepper)">valider le produit</button>
-                <br/><br/>
+              <button class="btn btn-danger" mat-button (click)="validateProduct(stepper)">Valider la sélection du
+                produit</button>
+              <br /><br />
             </div>
 
           </div>
@@ -81,7 +100,7 @@
 
     </form>
   </mat-step>
-    <!-- Desserts -->
+  <!-- Desserts -->
   <mat-step [stepControl]="secondFormGroup" [editable]="isEditable">
     <form [formGroup]="secondFormGroup">
       <ng-template matStepLabel>Desserts</ng-template>
@@ -91,24 +110,46 @@
             <th>id</th>
             <th>Name</th>
             <th>Prix</th>
-            <th>Actions</th>
+            <th>Action</th>
           </tr>
         </thead>
         <tbody>
-          <tr *ngFor="let product of products">
+          <tr *ngFor="let product of products; let i = index">
             <td>{{product.id}}</td>
             <td>{{product.name}}</td>
             <td>{{product.price | number : '1.2-2'}} €</td>
             <td>
-              <input type="radio" value="{{product.id}}" formControlName="secondCtrl">
+              <mat-checkbox value="{{product.id}}" [(ngModel)]="product.isSelected"
+              formControlName="secondCtrl" (change)="getCheckboxes()"></mat-checkbox>
             </td>
           </tr>
         </tbody>
       </table>
 
+      <nav aria-label="Page navigation example" *ngIf="products != null">
+        <ul class="pagination justify-content-end">
+            <div style="width: 100%; margin-top: 8px;">
+                Nombre total de produits : {{totalElements}}
+            </div>
+
+            <div style="display: inherit;" *ngIf="totalElements > 4">
+                <li class="page-item" [ngClass]="{'disabled' : selectedPage2 == 0}">
+                    <button class="page-link" (click)="findAllProductsByCategoryName(stepper, false, selectedPage2 - 1)">Précédent</button>
+                </li>
+                <li class="page-item" [ngClass]="{'disabled' : selectedPage2 == page2-1}" *ngFor="let page2 of pages2">
+                    <button class="page-link" (click)="findAllProductsByCategoryName(stepper, false, page2-1)">{{page2}}</button>
+                </li>
+                <li class="page-item" [ngClass]="{'disabled' : selectedPage2 == pages2[pages2.length-1]-1}">
+                    <button class="page-link" (click)="findAllProductsByCategoryName(stepper, false, selectedPage2 + 1)">Suivant</button>
+                </li>
+            </div>
+
+        </ul>
+    </nav>
+
       <div>
-        <button mat-button matStepperPrevious>Back</button>
-        <button mat-button matStepperNext (click)="takeDessert()">Next</button>
+        <button mat-button matStepperPrevious>Précédent</button>
+        <button mat-button matStepperNext (click)="takeDessert()">Suivant</button>
       </div>
     </form>
   </mat-step>
@@ -117,11 +158,12 @@
     <ng-template matStepLabel>Paiement</ng-template>
 
     <button class="btn btn-danger" (click)="createPayment()">Payer avec PayPal</button>
-    <br/><br/>
+    <br /><br />
     <div>
       <button class="btn btn-danger" mat-button matStepperPrevious>Précédent</button>
-      <br/><br/>
-      <button class="btn btn-danger" mat-button (click)="firstFormGroup.reset();stepper.reset();this.see = false;">Reset</button>
+      <br /><br />
+      <button class="btn btn-danger" mat-button
+        (click)="firstFormGroup.reset();stepper.reset();this.see = false;">Reset</button>
     </div>
   </mat-step>
 </mat-horizontal-stepper>

@@ -65,12 +65,25 @@ public class EmployeeDTO {
         return Objects.hash(id, hiringDate, userId);
     }
 
-    @Override
-    public String toString() {
-        return "EmployeeDTO{" +
-                "id=" + id +
-                ", hiringDate=" + hiringDate +
-                ", userId=" + userId +
-                '}';
-    }
+	@Override
+	public String toString() {
+		StringBuilder builder = new StringBuilder();
+		builder.append("EmployeeDTO [");
+		if (id != null) {
+			builder.append("id=");
+			builder.append(id);
+			builder.append(", ");
+		}
+		if (hiringDate != null) {
+			builder.append("hiringDate=");
+			builder.append(hiringDate);
+			builder.append(", ");
+		}
+		if (userId != null) {
+			builder.append("userId=");
+			builder.append(userId);
+		}
+		builder.append("]");
+		return builder.toString();
+	}
 }

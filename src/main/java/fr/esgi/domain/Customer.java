@@ -1,14 +1,17 @@
 package fr.esgi.domain;
 
 import java.io.Serializable;
+import java.util.List;
 import java.util.Objects;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.validation.constraints.Size;
 
 @Entity
@@ -30,8 +33,8 @@ public class Customer implements Serializable {
 	@Column(name = "city", length = 150)
 	private String city;
 
-	@ManyToOne
-	private Command command;
+	@OneToMany(fetch = FetchType.LAZY)
+	private List<Command> commands;
 
 	@ManyToOne
 	private User user;
@@ -72,12 +75,12 @@ public class Customer implements Serializable {
 		this.city = city;
 	}
 
-	public Command getCommand() {
-		return command;
+	public List<Command> getCommands() {
+		return commands;
 	}
 
-	public void setCommand(Command command) {
-		this.command = command;
+	public void setCommands(List<Command> commands) {
+		this.commands = commands;
 	}
 
 	public User getUser() {
@@ -89,32 +92,56 @@ public class Customer implements Serializable {
 	}
 
 	@Override
-	public boolean equals(Object o) {
-		if (this == o) return true;
-		if (o == null || getClass() != o.getClass()) return false;
-		Customer customer = (Customer) o;
-		return zipCode == customer.zipCode &&
-				Objects.equals(id, customer.id) &&
-				Objects.equals(address, customer.address) &&
-				Objects.equals(city, customer.city) &&
-				Objects.equals(command, customer.command) &&
-				Objects.equals(user, customer.user);
+	public int hashCode() {
+		return Objects.hash(address, city, commands, id, user, zipCode);
 	}
 
 	@Override
-	public int hashCode() {
-		return Objects.hash(id, address, zipCode, city, command, user);
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Customer other = (Customer) obj;
+		return Objects.equals(address, other.address) && Objects.equals(city, other.city)
+				&& Objects.equals(commands, other.commands) && Objects.equals(id, other.id)
+				&& Objects.equals(user, other.user) && zipCode == other.zipCode;
 	}
 
 	@Override
 	public String toString() {
-		return "Customer{" +
-				"id=" + id +
-				", address='" + address + '\'' +
-				", zipCode=" + zipCode +
-				", city='" + city + '\'' +
-				", command=" + command +
-				", user=" + user +
-				'}';
+		StringBuilder builder = new StringBuilder();
+		builder.append("Customer [");
+		if (id != null) {
+			builder.append("id=");
+			builder.append(id);
+			builder.append(", ");
+		}
+		if (address != null) {
+			builder.append("address=");
+			builder.append(address);
+			builder.append(", ");
+		}
+		builder.append("zipCode=");
+		builder.append(zipCode);
+		builder.append(", ");
+		if (city != null) {
+			builder.append("city=");
+			builder.append(city);
+			builder.append(", ");
+		}
+		if (commands != null) {
+			builder.append("commands=");
+			builder.append(commands);
+			builder.append(", ");
+		}
+		if (user != null) {
+			builder.append("user=");
+			builder.append(user);
+		}
+		builder.append("]");
+		return builder.toString();
 	}
 }

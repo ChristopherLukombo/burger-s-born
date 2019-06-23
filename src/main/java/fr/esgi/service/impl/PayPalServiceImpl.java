@@ -1,5 +1,8 @@
 package fr.esgi.service.impl;
 
+import java.math.BigDecimal;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -21,6 +24,9 @@ import com.paypal.api.payments.Payer;
 import com.paypal.api.payments.Payment;
 import com.paypal.api.payments.PaymentExecution;
 import com.paypal.api.payments.RedirectUrls;
+import com.paypal.api.payments.Refund;
+import com.paypal.api.payments.RefundRequest;
+import com.paypal.api.payments.Sale;
 import com.paypal.api.payments.Transaction;
 import com.paypal.base.rest.APIContext;
 import com.paypal.base.rest.PayPalRESTException;
@@ -72,15 +78,15 @@ public class PayPalServiceImpl implements PayPalService {
 		Payment payment = getPayment(Arrays.asList(createTransaction(commandDTO)), payer);
 		payment.setRedirectUrls(getRedirectUrls());
 		try {
-			APIContext context = new APIContext(
-					configurationService.getPaypalClientId(),
-					configurationService.getPaypalClientSecret(), Constants.SANDBOX);
+			APIContext context = getApiContext();
 			Payment createdPayment = payment.create(context);
 			if (null != createdPayment) {
 				response.put(Constants.STATUS, Constants.SUCCESS);
 				response.put(Constants.REDIRECT_URL, getRedirectUrl(createdPayment));
 				commandDTO.setOrderStatus(Constants.WAITTING);
 				commandDTO.setPaymentId(createdPayment.getId());
+				Command command = setToCommand(commandDTO);
+				commandDTO.setPrice(BigDecimal.valueOf((getPrice(command.getProducts(), command.getMenus()))));
 				CommandDTO result = commandService.save(commandDTO);
 				if (null != result) {
 					response.put(Constants.WAITTING, getRedirectUrl(createdPayment));
@@ -94,13 +100,17 @@ public class PayPalServiceImpl implements PayPalService {
 
 	private Transaction createTransaction(CommandDTO commandDTO) {
 		ItemList itemList = new ItemList();
-		Command command = commandMapper.commandDTOToCommand(commandDTO);
+		Command command = setToCommand(commandDTO);
 		List<Item> items = getItems(command);
 		itemList.setItems(items);
 		Double price = getPrice(command.getProducts(), command.getMenus());
 		Details details = getDetails((price != null) ? price : 0);
 		Amount amount = getAmount(details, price);
 		return getTransaction(itemList, amount);
+	}
+
+	private Command setToCommand(CommandDTO commandDTO) {
+		return commandMapper.commandDTOToCommand(commandDTO);
 	}
 
 	private String getRedirectUrl(Payment createdPayment) {
@@ -226,13 +236,11 @@ public class PayPalServiceImpl implements PayPalService {
 
 		Payment payment = getPayment(paypal);
 		try {
-			APIContext context = new APIContext(
-					configurationService.getPaypalClientId(),
-					configurationService.getPaypalClientSecret(), Constants.SANDBOX);
+			APIContext context = getApiContext();
 			PaymentExecution paymentExecution = getPaymentExecution(paypal);
 			Payment createdPayment = payment.execute(context, paymentExecution);
 			if (null != createdPayment) {
-				setStatusCommand(paypal);
+				setStatusCommand(paypal, createdPayment);
 				response.put(Constants.STATUS, Constants.SUCCESS);
 				response.put(Constants.PAYMENT, createdPayment);
 			}
@@ -242,24 +250,70 @@ public class PayPalServiceImpl implements PayPalService {
 		return response;
 	}
 
+	private APIContext getApiContext() {
+		return new APIContext(
+				configurationService.getPaypalClientId(),
+				configurationService.getPaypalClientSecret(), Constants.SANDBOX);
+	}
+
 	private Payment getPayment(Paypal paypal) {
 		Payment payment = new Payment();
 		payment.setId(paypal.getPaymentId());
 		return payment;
 	}
 
-	private PaymentExecution getPaymentExecution(Paypal req) {
+	private PaymentExecution getPaymentExecution(Paypal paypal) {
 		PaymentExecution paymentExecution = new PaymentExecution();
-		paymentExecution.setPayerId(req.getPayerID());
+		paymentExecution.setPayerId(paypal.getPayerID());
 		return paymentExecution;
 	}
 
-	private void setStatusCommand(Paypal paypal) {
+	private void setStatusCommand(Paypal paypal, Payment payment) {
 		Optional<CommandDTO> result = commandService.findByPaymentId(paypal.getPaymentId());
 		if (result.isPresent()) {
 			CommandDTO commandDTO = result.get();
 			commandDTO.setOrderStatus(Constants.PAID);
+			commandDTO.setDate(ZonedDateTime.now(ZoneId.of("Europe/Paris")));
+			commandDTO.setSaleId(payment.getTransactions().get(0).getRelatedResources().get(0).getSale().getId());
+			commandDTO.setCustomerId(commandDTO.getCustomerId());
 			commandService.update(commandDTO);
 		}
+	}
+
+	/**
+	 * Refund a user.
+	 * @param commandId
+	 * @return status
+	 */
+	@Override
+	public Map<String, Object> refundPayment(Long commandId) {
+		Map<String, Object> response = new HashMap<>();
+		Optional<CommandDTO> commandDTO = commandService.findOne(commandId);
+		if (commandDTO.isPresent()) {
+			Command command = setToCommand(commandDTO.get());
+			APIContext context = getApiContext();
+			
+			Refund refund = new Refund();
+			
+			Sale sale = new Sale();
+			sale.setId(command.getSaleId());
+
+			Amount amount = new Amount();
+			amount.setTotal(String.valueOf(command.getPrice()));
+			amount.setCurrency(Constants.EUR);
+			refund.setAmount(amount);
+
+			RefundRequest refundRequest = new RefundRequest();
+
+			try {
+				sale.refund(context, refundRequest);
+				commandService.delete(commandId);
+				response.put(Constants.STATUS, Constants.SUCCESS);
+			} catch (PayPalRESTException e) {
+				LOGGER.error(e.getDetails().toString(), e);
+			}
+		}
+
+		return response;
 	}
 }

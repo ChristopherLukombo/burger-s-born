@@ -82,11 +82,28 @@ public class Employee implements Serializable {
 
 	@Override
 	public String toString() {
-		return "Employee{" +
-				"id=" + id +
-				", hiringDate=" + hiringDate +
-				", commandCompo=" + commandCompo +
-				", user=" + user +
-				'}';
+		StringBuilder builder = new StringBuilder();
+		builder.append("Employee [");
+		if (id != null) {
+			builder.append("id=");
+			builder.append(id);
+			builder.append(", ");
+		}
+		if (hiringDate != null) {
+			builder.append("hiringDate=");
+			builder.append(hiringDate);
+			builder.append(", ");
+		}
+		if (commandCompo != null) {
+			builder.append("commandCompo=");
+			builder.append(commandCompo);
+			builder.append(", ");
+		}
+		if (user != null) {
+			builder.append("user=");
+			builder.append(user);
+		}
+		builder.append("]");
+		return builder.toString();
 	}
 }

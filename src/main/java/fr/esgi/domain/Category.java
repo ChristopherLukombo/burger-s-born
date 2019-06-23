@@ -78,10 +78,23 @@ public class Category implements Serializable {
 
 	@Override
 	public String toString() {
-		return "Category{" +
-				"id=" + id +
-				", name='" + name + '\'' +
-				", products=" + products +
-				'}';
+		StringBuilder builder = new StringBuilder();
+		builder.append("Category [");
+		if (id != null) {
+			builder.append("id=");
+			builder.append(id);
+			builder.append(", ");
+		}
+		if (name != null) {
+			builder.append("name=");
+			builder.append(name);
+			builder.append(", ");
+		}
+		if (products != null) {
+			builder.append("products=");
+			builder.append(products);
+		}
+		builder.append("]");
+		return builder.toString();
 	}
 }

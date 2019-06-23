@@ -1,14 +1,22 @@
 package fr.esgi.domain;
 
 
-import javax.persistence.*;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
-
 import java.io.Serializable;
-import java.time.LocalDate;
+import java.math.BigDecimal;
+import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Objects;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 @Entity
 public class Command implements Serializable {
@@ -26,21 +34,25 @@ public class Command implements Serializable {
 
 	@NotNull
 	@Column(name = "date")
-	private LocalDate date;
+	private ZonedDateTime date;
 	
 	@ManyToMany(targetEntity = Product.class)
 	private List<Product> products;
 
-	@OneToOne(mappedBy = "command")
+	@OneToOne	
 	private Customer customer;
 	
     @OneToMany(mappedBy = "command")
 	private List<CommandCompo> commandCompos;
 
-	@ManyToMany(mappedBy = "commands")
+	@ManyToMany
 	private List<Menu> menus;
 	
 	private String paymentId;
+	
+	private BigDecimal price;
+	
+	private String saleId;
 
 	public Command() {
 		// Empty constructor needed for Hibernate.
@@ -62,11 +74,11 @@ public class Command implements Serializable {
 		this.orderStatus = orderStatus;
 	}
 
-	public LocalDate getDate() {
+	public ZonedDateTime getDate() {
 		return date;
 	}
 
-	public void setDate(LocalDate date) {
+	public void setDate(ZonedDateTime date) {
 		this.date = date;
 	}
 
@@ -110,9 +122,25 @@ public class Command implements Serializable {
 		this.paymentId = paymentId;
 	}
 
+	public BigDecimal getPrice() {
+		return price;
+	}
+
+	public String getSaleId() {
+		return saleId;
+	}
+
+	public void setSaleId(String saleId) {
+		this.saleId = saleId;
+	}
+
+	public void setPrice(BigDecimal price) {
+		this.price = price;
+	}
+
 	@Override
 	public int hashCode() {
-		return Objects.hash(commandCompos, customer, date, id, menus, orderStatus, paymentId, products);
+		return Objects.hash(commandCompos, customer, date, id, menus, orderStatus, paymentId, price, products, saleId);
 	}
 
 	@Override
@@ -127,7 +155,8 @@ public class Command implements Serializable {
 		return Objects.equals(commandCompos, other.commandCompos) && Objects.equals(customer, other.customer)
 				&& Objects.equals(date, other.date) && Objects.equals(id, other.id)
 				&& Objects.equals(menus, other.menus) && Objects.equals(orderStatus, other.orderStatus)
-				&& Objects.equals(paymentId, other.paymentId) && Objects.equals(products, other.products);
+				&& Objects.equals(paymentId, other.paymentId) && Objects.equals(price, other.price)
+				&& Objects.equals(products, other.products) && Objects.equals(saleId, other.saleId);
 	}
 
 	@Override
@@ -172,6 +201,16 @@ public class Command implements Serializable {
 		if (paymentId != null) {
 			builder.append("paymentId=");
 			builder.append(paymentId);
+			builder.append(", ");
+		}
+		if (price != null) {
+			builder.append("price=");
+			builder.append(price);
+			builder.append(", ");
+		}
+		if (saleId != null) {
+			builder.append("saleId=");
+			builder.append(saleId);
 		}
 		builder.append("]");
 		return builder.toString();

@@ -12,9 +12,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import fr.esgi.config.Constants;
 import fr.esgi.dao.ManagerRepository;
 import fr.esgi.dao.MenuRepository;
 import fr.esgi.dao.ProductRepository;
@@ -27,8 +29,8 @@ import fr.esgi.service.dto.ProductDTO;
 import fr.esgi.service.mapper.MenuMapper;
 import fr.esgi.service.mapper.ProductMapper;
 
-@Service
 @Transactional
+@Service("MenuService")
 public class MenuServiceImpl implements MenuService {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(MenuServiceImpl.class);
@@ -179,10 +181,24 @@ public class MenuServiceImpl implements MenuService {
 	
 	@Transactional(readOnly = true)
 	@Override
-	public List<ProductDTO> findProductsByCategoryName(String categoryName) {
-		return productRepo.findAllByCategoryName(categoryName).stream()
-				.map(productMapper::productToProductDTO)
+	public Page<ProductDTO> findProductsByCategoryName(Pageable pageable, String categoryName) {
+		LOGGER.debug("Request to find all products by categoryName: {}", categoryName);
+		return productRepo.findAllByCategoryName(pageable, categoryName)
+				.map(productMapper::productToProductDTO);
+	}
+
+	 /**
+     * Returns the four trends menus.
+     * @return the list of entities
+     */
+	@Transactional(readOnly = true)
+	@Override
+	public List<MenuDTO> findAllTrendsMenus() {
+		List<MenuDTO> menusDTO = menuRepo.findAllTrendsMenus(Constants.PAID, 4).stream()
+				.map(menuMapper::menuToMenuDTO)
 				.collect(Collectors.toList());
+		Collections.shuffle(menusDTO);
+		return menusDTO;
 	}
 
 }

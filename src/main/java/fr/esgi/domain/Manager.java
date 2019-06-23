@@ -82,11 +82,28 @@ public class Manager implements Serializable {
 
 	@Override
 	public String toString() {
-		return "Manager{" +
-				"id=" + id +
-				", products=" + products +
-				", menus=" + menus +
-				", user=" + user +
-				'}';
+		StringBuilder builder = new StringBuilder();
+		builder.append("Manager [");
+		if (id != null) {
+			builder.append("id=");
+			builder.append(id);
+			builder.append(", ");
+		}
+		if (products != null) {
+			builder.append("products=");
+			builder.append(products);
+			builder.append(", ");
+		}
+		if (menus != null) {
+			builder.append("menus=");
+			builder.append(menus);
+			builder.append(", ");
+		}
+		if (user != null) {
+			builder.append("user=");
+			builder.append(user);
+		}
+		builder.append("]");
+		return builder.toString();
 	}
 }
