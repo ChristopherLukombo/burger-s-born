@@ -48,10 +48,12 @@ public class ProductResource {
         this.messageSource = messageSource;
     }
 
+
     /**
      * GET  /product : find all products.
      *
-     * @param request the HTTP request
+     * @param page
+     * @param size
      * @return all products
      * @throws BurgerSTerminalException
      */
@@ -66,11 +68,14 @@ public class ProductResource {
         return ResponseEntity.ok(products);
     }
 
-
     /**
      * POST  /product : add new product.
      *
-     * @param request the HTTP request
+     * @param productDTO
+     * @param id
+     * @param available
+     * @param name
+     * @param price
      * @return created product
      * @throws BurgerSTerminalException
      */
@@ -83,8 +88,8 @@ public class ProductResource {
     /**
      * POST : /product/import/json : Add or Update products from a JSON file
      *
-     * @param inputFile
-     * @return String the status
+     * @param inputFile file used to import product
+     * @return Message on the operation
      * @throws BurgerSTerminalException
      */
     @PostMapping(value = "/product/import/json", headers = "content-type=multipart/*")
@@ -99,7 +104,7 @@ public class ProductResource {
         } catch (DataIntegrityViolationException e) {
             throw new BurgerSTerminalException(HttpStatus.INTERNAL_SERVER_ERROR.value(),
                     messageSource.getMessage(ErrorMessage.ERROR_FAIL_BATCH_IMPORT_PRODUCT, null, getLang("fr")) +
-                            inputFile.getOriginalFilename(), e);
+                            " " + inputFile.getOriginalFilename(), e);
         }
 
         return ResponseEntity.ok()
