@@ -9,6 +9,8 @@ import javax.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,6 +19,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import fr.esgi.exception.BurgerSTerminalException;
@@ -37,6 +40,28 @@ public class CommandResource {
 	@Autowired
 	public CommandResource(CommandService commandService) {
 		this.commandService = commandService;
+	}
+	
+	/**
+	 * GET  /commands : get all commands by customerId.
+	 * @param commandDTO
+	 * @return the ResponseEntity with status 200 (Ok) and with body the assignmentModuleDTO
+	 * @throws URISyntaxException if the Location URI syntax is incorrect
+	 * @throws BurgerSTerminalException if the id of command is not empty.
+	 */
+	@GetMapping("/commands")
+	public ResponseEntity<Page<CommandDTO>> getAllCommands(
+			@RequestParam("page") int page,
+			@RequestParam("size") int size,
+			@RequestParam("customerId") Long customerId) throws URISyntaxException, BurgerSTerminalException {
+		LOGGER.debug("REST request to get all commands: {} {} {}", page, size, customerId);
+		Page<CommandDTO> commandDTOs = commandService.findAllByCustomerId(PageRequest.of(page, size), customerId);
+		if (commandDTOs.isEmpty()) {
+			throw new BurgerSTerminalException(HttpStatus.NOT_FOUND.value(),
+					"Pas de commandes");
+		}
+		return ResponseEntity.ok()
+				.body(commandDTOs);
 	}
 
 	/**

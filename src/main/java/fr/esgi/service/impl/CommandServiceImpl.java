@@ -1,15 +1,16 @@
 package fr.esgi.service.impl;
 
-import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import fr.esgi.config.Constants;
 import fr.esgi.dao.CommandRepository;
 import fr.esgi.domain.Command;
 import fr.esgi.service.CommandService;
@@ -92,18 +93,18 @@ public class CommandServiceImpl implements CommandService {
 	}
 
 	/**
-	 * Get all the commands.
-	 *
+	 * Get all the commands by customerId.
+	 * 
+	 * @param pageable
+	 * @param customerId : id of the customer
 	 * @return the list of entities
 	 */
 	@Transactional(readOnly = true)
 	@Override
-	public List<CommandDTO> findAll() {
-		LOGGER.debug("Request to find all commands");
-		return commandRepository.findAll()
-				.stream()
-				.map(commandMapper::commandToCommandDTO)
-				.collect(Collectors.toList());
+	public Page<CommandDTO> findAllByCustomerId(Pageable pageable, Long customerId) {
+		LOGGER.debug("Request to find all commands by customerId: {}", customerId);
+		return commandRepository.findAllByCustomerId(pageable, customerId, Constants.PAID)
+				.map(commandMapper::commandToCommandDTO);
 	}
 
 	/**

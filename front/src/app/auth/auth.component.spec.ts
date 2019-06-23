@@ -1,7 +1,9 @@
 import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatDatepickerModule, MatStepperModule, MatDialogModule, MatInputModule, MatNativeDateModule } from '@angular/material';
+import { MatCheckboxModule, MatDatepickerModule, MatDialogModule, MatInputModule, MatNativeDateModule, MatStepperModule } from '@angular/material';
+import { MatRadioModule } from '@angular/material/radio';
 import { MatSelectModule } from '@angular/material/select';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -13,21 +15,21 @@ import { AppRoutingModule } from '../app-routing.module';
 import { AppComponent } from '../app.component';
 import { HttpLoaderFactory } from '../app.module';
 import { AuthGuard } from '../auth.guard';
-import { DialogSuccessComponent } from '../dialog-success/dialog-success.component';
 import { DialogRedirectionComponent } from '../dialog-redirection/dialog-redirection.component';
+import { DialogSuccessComponent } from '../dialog-success/dialog-success.component';
 import { HeaderComponent } from '../header/header.component';
 import { HomeComponent } from '../home/home.component';
+import { ImporterComponent } from '../importer/importer.component';
+import { MenuComponent } from '../menu/menu.component';
 import { NavbarComponent } from '../navbar/navbar.component';
-import { StepOrderComponent } from '../step-order/step-order.component';
+import { OrdersComponent } from '../orders/orders.component';
 import { ProductComponent } from '../product/product.component';
 import { RegisterComponent } from '../register/register.component';
-import { MatRadioModule} from '@angular/material/radio';
 import { AuthProviderService } from '../services/auth-provider.service';
 import { ServicesDataService } from '../services/services-data.service';
+import { StepOrderComponent } from '../step-order/step-order.component';
 import { AuthComponent } from './auth.component';
-import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { MenuComponent } from '../menu/menu.component';
-import { ImporterComponent } from '../importer/importer.component';
+import { CreateMenuComponent } from '../create-menu/create-menu.component';
 
 
 describe('AuthComponent', () => {
@@ -42,15 +44,17 @@ describe('AuthComponent', () => {
         RegisterComponent,
         AuthComponent,
         DialogSuccessComponent,
+        DialogRedirectionComponent,
         ProductComponent,
-        NavbarComponent,
-        HeaderComponent,
         NavbarComponent,
         HeaderComponent,
         MenuComponent,
         ImporterComponent,
+        HeaderComponent,
+        MenuComponent,
         StepOrderComponent,
-        DialogRedirectionComponent
+        CreateMenuComponent,
+        OrdersComponent
       ],
       imports: [
         ReactiveFormsModule,
@@ -62,6 +66,7 @@ describe('AuthComponent', () => {
         MatNativeDateModule,
         MatSelectModule,
         MatStepperModule,
+        MatCheckboxModule,
         MatRadioModule,
         BrowserAnimationsModule,
         FormsModule,
@@ -74,10 +79,10 @@ describe('AuthComponent', () => {
           }
         }),
         LoggerModule.forRoot(
-            {
-              level: NgxLoggerLevel.DEBUG,
-              serverLogLevel: NgxLoggerLevel.ERROR
-            }
+          {
+            level: NgxLoggerLevel.DEBUG,
+            serverLogLevel: NgxLoggerLevel.ERROR
+          }
         ),
         JwtModule.forRoot({
           config: {
@@ -95,9 +100,9 @@ describe('AuthComponent', () => {
         AuthGuard,
         MatDatepickerModule,
       ],
-      schemas: [ CUSTOM_ELEMENTS_SCHEMA ]
+      schemas: [CUSTOM_ELEMENTS_SCHEMA]
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {

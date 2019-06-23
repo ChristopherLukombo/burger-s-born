@@ -5,10 +5,11 @@ import { Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { NGXLogger } from 'ngx-logger';
 import { Login } from '../../model/model.login';
+import { Token } from '../../model/model.token';
 import { AuthProviderService } from '../services/auth-provider.service';
 import { ServicesDataService } from '../services/services-data.service';
 
-declare var require: any;
+declare const require: any;
 
 @Component({
   selector: 'app-auth',
@@ -60,6 +61,10 @@ export class AuthComponent implements OnInit {
     this.authProviderService.authenticate(this.login)
       .subscribe(data => {
         this.authenticateSuccess(data);
+        // TODO put in object
+       const token = data.body as Token;
+
+        this.authProviderService.storeIdCustomer(token.id_customer);
 
         this.authProviderService.connect.next(this.authProviderService.isAuthenticated());
 

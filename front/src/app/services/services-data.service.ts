@@ -80,27 +80,45 @@ export class ServicesDataService {
 
     }
 
-    /*********************************************************************************************/
-
-    findProductsByCategoryName(categorieName: string): Observable<HttpResponse<Object>> {
+    findProductsByCategoryName(indexPage: number, categorieName: string): Observable<HttpResponse<Object>> {
         const headers = new HttpHeaders({ 'Authorization': 'Bearer ' + this.authProviderService.getToken() });
         return this.http.get<HttpResponse<Object>>(
-            this.resourceUrl + '/products/category?categorieName=' + `${categorieName}`,
+            this.resourceUrl + '/products/category?page=' + `${indexPage}` + '&size=4&categorieName=' + `${categorieName}`,
          {headers, observe: 'response' });
+    }
+
+    getAllCommands(indexPage: number, customerId: number): Observable<HttpResponse<Object>> {
+        const headers = new HttpHeaders({ 'Authorization': 'Bearer ' + this.authProviderService.getToken() });
+        return this.http.get<HttpResponse<Object>>(
+            this.resourceUrl + '/commands?page=' + indexPage + '&size=4' + '&customerId=' + `${customerId}`,
+            { headers, observe: 'response' });
     }
 
     createPayment(command: Command): Observable<HttpResponse<Object>> {
-        const headers = new HttpHeaders({ 'Authorization': 'Bearer ' + this.authProviderService.getToken()});
+        const headers = new HttpHeaders({ 'Authorization': 'Bearer ' + this.authProviderService.getToken() });
         return this.http.post<HttpResponse<Object>>(
             this.resourceUrl + '/make/payment', command,
-         {headers, observe: 'response' });
+            { headers, observe: 'response' });
     }
 
     completePayment(paypal: Paypal): Observable<HttpResponse<Object>> {
-        const headers = new HttpHeaders({ 'Authorization': 'Bearer ' + this.authProviderService.getToken()});
+        const headers = new HttpHeaders({ 'Authorization': 'Bearer ' + this.authProviderService.getToken() });
         return this.http.post<HttpResponse<Object>>(
             this.resourceUrl + '/complete/payment', paypal,
-         {headers, observe: 'response' });
+            { headers, observe: 'response' });
+    }
+
+    cancelPayment(commandId: number): Observable<HttpResponse<Object>> {
+        const headers = new HttpHeaders({ 'Authorization': 'Bearer ' + this.authProviderService.getToken() });
+        return this.http.post<HttpResponse<Object>>(
+            this.resourceUrl + '/refund/payment/' + `${commandId}`, null,
+            { headers, observe: 'response' });
+    }
+
+    getAllTrendsMenus(): Observable<HttpResponse<Object>> {
+        return this.http.get<HttpResponse<Object>>(
+            this.resourceUrl + '/menus/trends',
+            { observe: 'response' });
     }
 
 }

@@ -116,14 +116,41 @@ public class Menu implements Serializable {
 
 	@Override
 	public String toString() {
-		return "Menu{" +
-				"id=" + id +
-				", name='" + name + '\'' +
-				", price=" + price +
-				", available=" + available +
-				", manager=" + manager +
-				", products=" + products +
-				", commands=" + commands +
-				'}';
+		StringBuilder builder = new StringBuilder();
+		builder.append("Menu [");
+		if (id != null) {
+			builder.append("id=");
+			builder.append(id);
+			builder.append(", ");
+		}
+		if (name != null) {
+			builder.append("name=");
+			builder.append(name);
+			builder.append(", ");
+		}
+		builder.append("price=");
+		builder.append(price);
+		builder.append(", ");
+		if (available != null) {
+			builder.append("available=");
+			builder.append(available);
+			builder.append(", ");
+		}
+		if (manager != null) {
+			builder.append("manager=");
+			builder.append(manager);
+			builder.append(", ");
+		}
+		if (products != null) {
+			builder.append("products=");
+			builder.append(products);
+			builder.append(", ");
+		}
+		if (commands != null) {
+			builder.append("commands=");
+			builder.append(commands);
+		}
+		builder.append("]");
+		return builder.toString();
 	}
 }

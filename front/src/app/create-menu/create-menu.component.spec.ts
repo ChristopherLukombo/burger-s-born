@@ -1,71 +1,60 @@
+import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
-import { CreateMenuComponent } from './create-menu.component';
-import {AppComponent} from '../app.component';
-import {HomeComponent} from '../home/home.component';
-import {RegisterComponent} from '../register/register.component';
-import {AuthComponent} from '../auth/auth.component';
-import {DialogSuccessComponent} from '../dialog-success/dialog-success.component';
-import {ProductComponent} from '../product/product.component';
-import {NavbarComponent} from '../navbar/navbar.component';
-import {HeaderComponent} from '../header/header.component';
-import {MenuComponent} from '../menu/menu.component';
-import {ImporterComponent} from '../importer/importer.component';
-import {StepOrderComponent} from '../step-order/step-order.component';
-import {DialogRedirectionComponent} from '../dialog-redirection/dialog-redirection.component';
-import {FormsModule, ReactiveFormsModule} from '@angular/forms';
-import {BrowserModule} from '@angular/platform-browser';
-import {AppRoutingModule} from '../app-routing.module';
-import {HttpClient, HttpClientModule} from '@angular/common/http';
-import {
-  MatDatepickerModule, MatDialogModule,
-  MatInputModule,
-  MatNativeDateModule,
-  MatRadioModule,
-  MatSelectModule,
-  MatStepperModule
-} from '@angular/material';
-import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
-import {TranslateLoader, TranslateModule} from '@ngx-translate/core';
-import {HttpLoaderFactory} from '../app.module';
-import {LoggerModule, NgxLoggerLevel} from 'ngx-logger';
-import {JwtModule} from '@auth0/angular-jwt';
-import {ServicesDataService} from '../services/services-data.service';
-import {AuthProviderService} from '../services/auth-provider.service';
-import {LocalStorageService} from 'ngx-webstorage';
-import {AuthGuard} from '../auth.guard';
-import {CUSTOM_ELEMENTS_SCHEMA} from '@angular/core';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatCheckboxModule, MatDatepickerModule, MatDialogModule, MatInputModule, MatNativeDateModule, MatStepperModule } from '@angular/material';
+import { MatRadioModule } from '@angular/material/radio';
+import { MatSelectModule } from '@angular/material/select';
+import { BrowserModule } from '@angular/platform-browser';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { JwtModule } from '@auth0/angular-jwt';
+import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
+import { LoggerModule, NgxLoggerLevel } from 'ngx-logger';
+import { LocalStorageService } from 'ngx-webstorage';
+import { AppRoutingModule } from '../app-routing.module';
+import { AppComponent } from '../app.component';
+import { HttpLoaderFactory } from '../app.module';
+import { AuthGuard } from '../auth.guard';
+import { AuthComponent } from '../auth/auth.component';
+import { DialogRedirectionComponent } from '../dialog-redirection/dialog-redirection.component';
+import { DialogSuccessComponent } from '../dialog-success/dialog-success.component';
+import { HeaderComponent } from '../header/header.component';
+import { HomeComponent } from '../home/home.component';
+import { ImporterComponent } from '../importer/importer.component';
+import { MenuComponent } from '../menu/menu.component';
+import { NavbarComponent } from '../navbar/navbar.component';
+import { OrdersComponent } from '../orders/orders.component';
+import { ProductComponent } from '../product/product.component';
+import { RegisterComponent } from '../register/register.component';
+import { AuthProviderService } from '../services/auth-provider.service';
+import { ServicesDataService } from '../services/services-data.service';
+import { StepOrderComponent } from '../step-order/step-order.component';
+import { CreateMenuComponent } from '../create-menu/create-menu.component';
 
 describe('CreateMenuComponent', () => {
   let component: CreateMenuComponent;
   let fixture: ComponentFixture<CreateMenuComponent>;
 
 
-
-  beforeEach(() => {
-    fixture = TestBed.createComponent(CreateMenuComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
-
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [
-        CreateMenuComponent,
         AppComponent,
         HomeComponent,
         RegisterComponent,
         AuthComponent,
         DialogSuccessComponent,
+        DialogRedirectionComponent,
         ProductComponent,
-        NavbarComponent,
-        HeaderComponent,
         NavbarComponent,
         HeaderComponent,
         MenuComponent,
         ImporterComponent,
+        HeaderComponent,
+        MenuComponent,
         StepOrderComponent,
-        DialogRedirectionComponent
+        CreateMenuComponent,
+        OrdersComponent
       ],
       imports: [
         ReactiveFormsModule,
@@ -78,6 +67,7 @@ describe('CreateMenuComponent', () => {
         MatSelectModule,
         MatStepperModule,
         MatRadioModule,
+        MatCheckboxModule,
         BrowserAnimationsModule,
         FormsModule,
         MatDialogModule,
@@ -89,10 +79,10 @@ describe('CreateMenuComponent', () => {
           }
         }),
         LoggerModule.forRoot(
-            {
-              level: NgxLoggerLevel.DEBUG,
-              serverLogLevel: NgxLoggerLevel.ERROR
-            }
+          {
+            level: NgxLoggerLevel.DEBUG,
+            serverLogLevel: NgxLoggerLevel.ERROR
+          }
         ),
         JwtModule.forRoot({
           config: {
@@ -110,10 +100,16 @@ describe('CreateMenuComponent', () => {
         AuthGuard,
         MatDatepickerModule,
       ],
-      schemas: [ CUSTOM_ELEMENTS_SCHEMA ]
+      schemas: [CUSTOM_ELEMENTS_SCHEMA]
     })
-        .compileComponents();
+      .compileComponents();
   }));
+
+  beforeEach(() => {
+    fixture = TestBed.createComponent(CreateMenuComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+  });
 
   it('should create', () => {
     expect(component).toBeTruthy();
