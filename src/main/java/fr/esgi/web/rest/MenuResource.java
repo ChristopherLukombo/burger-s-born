@@ -65,20 +65,12 @@ public class MenuResource {
 		return ResponseEntity.ok(menus);
 	}
 
-	//    @GetMapping("/find/menu/id")
-	//    public ResponseEntity<MenuDTO> findById(@RequestParam Long id) throws BurgerSTerminalException {
-	//    	try {
-	//            return ResponseEntity.ok(menuService.findById(id));
-	//        } catch (Exception e) { // TODO Mettre le message dans les fichiers messages
-	//            throw new BurgerSTerminalException(HttpStatus.NOT_FOUND.value(), "ID non trouvé : " + id , e);
-	//        }
-	//    }
-
 	@GetMapping("/find/menu/name")
 	public ResponseEntity<MenuDTO> findByName(@RequestParam String name) {
 		return ResponseEntity.ok(menuService.findByName(name));
 	}
 
+	// TODO : refactorer la méthode
 	@PutMapping("/menu/update")
 	public ResponseEntity<MenuDTO> findById(@RequestBody @Valid MenuDTO menuDTO) throws BurgerSTerminalException {
 		if (null == menuDTO.getId()) {
@@ -100,6 +92,7 @@ public class MenuResource {
 		return ResponseEntity.ok().build();
 	}
 
+	// TODO : refactorer la méthode
 	@PutMapping("/addProduct")
 	public ResponseEntity<MenuDTO> addProduct(@RequestParam("menuName") String menuName,@RequestParam("nameProduct") String...nameProducts ){
 
@@ -112,6 +105,7 @@ public class MenuResource {
 		return ResponseEntity.ok().build();
 	}
 
+	// TODO : refactorer la méthode
 	@DeleteMapping("/removeProduct")
 	public ResponseEntity<MenuDTO> removeProduct(@RequestParam("menuName") String menuName,@RequestParam("nameProduct") String...nameProducts ){
 

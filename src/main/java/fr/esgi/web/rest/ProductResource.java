@@ -36,20 +36,17 @@ public class ProductResource {
 
     private final ProductService productService;
 
-    private final DatabaseUpdatorService databaseUpdatorService;
-
     private final MessageSource messageSource;
 
-
     @Autowired
-    public ProductResource(ProductService productService, DatabaseUpdatorService databaseUpdatorService, MessageSource messageSource) {
-        this.productService = productService;
-        this.databaseUpdatorService = databaseUpdatorService;
-        this.messageSource = messageSource;
-    }
+    public ProductResource(ProductService productService, MessageSource messageSource) {
+		this.productService = productService;
+		this.messageSource = messageSource;
+	}
 
 
-    /**
+
+	/**
      * GET  /product : find all products.
      *
      * @param page
@@ -79,37 +76,10 @@ public class ProductResource {
      * @return created product
      * @throws BurgerSTerminalException
      */
-    @PostMapping("/product")
-    public ResponseEntity<ProductDTO> addProduct(@RequestBody @Valid ProductDTO productDTO, @RequestParam("id") Long id, @RequestParam("available") Boolean available, @RequestParam("name") String name, @RequestParam("price") double price) throws BurgerSTerminalException {
-        LOGGER.debug("REST request to add new product");
-        return new ResponseEntity<ProductDTO>(productService.addProduct(productDTO, id, available, name, price), HttpStatus.OK);
-    }
-
-    /**
-     * POST : /product/import/json : Add or Update products from a JSON file
-     *
-     * @param inputFile file used to import product
-     * @return Message on the operation
-     * @throws BurgerSTerminalException
-     */
-    @PostMapping(value = "/product/import/json", headers = "content-type=multipart/*")
-    public ResponseEntity<String> upload(
-            @RequestPart("importfile") MultipartFile inputFile) throws BurgerSTerminalException {
-
-        JSONArray objects = databaseUpdatorService.importFile(inputFile, "json");
-        List<ProductDTO> productDTOS = productService.convertJsonToArray(objects);
-
-        try {
-            productService.addAll(productDTOS);
-        } catch (DataIntegrityViolationException e) {
-            throw new BurgerSTerminalException(HttpStatus.INTERNAL_SERVER_ERROR.value(),
-                    messageSource.getMessage(ErrorMessage.ERROR_FAIL_BATCH_IMPORT_PRODUCT, null, getLang("fr")) +
-                            " " + inputFile.getOriginalFilename(), e);
-        }
-
-        return ResponseEntity.ok()
-                .body("Successfully uploaded : " + inputFile.getOriginalFilename());
-    }
-
+//    @PostMapping("/product")
+//    public ResponseEntity<ProductDTO> addProduct(@RequestBody @Valid ProductDTO productDTO, @RequestParam("id") Long id, @RequestParam("available") Boolean available, @RequestParam("name") String name, @RequestParam("price") double price) throws BurgerSTerminalException {
+//        LOGGER.debug("REST request to add new product");
+//        return new ResponseEntity<ProductDTO>(productService.addProduct(productDTO, id, available, name, price), HttpStatus.OK);
+//    }
 
 }
