@@ -28,6 +28,23 @@ public final class Constants {
     public static final String WAITTING = "Waitting";
     public static final String PAID = "Paid";
     public static final String REFUND = "REFUND";
+    
+    public static final String COMMA = ";";
+    public static final String CSV = "csv";
+    public static final String JSON = "json";
+    
+    public static final String FORMAT_DE_FICHIER_EST_INVALIDE = "Format de fichier est invalide";
+    public static final String LE_FICHIER_D_IMPORT_EST_VIDE = "Le fichier d'import est vide";
+	public static final String UNE_ERREUR_S_EST_PRODUITE_DURANT = "Une erreur s'est produite durant.";
+	public static final String LE_FICHIER_NE_CONTIENT_PAS_LE_BON_NOMBRE_DE_COLONNES = "Le fichier ne contient pas le bon nombre de colonnes";
+
+	public static final String MANAGER_ID = "managerId";
+	public static final String CATEGORY_ID = "categoryId";
+	public static final String AVAILABLE = "available";
+	public static final String PRICE = "price";
+	public static final String NAME = "name";
+
+
 
     private Constants() {
         // private constructor needed for Constants class.

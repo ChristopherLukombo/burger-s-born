@@ -34,4 +34,12 @@ public interface MenuService {
      * @return the list of entities
      */
 	List<MenuDTO> findAllTrendsMenus();
+	
+	/**
+	 * SaveAll menus.
+	 * 
+	 * @param menusDTO the list of entities to save
+	 * @return the list of entities
+	 */
+	List<MenuDTO> saveAll(List<MenuDTO> menusDTO);
 }

@@ -18,6 +18,10 @@
   *ngIf="authProviderService.isAuthenticated()">
     Mes commandes
   </a>
+  <a class="nav-link" routerLink="/importer" routerLinkActive="active" role="tab"
+  *ngIf="authProviderService.isAuthenticated()">
+    Import de fichiers
+  </a>
   <a class="nav-link" routerLink="/register" routerLinkActive="active" role="tab"
     *ngIf="(!authProviderService.isAuthenticated() || isAdmin)">
     Inscription

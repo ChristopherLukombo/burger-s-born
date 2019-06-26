@@ -37,13 +37,15 @@ export class ServicesDataService {
         return this.http.request(req);
     }
 
-    importFile(file: File) {
+    importFile(file: File, fileFomat: string, element: string) {
         const formdata: FormData = new FormData();
         formdata.append('importfile', file);
+        const headers = new HttpHeaders({ 'Authorization': 'Bearer ' + this.authProviderService.getToken() });
 
-        const req = new HttpRequest('POST', this.resourceUrl + '/product/import/json', formdata, {
+        const req = new HttpRequest('POST', this.resourceUrl + '/' + `${element}` + '/import?fileFormat=' + `${fileFomat}`, formdata, {
+            headers: headers,
+            reportProgress: true,
             responseType: 'text',
-
         });
 
         return this.http.request(req);
