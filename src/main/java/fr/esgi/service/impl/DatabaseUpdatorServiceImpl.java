@@ -9,21 +9,22 @@ import java.io.InputStreamReader;
 import java.io.StringWriter;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
-import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import fr.esgi.config.Constants;
+import fr.esgi.config.ErrorMessage;
 import fr.esgi.exception.BurgerSTerminalException;
 import fr.esgi.service.DatabaseUpdatorService;
 import fr.esgi.service.MenuService;
@@ -39,9 +40,9 @@ public class DatabaseUpdatorServiceImpl implements DatabaseUpdatorService {
 
 	private final ProductService productService;
 
-    private final MenuService menuService;
-    
-    @Autowired
+	private final MenuService menuService;
+
+	@Autowired
 	public DatabaseUpdatorServiceImpl(ProductService productService, MenuService menuService) {
 		this.productService = productService;
 		this.menuService = menuService;
@@ -49,12 +50,6 @@ public class DatabaseUpdatorServiceImpl implements DatabaseUpdatorService {
 
 	@Override
 	public List<ProductDTO> importProductsFile(MultipartFile fileToImport, String fileFormat) throws BurgerSTerminalException {
-		if (fileFormat.isEmpty()) {
-			throw new BurgerSTerminalException(HttpStatus.INTERNAL_SERVER_ERROR.value(), Constants.LE_FICHIER_D_IMPORT_EST_VIDE);
-		}
-		if (!fileFormat.equalsIgnoreCase(FilenameUtils.getExtension(fileToImport.getOriginalFilename()))) {
-			throw new BurgerSTerminalException(HttpStatus.INTERNAL_SERVER_ERROR.value(), Constants.FORMAT_DE_FICHIER_EST_INVALIDE);
-		}
 		List<ProductDTO> products = null;
 		LOGGER.debug("Request to import File : {}", fileToImport.getName());
 		try {
@@ -64,16 +59,15 @@ public class DatabaseUpdatorServiceImpl implements DatabaseUpdatorService {
 				products = importCSVProductsFile(fileToImport);
 			}
 		} catch (IOException e) {
-			throw new BurgerSTerminalException(HttpStatus.INTERNAL_SERVER_ERROR.value(), Constants.UNE_ERREUR_S_EST_PRODUITE_DURANT, e);
+			throw new BurgerSTerminalException(ErrorMessage.AN_ERROR_OCCURRED_DURING_THE_IMPORT, e);
 		}
 		return products;
 	}
 
-	private List<ProductDTO> importJsonProductsFile(MultipartFile fileToImport) throws IOException, BurgerSTerminalException {
+	private List<ProductDTO> importJsonProductsFile(MultipartFile fileToImport) throws BurgerSTerminalException {
 		JSONArray jsonArray = getJSONArray(fileToImport);
-		JSONObject obj = (JSONObject) jsonArray.get(0);
-		if (5 != obj.length()) {
-			throw new BurgerSTerminalException(HttpStatus.BAD_REQUEST.value(), "Le fichier ne contient pas le bon nombre de colonne");
+		if (!isValidJSONFile(jsonArray, 5)) {
+			throw new BurgerSTerminalException(ErrorMessage.THE_FILE_DOES_NOT_CONTAIN_THE_CORRECT_NUMBER_OF_COLUMNS);
 		}
 		List<ProductDTO> products = convertJsonToList(jsonArray);
 		return productService.saveAll(products);
@@ -99,68 +93,88 @@ public class DatabaseUpdatorServiceImpl implements DatabaseUpdatorService {
 
 	private List<ProductDTO> importCSVProductsFile(MultipartFile fileToImport) throws IOException, BurgerSTerminalException {
 		String csv = convertCSVToString(fileToImport);
+		if (StringUtils.isEmpty(csv)) {
+			return Collections.emptyList();
+		}
 		List<ProductDTO> products = convertProductsCSVToList(csv);
 		return productService.saveAll(products);
 	}
 
-	private List<ProductDTO> convertProductsCSVToList(String csv) throws IOException, BurgerSTerminalException {
-		InputStream inputStream = new ByteArrayInputStream(csv.getBytes(StandardCharsets.UTF_8.name()));
-		BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
+	private List<ProductDTO> convertProductsCSVToList(String csv) throws BurgerSTerminalException {
 		List<ProductDTO> products = new ArrayList<>();
 
-		String line = null;
-		int index = 0;
+		try (InputStream inputStream = new ByteArrayInputStream(csv.getBytes(StandardCharsets.UTF_8.name()))) {
+			BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
 
-		while ((line = bufferedReader.readLine()) != null) {
-			String[] firstLine = line.split(Constants.COMMA);
-			if (5 != firstLine.length && 0 == index) {
-				throw new BurgerSTerminalException(HttpStatus.BAD_REQUEST.value(), 
-						Constants.LE_FICHIER_NE_CONTIENT_PAS_LE_BON_NOMBRE_DE_COLONNES);
+			String line = null;
+			int index = 0;
+
+			while ((line = bufferedReader.readLine()) != null) {
+				if (!isValidFileCSV(line, 0, 5)) {
+					throw new BurgerSTerminalException(ErrorMessage.THE_FILE_DOES_NOT_CONTAIN_THE_CORRECT_NUMBER_OF_COLUMNS);
+				}
+				String[] theLine = line.split(Constants.COMMA);
+
+				if (index > 0) {
+					ProductDTO productDTO = new ProductDTO();
+					productDTO.setName(theLine[0]);
+					productDTO.setPrice(Double.parseDouble(theLine[1]));
+					productDTO.setAvailable(Boolean.parseBoolean(theLine[2]));
+					productDTO.setCategoryId(Long.parseLong(theLine[3]));
+					productDTO.setManagerId(Long.parseLong(theLine[4]));
+
+					products.add(productDTO);
+				}
+				index++;
 			}
-			String[] theLine = line.split(Constants.COMMA);
-
-			if (index > 0) {
-				ProductDTO productDTO = new ProductDTO();
-				productDTO.setName(theLine[0]);
-				productDTO.setPrice(Double.parseDouble(theLine[1]));
-				productDTO.setAvailable(Boolean.parseBoolean(theLine[2]));
-				productDTO.setCategoryId(Long.parseLong(theLine[3]));
-				productDTO.setManagerId(Long.parseLong(theLine[4]));
-
-				products.add(productDTO);
-			}
-			index++;
+		} catch (Exception e) {
+			LOGGER.error(ErrorMessage.ERROR_DURING_READING_OF_FILE, e);
 		}
 		return products;
 	}
-	
+
 	private static String convertCSVToString(MultipartFile fileToImport) throws IOException {
-		InputStream inputStream = fileToImport.getInputStream();
-		StringWriter writer = new StringWriter();
-		IOUtils.copy(inputStream, writer, StandardCharsets.UTF_8.name());
-		return writer.toString();
+		String csv = null;		
+		try (InputStream inputStream = fileToImport.getInputStream()) {
+			StringWriter writer = new StringWriter();
+			IOUtils.copy(inputStream, writer, StandardCharsets.UTF_8.name());
+			return writer.toString();
+		} catch (Exception e) {
+			LOGGER.error("Error during reading of the contents of the file: {}", fileToImport.getName());
+		}
+		return csv;
 	}
-	
-	private static JSONArray getJSONArray(MultipartFile fileToImport) throws IOException {
-		InputStream inputStream = fileToImport.getInputStream();
-		
-		String datas = IOUtils.toString(inputStream, StandardCharsets.UTF_8.name());
-		inputStream.close();
-		return new JSONArray(datas);
+
+	private static JSONArray getJSONArray(MultipartFile fileToImport) {
+		JSONArray jsonArray = null;
+		try (InputStream inputStream = fileToImport.getInputStream()) {
+			String datas = IOUtils.toString(inputStream, StandardCharsets.UTF_8.name());
+			jsonArray = new JSONArray(datas);
+		} catch (IOException e) {
+			LOGGER.error("Error during reading of the contents of the file: {}", fileToImport.getName());
+		} 
+		return jsonArray;
 	}
-	
+
+	private static boolean isValidJSONFile(JSONArray jsonArray, int countColumns) {
+		if (jsonArray != null && !jsonArray.isEmpty()) {
+			JSONObject obj = (JSONObject) jsonArray.get(0);
+			if (countColumns == obj.length()) {
+				return true;
+			}
+		} 
+		return false;
+	}
+
+	private static boolean isValidFileCSV(String line, int index, int countColumns) {
+		String[] firstLine = line.split(Constants.COMMA);
+		return countColumns == firstLine.length && 0 == index;
+	}	
+
 	// Menus
 
 	@Override
 	public List<MenuDTO> importMenusFile(MultipartFile fileToImport, String fileFormat) throws BurgerSTerminalException {
-		if (fileFormat.isEmpty()) {
-			throw new BurgerSTerminalException(HttpStatus.INTERNAL_SERVER_ERROR.value(),
-					Constants.LE_FICHIER_D_IMPORT_EST_VIDE);
-		}
-		if (!fileFormat.equalsIgnoreCase(FilenameUtils.getExtension(fileToImport.getOriginalFilename()))) {
-			throw new BurgerSTerminalException(HttpStatus.INTERNAL_SERVER_ERROR.value(), 
-					Constants.FORMAT_DE_FICHIER_EST_INVALIDE);
-		}
 		List<MenuDTO> menus = null;
 		LOGGER.debug("Request to import File : {}", fileToImport.getName());
 		try {
@@ -170,29 +184,29 @@ public class DatabaseUpdatorServiceImpl implements DatabaseUpdatorService {
 				menus = importCSVMenusFile(fileToImport);
 			}
 		} catch (IOException e) {
-			throw new BurgerSTerminalException(HttpStatus.INTERNAL_SERVER_ERROR.value(), 
-					Constants.UNE_ERREUR_S_EST_PRODUITE_DURANT, e);
+			throw new BurgerSTerminalException(ErrorMessage.AN_ERROR_OCCURRED_DURING_THE_IMPORT, e);
 		}
 		return menus;
 	}
 
 	private List<MenuDTO> importCSVMenusFile(MultipartFile fileToImport) throws IOException, BurgerSTerminalException {
 		String csv = convertCSVToString(fileToImport);
+		if (StringUtils.isEmpty(csv)) {
+			return Collections.emptyList();
+		}
 		List<MenuDTO> menus = convertMenusCSVToList(csv);
 		return menuService.saveAll(menus);
 	}
-	
-	private List<MenuDTO> importJsonMenusFile(MultipartFile fileToImport) throws IOException, BurgerSTerminalException {
+
+	private List<MenuDTO> importJsonMenusFile(MultipartFile fileToImport) throws BurgerSTerminalException {
 		JSONArray jsonArray = getJSONArray(fileToImport);
-		JSONObject obj = (JSONObject) jsonArray.get(0);
-		if (4 != obj.length()) {
-			throw new BurgerSTerminalException(HttpStatus.INTERNAL_SERVER_ERROR.value(),
-					"Le fichier ne contient pas le bon nombre de colonnes");
+		if (!isValidJSONFile(jsonArray, 4)) {
+			throw new BurgerSTerminalException(ErrorMessage.THE_FILE_DOES_NOT_CONTAIN_THE_CORRECT_NUMBER_OF_COLUMNS);
 		}
 		List<MenuDTO> menus = convertJsonMenusToList(jsonArray);
 		return menuService.saveAll(menus);
 	}
-	
+
 	private List<MenuDTO> convertJsonMenusToList(JSONArray objects) {
 		List<MenuDTO> menus = new ArrayList<>();
 
@@ -211,32 +225,35 @@ public class DatabaseUpdatorServiceImpl implements DatabaseUpdatorService {
 	}
 
 	private List<MenuDTO> convertMenusCSVToList(String csv) throws IOException, BurgerSTerminalException {
-		InputStream inputStream = new ByteArrayInputStream(csv.getBytes(StandardCharsets.UTF_8.name()));
-		BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
 		List<MenuDTO> menus = new ArrayList<>();
 
-		String line = null;
-		int index = 0;
+		try (InputStream inputStream = new ByteArrayInputStream(csv.getBytes(StandardCharsets.UTF_8.name()))) {
+			BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
 
-		while ((line = bufferedReader.readLine()) != null) {
-			String[] firstLine = line.split(Constants.COMMA);
-			if (4 != firstLine.length && 0 == index) {
-				throw new BurgerSTerminalException(HttpStatus.INTERNAL_SERVER_ERROR.value(),
-						Constants.LE_FICHIER_NE_CONTIENT_PAS_LE_BON_NOMBRE_DE_COLONNES);
+			String line = null;
+			int index = 0;
+
+			while ((line = bufferedReader.readLine()) != null) {
+				if (!isValidFileCSV(line, index, 4)) {
+					throw new BurgerSTerminalException(ErrorMessage.THE_FILE_DOES_NOT_CONTAIN_THE_CORRECT_NUMBER_OF_COLUMNS);
+				}
+				String[] theLine = line.split(Constants.COMMA);
+
+				if (index > 0) {
+					MenuDTO menuDTO = new MenuDTO();
+					menuDTO.setName(theLine[0]);
+					menuDTO.setPrice(Double.parseDouble(theLine[1]));
+					menuDTO.setAvailable(Boolean.parseBoolean(theLine[2]));
+					menuDTO.setManagerId(Long.parseLong(theLine[3]));
+
+					menus.add(menuDTO);
+				}
+				index++;
 			}
-			String[] theLine = line.split(Constants.COMMA);
-
-			if (index > 0) {
-				MenuDTO menuDTO = new MenuDTO();
-				menuDTO.setName(theLine[0]);
-				menuDTO.setPrice(Double.parseDouble(theLine[1]));
-				menuDTO.setAvailable(Boolean.parseBoolean(theLine[2]));
-				menuDTO.setManagerId(Long.parseLong(theLine[3]));
-
-				menus.add(menuDTO);
-			}
-			index++;
+		} catch (Exception e) {
+			LOGGER.error(ErrorMessage.ERROR_DURING_READING_OF_FILE, e);
 		}
+
 		return menus;
-	}	
+	}
 }
