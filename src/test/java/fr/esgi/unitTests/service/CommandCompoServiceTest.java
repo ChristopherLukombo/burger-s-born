@@ -51,15 +51,6 @@ public class CommandCompoServiceTest {
 		return commandCompoDTO;
 	}
 	
-	private static CommandCompo getCommandCompo() {
-		CommandCompo commandCompoDTO = new CommandCompo();
-		commandCompoDTO.setId(ID);
-		commandCompoDTO.setState(STATE);
-//		commandCompoDTO.setCommandId(ID);
-//		commandCompoDTO.setEmployeeId(ID);
-		return commandCompoDTO;
-	}
-	
 	@Test
 	public void shouldSaveWhenIsOK() {
 		// Given
