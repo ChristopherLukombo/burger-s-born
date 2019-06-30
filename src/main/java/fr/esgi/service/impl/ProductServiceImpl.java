@@ -48,11 +48,6 @@ public class ProductServiceImpl implements ProductService {
 				.map(productMapper::productToProductDTO);
 	}
 
-	@Override
-	public List<Product> findAllByMenuId(Long menuId) {
-		return productRepository.findAllByMenuId(menuId);
-	}
-
 	/**
 	 * SaveAll products.
 	 * 

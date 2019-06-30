@@ -4,6 +4,7 @@ import static fr.esgi.config.Utils.getLang;
 
 import java.util.List;
 
+import org.apache.commons.io.FilenameUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,17 +55,25 @@ public class DatabaseUpdatorResource {
     public ResponseEntity<List<ProductDTO>> uploadProductsFile(
     		@RequestPart("importfile") MultipartFile inputFile, @RequestParam String fileFormat) throws BurgerSTerminalException {
     	List<ProductDTO> importFile;
+    	
+    	if (fileFormat.isEmpty()) {
+			throw new BurgerSTerminalException(ErrorMessage.THE_IMPORT_FILE_IS_EMPTY);
+		}
+		if (!fileFormat.equalsIgnoreCase(FilenameUtils.getExtension(inputFile.getOriginalFilename()))) {
+			throw new BurgerSTerminalException(ErrorMessage.THE_FILE_FORMAT_IS_INVALID);
+		}
+		
     	LOGGER.debug("Request to import file : {}", inputFile.getName());
     	try {
     		importFile = databaseUpdatorService.importProductsFile(inputFile, fileFormat);
     	} catch (DataIntegrityViolationException e) {
     		throw new BurgerSTerminalException(HttpStatus.INTERNAL_SERVER_ERROR.value(),
-    				messageSource.getMessage(ErrorMessage.ERROR_FAIL_BATCH_IMPORT_PRODUCT, null, getLang("fr")) +
-    				" " + inputFile.getOriginalFilename(), e);
-    	}catch (Exception e) {
+    				messageSource.getMessage(ErrorMessage.ERROR_FAIL_BATCH_IMPORT_PRODUCT, null, getLang("fr")));
+    	} catch (BurgerSTerminalException e) {
     		throw new BurgerSTerminalException(HttpStatus.INTERNAL_SERVER_ERROR.value(),
-    				"Le fichier n'est pas valide", e);
+    				messageSource.getMessage(ErrorMessage.ERROR_BATCH_INVALID, null, getLang("fr")));
     	}
+    	
     	return ResponseEntity.ok().body(importFile);
     }
     
@@ -79,14 +88,25 @@ public class DatabaseUpdatorResource {
     public ResponseEntity<List<MenuDTO>> uploadMenuFile(
     		@RequestPart("importfile") MultipartFile inputFile, @RequestParam String fileFormat) throws BurgerSTerminalException {
     	List<MenuDTO> importFile;
+    	
+    	if (fileFormat.isEmpty()) {
+			throw new BurgerSTerminalException(ErrorMessage.THE_IMPORT_FILE_IS_EMPTY);
+		}
+		if (!fileFormat.equalsIgnoreCase(FilenameUtils.getExtension(inputFile.getOriginalFilename()))) {
+			throw new BurgerSTerminalException(ErrorMessage.THE_FILE_FORMAT_IS_INVALID);
+		}
+    	
     	LOGGER.debug("Request to import file : {}", inputFile.getName());
     	try {
     		importFile = databaseUpdatorService.importMenusFile(inputFile, fileFormat);
     	} catch (DataIntegrityViolationException e) {
     		throw new BurgerSTerminalException(HttpStatus.INTERNAL_SERVER_ERROR.value(),
-    				messageSource.getMessage(ErrorMessage.ERROR_FAIL_BATCH_IMPORT_PRODUCT, null, getLang("fr")) +
-    				" " + inputFile.getOriginalFilename(), e);
+    				messageSource.getMessage(ErrorMessage.ERROR_FAIL_BATCH_IMPORT_PRODUCT, null, getLang("fr")));
+    	} catch (BurgerSTerminalException e) {
+    		throw new BurgerSTerminalException(HttpStatus.INTERNAL_SERVER_ERROR.value(),
+    				messageSource.getMessage(ErrorMessage.ERROR_BATCH_INVALID, null, getLang("fr")));
     	}
+
     	return ResponseEntity.ok().body(importFile);
     }
 }
