@@ -60,8 +60,8 @@ public class CommandServiceImpl implements CommandService {
 	@Override
 	public Optional<CommandDTO> findOne(Long id) {
 		LOGGER.debug("Request to find a command by id: {}", id);
-		return commandRepository.findById(id)
-				.map(commandMapper::commandToCommandDTO);
+		Optional<Command> command = commandRepository.findById(id);
+		return command.map(commandMapper::commandToCommandDTO);
 	}
 	
 	/**

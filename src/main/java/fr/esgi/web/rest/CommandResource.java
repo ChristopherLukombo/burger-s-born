@@ -13,7 +13,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -75,7 +74,7 @@ public class CommandResource {
 	@PostMapping("/commands")
 	public ResponseEntity<CommandDTO> createCommand(@RequestBody @Valid CommandDTO commandDTO) throws URISyntaxException, BurgerSTerminalException {
 		LOGGER.debug("REST request to create a command: {}", commandDTO);
-		if (null != commandDTO.getId()) {
+		if (null != commandDTO) {
 			throw new BurgerSTerminalException(HttpStatus.BAD_REQUEST.value(),
 					"Une nouvelle commande ne peut pas déjà avoir un ID.");
 		}
@@ -93,7 +92,7 @@ public class CommandResource {
 	@PutMapping("/commands")
 	public ResponseEntity<CommandDTO> updateCommand(@RequestBody @Valid CommandDTO commandDTO) throws BurgerSTerminalException {
 		LOGGER.debug("REST request to update a command: {}", commandDTO);
-		if (null == commandDTO.getId()) {
+		if (null == commandDTO) {
 			throw new BurgerSTerminalException(HttpStatus.BAD_REQUEST.value(),
 					"Une commande doit avoir un ID.");
 		}
@@ -124,7 +123,7 @@ public class CommandResource {
 	 * @param id the id of the commandDTO to delete
 	 * @return the ResponseEntity with status 200 (OK)
 	 */
-	@DeleteMapping("/commands/{id}")
+	@PutMapping("/commands/{id}")
 	public ResponseEntity<Void> deleteCommand(@PathVariable Long id) {
 		LOGGER.debug("REST request to delete a command: {}", id);
 		commandService.delete(id);
