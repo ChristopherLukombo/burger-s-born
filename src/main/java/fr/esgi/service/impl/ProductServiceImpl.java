@@ -1,12 +1,8 @@
 package fr.esgi.service.impl;
 
-import fr.esgi.dao.CategoryRepository;
-import fr.esgi.dao.ManagerRepository;
-import fr.esgi.domain.Category;
-import fr.esgi.domain.Manager;
-import fr.esgi.domain.Product;
-import org.json.JSONArray;
-import org.json.JSONObject;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,15 +10,12 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
- 
+
 import fr.esgi.dao.ProductRepository;
+import fr.esgi.domain.Product;
 import fr.esgi.service.ProductService;
 import fr.esgi.service.dto.ProductDTO;
 import fr.esgi.service.mapper.ProductMapper;
-
-import java.util.List;
-import java.util.ArrayList;
-import java.util.Optional;
 
 /**
  * Service Implementation for managing User.
@@ -33,117 +26,43 @@ import java.util.Optional;
 public class ProductServiceImpl implements ProductService {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(ProductServiceImpl.class);
-	 
-    private final ProductRepository productRepository;
 
-    private final CategoryRepository categoryRepository;
+	private final ProductRepository productRepository;
 
-    private final ManagerRepository managerRepository;
- 
-    private final ProductMapper productMapper;
+	private final ProductMapper productMapper;
 
-    @Autowired
-    public ProductServiceImpl(ProductRepository productRepository, ProductMapper productMapper, CategoryRepository categoryRepository, ManagerRepository managerRepository) {
-        this.managerRepository = managerRepository;
-        this.categoryRepository = categoryRepository;
-        this.productRepository = productRepository;
-        this.productMapper = productMapper;
-    }
-
- 
-    /**
-     * Returns all products
-     * @return List<Product>
-     */
-    @Transactional(readOnly = true)
-    public Page<ProductDTO> findAll(int page, int size) {
-        LOGGER.debug("Request to get all products");
-        return productRepository.findAll(PageRequest.of(page, size))
-                .map(productMapper::productToProductDTO);
-    }
-
-    // TODO refactorer la methode
-    @Override
-    public ProductDTO addProduct(ProductDTO productDTO) {
-        Product newProduct = new Product();
-        newProduct.setId(productDTO.getId());
-        newProduct.setName(productDTO.getName());
-        newProduct.setPrice(productDTO.getPrice());
-        newProduct.setAvailable(productDTO.isAvailable());
-        final Optional<Category> category = categoryRepository.findById(productDTO.getCategoryId());
-        if (category.isPresent()) {
-            newProduct.setCategory(category.get());
-        }
-        final Optional<Manager> manager = managerRepository.findById(productDTO.getManagerId());
-        if (manager.isPresent()) {
-            newProduct.setManager(manager.get());
-        }
-
-        newProduct = productRepository.save(newProduct);
-
-        LOGGER.debug("Created Information for Product: {}", newProduct);
-        return productMapper.productToProductDTO(newProduct);
-    }
-
-    @Override
-    public List<ProductDTO> convertJsonToArray(JSONArray objects) {
-        ArrayList<ProductDTO> products = new ArrayList<>();
-
-        for (int i = 0; i < objects.length(); i++) {
-
-            JSONObject obj = (JSONObject) objects.get(i);
-
-            ProductDTO product = new ProductDTO();
-            product.setId(obj.getLong("id"));
-            product.setName(obj.getString("name"));
-            product.setPrice(obj.getDouble("price"));
-            product.setAvailable(obj.getBoolean("available"));
-            product.setCategoryId(obj.getLong("categoryId"));
-            product.setManagerId(obj.getLong("managerId"));
-
-            products.add(product);
-        }
-
-        return products;
-    }
-
-
-    private List<Product> convertToProductList(List<ProductDTO> productDTOS) {
-        List<Product> products = new ArrayList<>();
-
-        for ( ProductDTO dto: productDTOS ) {
-            Product product = new Product();
-            product.setName(dto.getName());
-            product.setPrice(dto.getPrice());
-            product.setAvailable(dto.isAvailable());
-            final Optional<Category> category = categoryRepository.findById(dto.getCategoryId());
-            category.ifPresent(product::setCategory);
-            final Optional<Manager> manager = managerRepository.findById(dto.getManagerId());
-            manager.ifPresent(product::setManager);
-
-            products.add(product);
-        }
-        return products;
-    }
-
-    @Override
-    public List<ProductDTO> addAll(List<ProductDTO> products) {
-
-        List<Product> convertedProducts = convertToProductList(products);
-        productRepository.saveAll(convertedProducts);
-        return products;
-    }
-
-
-    @Override
-	public ProductDTO addProduct(ProductDTO productDTO, Long id, Boolean available, String name, double price) {
-		// TODO Auto-generated method stub
-		return null;
+	@Autowired
+	public ProductServiceImpl(ProductRepository productRepository, ProductMapper productMapper) {
+		this.productRepository = productRepository;
+		this.productMapper = productMapper;
 	}
-	
+
+	/**
+	 * Returns all products
+	 * @return List<Product>
+	 */
+	@Transactional(readOnly = true)
+	public Page<ProductDTO> findAll(int page, int size) {
+		LOGGER.debug("Request to get all products");
+		return productRepository.findAll(PageRequest.of(page, size))
+				.map(productMapper::productToProductDTO);
+	}
+
+	/**
+	 * SaveAll products.
+	 * 
+	 * @param productsDTO the list of entities to save
+	 * @return the list of entities
+	 */
 	@Override
-	public List<Product> findAllByMenuId(Long menuId) {
-		return productRepository.findAllByMenuId(menuId);
-	}
+	public List<ProductDTO> saveAll(List<ProductDTO> productsDTO) {
+		LOGGER.debug("Request to save all products");
+		List<Product> products = productsDTO.stream()
+				.map(productMapper::productDTOToProduct)
+				.collect(Collectors.toList());
 
+		return productRepository.saveAll(products).stream()
+				.map(productMapper::productToProductDTO)
+				.collect(Collectors.toList());
+	}
 }

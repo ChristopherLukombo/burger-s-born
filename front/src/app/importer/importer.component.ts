@@ -1,12 +1,11 @@
-import {Component, Injector, OnInit} from '@angular/core';
-import {FormControl, FormGroup, Validators} from '@angular/forms';
-import {environment} from '../../environments/environment';
-import {NGXLogger} from 'ngx-logger';
-import {AppConstants} from '../app.constants';
-import {ServicesDataService} from '../services/services-data.service';
-import {TranslateService} from '@ngx-translate/core';
-import {HttpErrorResponse, HttpResponse} from '@angular/common/http';
-import {errorObject} from 'rxjs/internal-compatibility';
+import { HttpErrorResponse, HttpEventType, HttpResponse } from '@angular/common/http';
+import { Component, OnInit } from '@angular/core';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { NGXLogger } from 'ngx-logger';
+import { environment } from '../../environments/environment';
+import { AppConstants } from '../app.constants';
+import { ServicesDataService } from '../services/services-data.service';
+
 
 @Component({
     selector: 'app-importer',
@@ -28,45 +27,61 @@ export class ImporterComponent implements OnInit {
 
     // Error messages
     errorMessage: string;
-    successMessage : string;
+    successMessage: string;
+
+    progress: { percentage: number } = { percentage: 0 };
 
     constructor(
         private logger: NGXLogger,
-        private servicesDataService: ServicesDataService
+        private servicesDataService: ServicesDataService,
     ) { }
 
     ngOnInit() {
         this.importForm = new FormGroup({
             'elementSelector': new FormControl('produit'),
-            'formatSelector' : new FormControl('application/json'),
+            'formatSelector': new FormControl('application/json'),
             'fileImport': new FormControl('', Validators.required)
-        })
+        });
     }
 
-    private static checkExtension(file: File): boolean {
+    private checkExtension(file: File): boolean {
         if (!file) {
             return false;
         }
-        const extensions = [
+        const extensionsJSON = [
             'application/json',
-            'application/vnd.ms-excel',
-            'text/csv'
         ];
-        return -1 !== extensions.indexOf(file.type);
-    }
 
-    selectFile(event): void {
-        document.getElementById("custom-file-label").innerText = event.target.files[0].name;
-        this.selectedFiles = event.target.files;
-        if(this.selectedFiles) {
-            this.currentFileToUpload = this.selectedFiles.item(0);
-            console.log("Current file information : \n"
-            + "fileName : " + this.currentFileToUpload.name + "\n"
-            + "type : " + this.currentFileToUpload.type);
+        const extensionsCSV = [
+            'text/csv',
+            'application/vnd.ms-excel'
+        ];
+
+        if (this.importForm.get('formatSelector').value === 'text/csv') {
+            if (extensionsCSV.indexOf(file.type) < 0) {
+                return false;
+            } else {
+                return true;
+            }
+        } else {
+            if (extensionsJSON.indexOf(file.type) >= 0) {
+                return true;
+            }
         }
     }
 
+    selectFile(event: any): void {
+        this.selectedFiles = event.target.files;
+        this.progress.percentage = 0;
+
+            this.currentFileToUpload = this.selectedFiles.item(0);
+            this.logger.log('Current file information : \n'
+                + 'fileName : ' + this.currentFileToUpload.name + '\n'
+                + 'type : ' + this.currentFileToUpload.type);
+    }
+
     public importFile(): void {
+        this.successMessage = undefined;
         this.submitted = true;
 
         // Stop here if the form is invalid
@@ -76,37 +91,58 @@ export class ImporterComponent implements OnInit {
         }
 
         if (this.currentFileToUpload) {
-            if (!ImporterComponent.checkExtension(this.currentFileToUpload)) {
+            if (!this.checkExtension(this.currentFileToUpload)) {
                 this.errorMessage = 'Fichier non valide';
                 return;
             }
         }
 
-        if (environment.production) {
+        if (!environment.production) {
             this.logger.debug(AppConstants.CALL_SERVICE_IMPORT, this.importForm.get('formatSelector').value);
         }
 
-        this.servicesDataService.importFile(this.currentFileToUpload)
-            .subscribe((event) => {
-                if (event instanceof HttpResponse) {
-                    this.logger.debug(AppConstants.FILE_IMPORT_SUCCESS);
-                    this.handleSuccessImport(event);
-                }
-            }, error => {
-                this.logger.info(AppConstants.FILE_IMPORT_FAILED, error.message, error.status);
-                this.handleErrorImport(error);
-            });
+        const extension = new Map<string, string>();
+        extension.set('text/csv', 'csv');
+        extension.set('application/json', 'json');
 
+        this.progress.percentage = 0;
+
+        const elements = [
+            'product',
+            'menu'
+        ];
+
+        if (elements.indexOf(this.importForm.get('elementSelector').value) >= 0) {
+            this.servicesDataService.importFile(
+                this.currentFileToUpload,
+                extension.get(this.importForm.get('formatSelector').value),
+                this.importForm.get('elementSelector').value)
+                .subscribe((event) => {
+                    this.handleSuccessImport(event);
+                }, error => {
+                    this.logger.error(AppConstants.FILE_IMPORT_FAILED, error.message, error.status);
+                    this.handleErrorImport(error);
+                });
+        }
         this.selectedFiles = undefined;
     }
 
-    private handleSuccessImport(event: HttpResponse<Object>) {
-        this.importForm.reset();
-        this.errorMessage = undefined;
-        this.successMessage = event.statusText;
+    private handleSuccessImport(event: any): void {
+        this.logger.debug(AppConstants.FILE_IMPORT_SUCCESS);
+        if (event.type === HttpEventType.UploadProgress) {
+            this.progress.percentage = Math.round(100 * event.loaded / event.total);
+        } else if (event instanceof HttpResponse) {
+            this.importForm.reset();
+            this.errorMessage = undefined;
+            this.successMessage = event.statusText;
+            this.logger.info('File is completely uploaded!');
+        }
     }
 
-    private handleErrorImport(error: any) {
+    private handleErrorImport(error: any): void {
+        this.importForm.reset();
+        this.progress.percentage = 0;
+        this.successMessage = undefined;
         if (error instanceof HttpErrorResponse) {
             if (422 === error.status) {
                 Object.keys(error.error).forEach(prop => {

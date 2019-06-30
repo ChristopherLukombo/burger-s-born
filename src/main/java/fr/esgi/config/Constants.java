@@ -28,6 +28,18 @@ public final class Constants {
     public static final String WAITTING = "Waitting";
     public static final String PAID = "Paid";
     public static final String REFUND = "REFUND";
+    
+    public static final String COMMA = ";";
+    public static final String CSV = "csv";
+    public static final String JSON = "json";
+
+	public static final String MANAGER_ID = "managerId";
+	public static final String CATEGORY_ID = "categoryId";
+	public static final String AVAILABLE = "available";
+	public static final String PRICE = "price";
+	public static final String NAME = "name";
+
+
 
     private Constants() {
         // private constructor needed for Constants class.

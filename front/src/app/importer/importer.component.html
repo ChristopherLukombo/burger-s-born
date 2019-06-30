@@ -15,8 +15,8 @@
     <mat-form-field class="example-full-width">
         <mat-label>élément a importer</mat-label>
         <mat-select [(value)]="selectedElement" formControlName="elementSelector">
-            <mat-option value="produit">Produit</mat-option>
-            <mat-option value="menu" disabled="true">Menu</mat-option>
+            <mat-option value="product">Produit</mat-option>
+            <mat-option value="menu">Menu</mat-option>
         </mat-select>
     </mat-form-field>
 
@@ -25,21 +25,28 @@
         <mat-label>extension de fichier d'import</mat-label>
         <mat-select [(value)]="selectedFormat" formControlName="formatSelector">
             <mat-option value="application/json">JSON</mat-option>
-            <mat-option value="text/csv" disabled="true">CSV</mat-option>
+            <mat-option value="text/csv">CSV</mat-option>
         </mat-select>
     </mat-form-field>
 
 
     <div class="form-group">
         <div class="custom-file">
-            <input type="file" class="custom-file-input" id="fileImport" formControlName="fileImport" (change)="selectFile($event)">
-            <label class="custom-file-label" id="custom-file-label" for="fileImport">Choose file</label>
+            <input type="file" id="fileImport" formControlName="fileImport" (change)="selectFile($event)">
         </div>
     </div>
 
-    <div class="form-group">
-        <button type="submit" class="btn btn-outline-success mb-2">Import
-        </button>
+    <div *ngIf="currentFileToUpload" class="progress">
+        <div class="progress-bar progress-bar-info progress-bar-striped"
+             role="progressbar" attr.aria-valuenow="{{progress.percentage}}"
+             aria-valuemin="0" aria-valuemax="100"
+             [ngStyle]="{width:progress.percentage+'%'}">
+            {{progress.percentage}}%
+        </div>
+    </div>
+    <br>
 
+    <div class="form-group">
+        <button type="submit" class="btn btn-outline-success mb-2">Import</button>
     </div>
 </form>
