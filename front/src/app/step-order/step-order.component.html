@@ -119,8 +119,9 @@
             <td>{{product.name}}</td>
             <td>{{product.price | number : '1.2-2'}} €</td>
             <td>
-              <mat-checkbox value="{{product.id}}" [(ngModel)]="product.isSelected"
-              formControlName="secondCtrl" (change)="getCheckboxes()"></mat-checkbox>
+            <mat-checkbox value="{{product}}" [(ngModel)]="product.isSelected" [ngModelOptions]="{standalone: true}"
+              (change)="getCheckboxes()">
+            </mat-checkbox>
             </td>
           </tr>
         </tbody>
@@ -132,16 +133,18 @@
                 Nombre total de produits : {{totalElements}}
             </div>
 
-            <div style="display: inherit;" *ngIf="totalElements > 4">
-                <li class="page-item" [ngClass]="{'disabled' : selectedPage2 == 0}">
-                    <button class="page-link" (click)="findAllProductsByCategoryName(stepper, false, selectedPage2 - 1)">Précédent</button>
-                </li>
-                <li class="page-item" [ngClass]="{'disabled' : selectedPage2 == page2-1}" *ngFor="let page2 of pages2">
-                    <button class="page-link" (click)="findAllProductsByCategoryName(stepper, false, page2-1)">{{page2}}</button>
-                </li>
-                <li class="page-item" [ngClass]="{'disabled' : selectedPage2 == pages2[pages2.length-1]-1}">
-                    <button class="page-link" (click)="findAllProductsByCategoryName(stepper, false, selectedPage2 + 1)">Suivant</button>
-                </li>
+            <div style="display: inherit;" *ngIf="totalElements > 4 && null != this.pages2">
+              <li class="page-item" [ngClass]="{'disabled' : selectedPage2 === 0}">
+                <button class="page-link"
+                  (click)="findAllProductsByCategoryName(stepper, false, selectedPage2 - 1)">Précédent</button>
+              </li>
+              <li class="page-item" [ngClass]="{'disabled' : selectedPage2 === page2 - 1}" *ngFor="let page2 of this.pages2">
+                <button class="page-link" (click)="findAllProductsByCategoryName(stepper, false, this.page2 - 1)">{{page2}}</button>
+              </li>
+              <li class="page-item" [ngClass]="{'disabled' : selectedPage2 === pages2[pages2.length - 1] - 1}">
+                <button class="page-link"
+                  (click)="findAllProductsByCategoryName(stepper, false, selectedPage2 + 1)">Suivant</button>
+              </li>
             </div>
 
         </ul>
@@ -163,7 +166,7 @@
       <button class="btn btn-danger" mat-button matStepperPrevious>Précédent</button>
       <br /><br />
       <button class="btn btn-danger" mat-button
-        (click)="firstFormGroup.reset();stepper.reset();this.see = false;">Reset</button>
+        (click)="firstFormGroup.reset();stepper.reset();this.see = false;this.resetPreferences();">Reset</button>
     </div>
   </mat-step>
 </mat-horizontal-stepper>
