@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -64,5 +65,13 @@ public class ProductServiceImpl implements ProductService {
 		return productRepository.saveAll(products).stream()
 				.map(productMapper::productToProductDTO)
 				.collect(Collectors.toList());
+	}
+	
+	@Transactional(readOnly = true)
+	@Override
+	public Page<ProductDTO> findProductsByCategoryName(Pageable pageable, String categoryName) {
+		LOGGER.debug("Request to find all products by categoryName: {}", categoryName);
+		return productRepository.findAllByCategoryName(pageable, categoryName)
+				.map(productMapper::productToProductDTO);
 	}
 }

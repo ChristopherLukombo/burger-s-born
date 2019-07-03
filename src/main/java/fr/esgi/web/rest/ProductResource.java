@@ -1,26 +1,21 @@
 package fr.esgi.web.rest;
 
-import fr.esgi.config.ErrorMessage;
-import fr.esgi.exception.BurgerSTerminalException;
-import fr.esgi.service.DatabaseUpdatorService;
-import fr.esgi.service.ProductService;
-import fr.esgi.service.dto.ProductDTO;
-import org.json.JSONArray;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
-import javax.validation.Valid;
-import java.util.List;
-
-import static fr.esgi.config.Utils.getLang;
+import fr.esgi.exception.BurgerSTerminalException;
+import fr.esgi.service.ProductService;
+import fr.esgi.service.dto.ProductDTO;
 
 
 /**
@@ -64,6 +59,20 @@ public class ProductResource {
 
         return ResponseEntity.ok(products);
     }
+    
+	@GetMapping("/products/category")
+	public ResponseEntity<Page<ProductDTO>> findProductsByCategoryName(
+			@RequestParam("page") int page,
+			@RequestParam("size") int size,
+			@RequestParam("categorieName") String categorieName) throws BurgerSTerminalException {
+		Page<ProductDTO> products = productService.findProductsByCategoryName(PageRequest.of(page, size), categorieName);
+		if (products.isEmpty()) {
+			throw new BurgerSTerminalException(
+					HttpStatus.NOT_FOUND.value(), "Il n'a pas de produits.");
+		}
+		return ResponseEntity.ok(products);
+	}
+
 
     /**
      * POST  /product : add new product.

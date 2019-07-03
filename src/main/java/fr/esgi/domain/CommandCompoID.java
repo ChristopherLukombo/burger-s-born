@@ -7,11 +7,35 @@ public class CommandCompoID implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
 	
-	Long id;
-    Command command;
-    Employee employee;
+	private Long id;
+    private Command command;
+    private Employee employee;
 
-    @Override
+    public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	public Command getCommand() {
+		return command;
+	}
+
+	public void setCommand(Command command) {
+		this.command = command;
+	}
+
+	public Employee getEmployee() {
+		return employee;
+	}
+
+	public void setEmployee(Employee employee) {
+		this.employee = employee;
+	}
+
+	@Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
