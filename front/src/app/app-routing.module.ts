@@ -5,6 +5,7 @@ import { AuthComponent } from './auth/auth.component';
 import { HomeComponent } from './home/home.component';
 import { MenuComponent } from './menu/menu.component';
 import { ProductComponent } from './product/product.component';
+import { CreateProductComponent } from './create-product/create-product.component';
 import { RegisterComponent } from './register/register.component';
 import { ImporterComponent } from './importer/importer.component';
 import { StepOrderComponent } from './step-order/step-order.component';
@@ -17,6 +18,7 @@ const routes: Routes = [
   {path: 'register', component: RegisterComponent},
   {path: 'auth', component: AuthComponent},
   {path: 'product', component: ProductComponent},
+  {path: 'createProduct', component: CreateProductComponent},
   {path: 'menu' , component: MenuComponent},
   {path: 'importer', component: ImporterComponent},
   {path: 'steporder' , component: StepOrderComponent},

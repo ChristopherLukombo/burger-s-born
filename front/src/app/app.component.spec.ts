@@ -24,6 +24,7 @@ import { MenuComponent } from './menu/menu.component';
 import { NavbarComponent } from './navbar/navbar.component';
 import { OrdersComponent } from './orders/orders.component';
 import { ProductComponent } from './product/product.component';
+import { CreateProductComponent } from './create-product/create-product.component';
 import { RegisterComponent } from './register/register.component';
 import { AuthProviderService } from './services/auth-provider.service';
 import { ServicesDataService } from './services/services-data.service';
@@ -41,6 +42,7 @@ describe('AppComponent', () => {
         DialogSuccessComponent,
         DialogRedirectionComponent,
         ProductComponent,
+        CreateProductComponent,
         NavbarComponent,
         HeaderComponent,
         MenuComponent,
