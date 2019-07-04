@@ -1,6 +1,7 @@
 package fr.esgi.service.impl;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
@@ -11,7 +12,9 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import fr.esgi.dao.CategoryRepository;
 import fr.esgi.dao.ProductRepository;
+import fr.esgi.domain.Category;
 import fr.esgi.domain.Product;
 import fr.esgi.service.ProductService;
 import fr.esgi.service.dto.ProductDTO;
@@ -28,13 +31,17 @@ public class ProductServiceImpl implements ProductService {
 	private static final Logger LOGGER = LoggerFactory.getLogger(ProductServiceImpl.class);
 
 	private final ProductRepository productRepository;
+	
+	private final CategoryRepository categoryRepository;
 
 	private final ProductMapper productMapper;
 
 	@Autowired
-	public ProductServiceImpl(ProductRepository productRepository, ProductMapper productMapper) {
+	public ProductServiceImpl(ProductRepository productRepository, ProductMapper productMapper,
+			CategoryRepository categoryRepository) {
 		this.productRepository = productRepository;
 		this.productMapper = productMapper;
+		this.categoryRepository = categoryRepository;
 	}
 
 	/**
@@ -65,4 +72,28 @@ public class ProductServiceImpl implements ProductService {
 				.map(productMapper::productToProductDTO)
 				.collect(Collectors.toList());
 	}
+	
+	
+	/**
+     * Save the product in database.
+     * @param ProductDTO
+     * @return ProductDTO
+     */
+    public ProductDTO addProduct(ProductDTO productDTO) {
+        Product newProduct = new Product();
+        Optional<Category> category = categoryRepository.findById(productDTO.getCategoryId());
+        
+        if(category.isPresent()) {
+        	newProduct.setCategory(category.get());
+        }
+        
+    	newProduct.setName(productDTO.getName());
+    	newProduct.setPrice(productDTO.getPrice());
+    	newProduct.setAvailable(true);
+    	
+    	newProduct = productRepository.save(newProduct);
+
+        LOGGER.debug("Created Information for Product: {}", newProduct);
+        return productMapper.productToProductDTO(newProduct);
+    }
 }

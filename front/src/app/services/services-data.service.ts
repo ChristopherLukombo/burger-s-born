@@ -7,6 +7,7 @@ import { User } from '../../model/model.user';
 import { Paypal } from '../../model/model.paypal';
 import { AuthProviderService } from './auth-provider.service';
 import {Menu} from '../../model/model.menu';
+import { Product } from '../../model/model.product';
 
 
 @Injectable()
@@ -59,6 +60,11 @@ export class ServicesDataService {
     /***************************************Product**********************************************************/
     public findAllProduct(indexPage): Observable<HttpResponse<Object>> {
         return this.http.get<HttpResponse<Object>>(this.resourceUrl + '/product?page=' + indexPage + '&size=4', { observe: 'response' });
+    }
+
+    public createProduct(product: Product): Observable<HttpResponse<Object>> {
+        const headers = new HttpHeaders({ 'Authorization': 'Bearer ' + this.authProviderService.getToken() });
+        return this.http.post<HttpResponse<Object>>(this.resourceUrl + '/new/product', product, { headers, observe: 'response' });
     }
 
     /*****************************************MENU**********************************************************/

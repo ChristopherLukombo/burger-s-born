@@ -27,4 +27,14 @@ public interface ProductService {
 	 * @return the list of entities
 	 */
     List<ProductDTO> saveAll(List<ProductDTO> products);
+    
+    /**
+	 * Add product.
+	 * 
+	 * @param productDTO of entities to save
+	 * @return the entities saved
+	 */
+    ProductDTO addProduct(ProductDTO product);
+    
+    
 }
