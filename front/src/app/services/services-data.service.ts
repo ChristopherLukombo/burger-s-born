@@ -57,6 +57,11 @@ export class ServicesDataService {
         return this.http.get(this.resourceUrl + '/users/imageURL/' + `${pseudo}`, { headers, responseType: 'blob' });
     }
 
+    /***************************************Category**********************************************************/
+    public findAllCategory(): Observable<HttpResponse<Object>> {
+        return this.http.get<HttpResponse<Object>>(this.resourceUrl + '/category', { observe: 'response' });
+    }
+
     /***************************************Product**********************************************************/
     public findAllProduct(indexPage): Observable<HttpResponse<Object>> {
         return this.http.get<HttpResponse<Object>>(this.resourceUrl + '/product?page=' + indexPage + '&size=4', { observe: 'response' });
