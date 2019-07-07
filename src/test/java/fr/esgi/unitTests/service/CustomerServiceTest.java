@@ -11,12 +11,10 @@ import java.time.ZonedDateTime;
 import java.util.Arrays;
 import java.util.Optional;
 
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import fr.esgi.dao.CustomerRepository;
@@ -48,12 +46,6 @@ public class CustomerServiceTest {
 
 	@InjectMocks
 	private CustomerServiceImpl customerServiceImpl;
-
-	@Before
-	public void setUp() {
-		MockitoAnnotations.initMocks(this);
-		customerServiceImpl = new CustomerServiceImpl(customerRepository, customerMapper);
-	}
 
 	private static CustomerDTO getCustomerDTO() {
 		CustomerDTO customerDTO = new CustomerDTO();

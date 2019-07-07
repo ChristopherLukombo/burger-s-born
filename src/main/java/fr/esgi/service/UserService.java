@@ -53,10 +53,4 @@ public interface UserService {
      * @throws BurgerSTerminalException 
      */
      Map<String, byte[]> getImageURL(String pseudo) throws BurgerSTerminalException;
-
-     /**
-      * Returns the current user.
-      */
-     Optional<UserDTO> findCurrentUser();
-     
 }

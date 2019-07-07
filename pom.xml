@@ -11,7 +11,7 @@
 	</parent>
 	<groupId>fr.esgi</groupId>
 	<artifactId>burger-s-terminal</artifactId>
-	<version>0.0.1</version>
+	<version>0.0.4</version>
 	<name>burger-s-terminal</name>
 
 	<properties>
@@ -60,6 +60,8 @@
 		<sonar.sources>${project.basedir}/src/main/</sonar.sources>
 		<sonar.surefire.reportsPath>${project.testresult.directory}/surefire-reports</sonar.surefire.reportsPath>
 		<sonar.tests>${project.basedir}/src/test/</sonar.tests>
+		<sonar.exclusions>src/main/java/fr/esgi/domain/**/*.*,
+			src/main/java/fr/esgi/service/dto/**/*.*</sonar.exclusions>
 	</properties>
 
 	<dependencies>

@@ -9,12 +9,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -140,8 +137,6 @@ public class UserServiceImpl implements UserService {
      */
     public Map<String, byte[]> getImageURL(String pseudo) throws BurgerSTerminalException {
     	final Optional<User> user = userRepository.findOneByPseudoIgnoreCase(pseudo);
-    	byte[] bytesArray;
-
     	final Map<String, byte[]> content = new HashMap<>();
 
     	if (user.isPresent()) {
@@ -150,12 +145,12 @@ public class UserServiceImpl implements UserService {
     			
     			final StringBuilder imageUrl = new StringBuilder();
     			imageUrl.append(configurationService.getImagesDirectory());
-    			imageUrl.append(((indexOfBackslash > 0) ?  Constants.IMAGES.replace(Constants.DELIMITER, Constants.DOUBLE_BACKSLASH) : Constants.IMAGES));
-    			imageUrl.append((indexOfBackslash > 0) ? Constants.DOUBLE_BACKSLASH : Constants.DELIMITER);
+    			imageUrl.append(((indexOfBackslash >= 0) ?  Constants.IMAGES.replace(Constants.DELIMITER, Constants.DOUBLE_BACKSLASH) : Constants.IMAGES));
+    			imageUrl.append((indexOfBackslash >= 0) ? Constants.DOUBLE_BACKSLASH : Constants.DELIMITER);
     			imageUrl.append(user.get().getId() + ((indexOfBackslash > 0) ? Constants.DOUBLE_BACKSLASH : Constants.DELIMITER));
     			imageUrl.append(user.get().getImageUrl());
     			final Path path = new File(imageUrl.toString()).toPath();
-    			bytesArray = readFile(imageUrl.toString());
+    			byte[] bytesArray = readFile(imageUrl.toString());
     			content.put(Files.probeContentType(path), bytesArray);
 
     		} catch (IOException e) {
@@ -186,22 +181,4 @@ public class UserServiceImpl implements UserService {
     private void sendFileToFolder(MultipartFile file, Path path) throws IOException {
         Files.copy(file.getInputStream(), path.resolve(file.getOriginalFilename()));
     }
-
-    /**
-     * Returns the current user.
-     */
-    @Transactional(readOnly = true)
-	@Override
-	public Optional<UserDTO> findCurrentUser() {
-		Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
- 		String username;
- 		if (principal instanceof UserDetails) {
- 		   username = ((UserDetails)principal).getUsername();
- 		} else {
- 		   username = principal.toString();
- 		}
- 		return userRepository.findOneByPseudoIgnoreCase(username)
- 				.map(userMapper::userToUserDTO);
-	}
-
 }

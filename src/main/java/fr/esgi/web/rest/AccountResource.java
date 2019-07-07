@@ -5,7 +5,6 @@ import static fr.esgi.config.Utils.getLang;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Map;
-import java.util.Optional;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -164,19 +163,6 @@ public class AccountResource {
         LOGGER.debug("REST request to check if the current user is authenticated");
         return new ResponseEntity<>(request.getRemoteUser(), HttpStatus.OK);
     }
-    
-    /**
-     * Returns the current user.
-     */
-	@GetMapping("/currentUser")
-	public ResponseEntity<UserDTO> getCurrentUser() throws BurgerSTerminalException {
- 		Optional<UserDTO> currentUser = userService.findCurrentUser();
- 		if (currentUser.isPresent()) {
- 			return ResponseEntity.ok().body(currentUser.get());
- 		}
- 		throw new BurgerSTerminalException(HttpStatus.INTERNAL_SERVER_ERROR.value(),
-				messageSource.getMessage(ErrorMessage.USER_DOES_NOT_EXISTS, null, getLang(FR)));
-	}
 
     private static boolean checkPasswordLength(String password) {
         return !StringUtils.isEmpty(password) &&

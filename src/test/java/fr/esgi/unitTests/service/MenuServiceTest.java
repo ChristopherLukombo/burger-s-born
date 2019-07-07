@@ -15,12 +15,10 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -51,8 +49,6 @@ public class MenuServiceTest {
 
 	private static final int PRICE = 1;
 
-	private static final String TEST = "TEST";
-
 	private static final long ID = 1L;
 
 	@Mock
@@ -66,13 +62,6 @@ public class MenuServiceTest {
 
 	@InjectMocks
 	private MenuServiceImpl menuServiceImpl;
-	
-
-	@Before
-	public void setUp() {
-		MockitoAnnotations.initMocks(this);
-		menuServiceImpl = new MenuServiceImpl(menuRepository, menuMapper, productMapper);
-	}
 	
 	private static MenuDTO getMenuDTO() {
 		MenuDTO menuDTO = new MenuDTO();
