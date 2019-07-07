@@ -64,7 +64,7 @@ export class ServicesDataService {
 
     /***************************************Product**********************************************************/
     public findAllProduct(indexPage): Observable<HttpResponse<Object>> {
-        return this.http.get<HttpResponse<Object>>(this.resourceUrl + '/product?page=' + indexPage + '&size=4', { observe: 'response' });
+        return this.http.get<HttpResponse<Object>>(this.resourceUrl + '/products?page=' + indexPage + '&size=4', { observe: 'response' });
     }
 
     public createProduct(product: Product): Observable<HttpResponse<Object>> {
@@ -75,6 +75,11 @@ export class ServicesDataService {
     public deleteProduct(id: Number): Observable<HttpResponse<Object>> {
         const headers = new HttpHeaders({ 'Authorization': 'Bearer ' + this.authProviderService.getToken() });
         return this.http.delete<HttpResponse<Object>>(this.resourceUrl + '/delete/product/' + id, { headers, observe: 'response' });
+    }
+
+    public updateProduct(product: Product): Observable<HttpResponse<Object>> {
+        const headers = new HttpHeaders({ 'Authorization': 'Bearer ' + this.authProviderService.getToken() });
+        return this.http.put<HttpResponse<Object>>(this.resourceUrl + '/product', product, { headers, observe: 'response' });
     }
 
     /*****************************************MENU**********************************************************/

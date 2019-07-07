@@ -70,15 +70,22 @@ export class CreateProductComponent implements OnInit {
     public createProduct(): void {
 
         this.errorMessage = null;
+
+        if(!this.isAdmin || !this.authProviderService.isAuthenticated()) {
+            this.errorMessage = 'Vous devez être connecté avec un compte administrateur.';
+            return;
+        }
+
+        this.errorMessage = null;
         this.submitted = true;
 
         const name = this.registerForm.controls.name.value;
         const category = this.registerForm.controls.category.value;
         const price = this.registerForm.controls.price.value;
 
-        if (this.registerForm.invalid) {
+        /*if (this.registerForm.invalid) {
             return;
-        }
+        }*/
 
         let product = new Product();
 
@@ -92,15 +99,11 @@ export class CreateProductComponent implements OnInit {
 
         this.servicesDataService.createProduct(product)
             .subscribe(data => {
-                console.log(data);
-                //this.logger.info(AppConstants.USER_SAVED_SUCCESSFULLY);
                 this.handleSuccessRegister(getUserId, data);
             }, error => {
                 if(error.status == 403) {
                     this.errorMessage = "Vous devez être connecté pour pouvoir ajouter un produit.";
                 }
-                console.log(error);
-                //this.logger.error(AppConstants.USER_HASNT_BEEN_SAVED, error.message, error.status);
                 this.handleErrorRegister(error);
             });
 
@@ -162,10 +165,13 @@ export class CreateProductComponent implements OnInit {
     public loadCategories(): void {
         this.servicesDataService.findAllCategory()
             .subscribe(data => {
-                console.log(data);
                 this.categories = data['body'];
             }, error => {
-                console.log(error);
+                if(error.status === 404) {
+                    this.errorMessage = "Aucune catégorie de produit enregistrée.";
+                } else {
+                    this.errorMessage = "Erreur lors de la récupération des catégories de produit.";
+                }
             });
     }
 

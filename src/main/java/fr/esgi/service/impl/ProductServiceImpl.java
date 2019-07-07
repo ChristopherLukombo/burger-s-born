@@ -15,8 +15,10 @@ import org.springframework.transaction.annotation.Transactional;
 import fr.esgi.dao.CategoryRepository;
 import fr.esgi.dao.ProductRepository;
 import fr.esgi.domain.Category;
+import fr.esgi.domain.Command;
 import fr.esgi.domain.Product;
 import fr.esgi.service.ProductService;
+import fr.esgi.service.dto.CommandDTO;
 import fr.esgi.service.dto.ProductDTO;
 import fr.esgi.service.mapper.ProductMapper;
 
@@ -106,5 +108,19 @@ public class ProductServiceImpl implements ProductService {
 	public void delete(Long id) {
 		LOGGER.debug("Request to delete a product");
 		productRepository.deleteById(id);
+	}
+	
+	/**
+	 * Update a product.
+	 *
+	 * @param productDTO the entity to update
+	 * @return the persisted entity
+	 */
+	@Override
+	public ProductDTO update(ProductDTO productDTO) {
+		LOGGER.debug("Request to update a product: {}", productDTO);
+		Product product = productMapper.productDTOToProduct(productDTO);
+		product = productRepository.saveAndFlush(product);
+		return productMapper.productToProductDTO(product);
 	}
 }

@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
+import fr.esgi.service.dto.CommandDTO;
 import fr.esgi.service.dto.ProductDTO;
 
 /**
@@ -42,6 +43,15 @@ public interface ProductService {
 	 * @param id the id of the entity
 	 */
     void delete(Long id);
+    
+    
+    /**
+	 * Update a product.
+	 *
+	 * @param productDTO the entity to update
+	 * @return the persisted entity
+	 */
+	ProductDTO update(ProductDTO productDTO);
     
     
 }
