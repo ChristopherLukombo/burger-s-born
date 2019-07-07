@@ -72,6 +72,11 @@ export class ServicesDataService {
         return this.http.post<HttpResponse<Object>>(this.resourceUrl + '/new/product', product, { headers, observe: 'response' });
     }
 
+    public deleteProduct(id: Number): Observable<HttpResponse<Object>> {
+        const headers = new HttpHeaders({ 'Authorization': 'Bearer ' + this.authProviderService.getToken() });
+        return this.http.delete<HttpResponse<Object>>(this.resourceUrl + '/delete/product/' + id, { headers, observe: 'response' });
+    }
+
     /*****************************************MENU**********************************************************/
     public findAllMenus(indexPage): Observable<HttpResponse<Object>> {
         return this.http.get<HttpResponse<Object>>(this.resourceUrl + '/menu/all?page=' + indexPage + '&size=4', { observe: 'response' });

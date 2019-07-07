@@ -29,7 +29,7 @@ export class ProductComponent implements OnInit {
 
                 this.products = data.body['content'];
                 this.totalElements = data.body['totalElements'];
-                this.pages = Array(data.body['totalPages']).fill(0).map((x, i) => i+1);
+                this.pages = Array(data.body['totalPages']).fill(0).map((x, i) => i + 1);
                 this.selectedPage = indexPage;
 
             }, err => {
@@ -40,6 +40,27 @@ export class ProductComponent implements OnInit {
                         this.errorMessage = 'Une erreur serveur s\'est produite.';
                     }
                 }
+                this.successMessage = null;
+            });
+    }
+
+    delete(id) {
+        this.servicesDataService.deleteProduct(id)
+            .subscribe(data => {
+                this.successMessage = 'Vous avez supprimé le produit avec succès.';
+                this.errorMessage = null;
+
+                this.findAll(this.selectedPage);
+
+            }, err => {
+                if (err instanceof HttpErrorResponse) {
+                    if (403 === err.status) {
+                        this.errorMessage = 'Vous n\'êtes pas autorisé à effectuer cette action.';
+                    } else {
+                        this.errorMessage = 'Une erreur serveur s\'est produite.';
+                    }
+                }
+                this.successMessage = null;
             });
     }
 

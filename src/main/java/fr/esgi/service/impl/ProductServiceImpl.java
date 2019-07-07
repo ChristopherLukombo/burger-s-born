@@ -96,4 +96,15 @@ public class ProductServiceImpl implements ProductService {
         LOGGER.debug("Created Information for Product: {}", newProduct);
         return productMapper.productToProductDTO(newProduct);
     }
+    
+    /**
+	 * Delete the "id" product.
+	 *
+	 * @param id the id of the entity
+	 */
+	@Override
+	public void delete(Long id) {
+		LOGGER.debug("Request to delete a product");
+		productRepository.deleteById(id);
+	}
 }

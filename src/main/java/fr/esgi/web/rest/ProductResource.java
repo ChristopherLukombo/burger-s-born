@@ -9,7 +9,9 @@ import org.springframework.context.MessageSource;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -79,5 +81,17 @@ public class ProductResource {
           LOGGER.debug("REST request to add new product");
           return new ResponseEntity<ProductDTO>(productService.addProduct(productDTO), HttpStatus.OK);
       }
+	  
+	  /**
+		 * DELETE  /product/{id} : delete a product.
+		 * @param id the id of the productDTO to delete
+		 * @return the ResponseEntity with status 200 (OK)
+		 */
+		@DeleteMapping("delete/product/{id}")
+		public ResponseEntity<Void> deleteProduct(@PathVariable Long id) {
+			LOGGER.debug("REST request to delete a product: {}", id);
+			productService.delete(id);
+			return ResponseEntity.noContent().build();
+		}
 
 }

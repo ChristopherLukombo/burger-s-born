@@ -36,5 +36,12 @@ public interface ProductService {
 	 */
     ProductDTO addProduct(ProductDTO product);
     
+    /**
+	 * Delete product.
+	 * 
+	 * @param id the id of the entity
+	 */
+    void delete(Long id);
+    
     
 }

@@ -6,6 +6,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { NGXLogger } from 'ngx-logger';
 import { environment } from '../../environments/environment';
 import { Product } from '../../model/model.product';
+import { Category } from '../../model/model.category';
 import { AppConstants } from '../app.constants';
 import { DialogSuccessComponent } from '../dialog-success/dialog-success.component';
 import { RoleName } from '../RoleName';
@@ -23,6 +24,7 @@ const HEIGHT = '15%';
 export class CreateProductComponent implements OnInit {
 
     product: Product;
+    categories: Category;
     registerForm: FormGroup;
     submitted = false;
     errorMessage: string;
@@ -42,6 +44,7 @@ export class CreateProductComponent implements OnInit {
     ngOnInit() {
         this.createForm();
         this.isAdmin = this.authProviderService.isAdmin();
+        this.loadCategories();
     }
 
     private createForm() {
@@ -66,9 +69,16 @@ export class CreateProductComponent implements OnInit {
 
     public createProduct(): void {
 
+        this.errorMessage = null;
+        this.submitted = true;
+
         const name = this.registerForm.controls.name.value;
         const category = this.registerForm.controls.category.value;
         const price = this.registerForm.controls.price.value;
+
+        if (this.registerForm.invalid) {
+            return;
+        }
 
         let product = new Product();
 
@@ -76,48 +86,24 @@ export class CreateProductComponent implements OnInit {
         product.categoryId = category;
         product.price = price;
 
-        /*
-        constructor(
-            public id?: number,
-            public available?: number,
-            public name?: string,
-            public price?: number,
-            public categoryId?: number,
-            public managerId?: number,
-            public isSelected?: boolean
-        ) {}*/
-
-        
+        if (!environment.production) {
+            this.logger.debug(AppConstants.CALL_SERVICE, product);
+        }
 
         this.servicesDataService.createProduct(product)
-        .subscribe(data => {
-            console.log(data);
-            //this.logger.info(AppConstants.USER_SAVED_SUCCESSFULLY);
-            this.handleSuccessRegister(getUserId, data);
-        }, error => {
-            console.log(error);
-            //this.logger.error(AppConstants.USER_HASNT_BEEN_SAVED, error.message, error.status);
-            this.handleErrorRegister(error);
-        });
-
-        
-        this.submitted = true;
-        // stop here if form is invalid
-        /*if (this.registerForm.invalid) {
-            return;
-        }
-
-        if (!environment.production) {
-            this.logger.debug(AppConstants.CALL_SERVICE, this.user);
-        }
-        this.servicesDataService.save(this.user, this.injector.get(TranslateService).currentLang)
             .subscribe(data => {
-                this.logger.info(AppConstants.USER_SAVED_SUCCESSFULLY);
+                console.log(data);
+                //this.logger.info(AppConstants.USER_SAVED_SUCCESSFULLY);
                 this.handleSuccessRegister(getUserId, data);
             }, error => {
-                this.logger.error(AppConstants.USER_HASNT_BEEN_SAVED, error.message, error.status);
+                if(error.status == 403) {
+                    this.errorMessage = "Vous devez être connecté pour pouvoir ajouter un produit.";
+                }
+                console.log(error);
+                //this.logger.error(AppConstants.USER_HASNT_BEEN_SAVED, error.message, error.status);
                 this.handleErrorRegister(error);
-            });*/
+            });
+
 
         function getUserId(data) {
             let userId: number;
@@ -171,6 +157,16 @@ export class CreateProductComponent implements OnInit {
                 height: HEIGHT
             }
         );
+    }
+
+    public loadCategories(): void {
+        this.servicesDataService.findAllCategory()
+            .subscribe(data => {
+                console.log(data);
+                this.categories = data['body'];
+            }, error => {
+                console.log(error);
+            });
     }
 
 }
