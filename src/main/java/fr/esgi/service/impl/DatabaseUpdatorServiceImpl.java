@@ -36,7 +36,7 @@ import fr.esgi.service.dto.ProductDTO;
 @Transactional
 public class DatabaseUpdatorServiceImpl implements DatabaseUpdatorService {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(DatabaseUpdatorService.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(DatabaseUpdatorServiceImpl.class);
 
 	private final ProductService productService;
 
