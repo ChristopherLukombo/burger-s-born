@@ -60,8 +60,14 @@
 		<sonar.sources>${project.basedir}/src/main/</sonar.sources>
 		<sonar.surefire.reportsPath>${project.testresult.directory}/surefire-reports</sonar.surefire.reportsPath>
 		<sonar.tests>${project.basedir}/src/test/</sonar.tests>
-		<sonar.exclusions>src/main/java/fr/esgi/domain/**/*.*,
-			src/main/java/fr/esgi/service/dto/**/*.*</sonar.exclusions>
+		<sonar.exclusions>
+			src/main/java/fr/esgi/domain/**/*.*,
+			src/main/java/fr/esgi/service/dto/**/*.*,
+			src/main/java/fr/esgi/config/**/*.*,
+			src/main/java/fr/esgi/security/**/*.*,
+			src/main/java/fr/esgi/dao/**/*.*,
+			src/main/java/fr/esgi/exception/**/*.*
+		</sonar.exclusions>
 	</properties>
 
 	<dependencies>
