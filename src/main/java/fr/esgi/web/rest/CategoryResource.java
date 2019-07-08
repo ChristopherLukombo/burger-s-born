@@ -50,13 +50,12 @@ public class CategoryResource {
      * @throws BurgerSTerminalException
      */
     @GetMapping("/category")
-    public ResponseEntity<List<CategoryDTO>> findCategory() throws BurgerSTerminalException {
+    public ResponseEntity<List<CategoryDTO>> getAllCategories() throws BurgerSTerminalException {
         LOGGER.debug("REST request to find all categories");
         final List<CategoryDTO> categories = categoryService.findAll();
         if (null == categories || categories.isEmpty()) {
             throw new BurgerSTerminalException(HttpStatus.NOT_FOUND.value(), "Catégorie non trouvé");
         }
-
         return ResponseEntity.ok(categories);
     }
 }

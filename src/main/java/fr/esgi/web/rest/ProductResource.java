@@ -1,5 +1,8 @@
 package fr.esgi.web.rest;
 
+import java.net.URI;
+import java.net.URISyntaxException;
+
 import javax.validation.Valid;
 
 import org.slf4j.Logger;
@@ -34,38 +37,36 @@ import fr.esgi.service.dto.ProductDTO;
 @RequestMapping("/api")
 public class ProductResource {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(ProductResource.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ProductResource.class);
 
-    private final ProductService productService;
+	private final ProductService productService;
 
-    @Autowired
-    public ProductResource(ProductService productService, MessageSource messageSource) {
+	@Autowired
+	public ProductResource(ProductService productService, MessageSource messageSource) {
 		this.productService = productService;
 	}
 
-
-
 	/**
-     * GET  /product : find all products.
-     *
-     * @param page
-     * @param size
-     * @return all products
-     * @throws BurgerSTerminalException
-     */
-    @GetMapping("/products")
-    public ResponseEntity<Page<ProductDTO>> findProducts(@RequestParam int page, @RequestParam("size") int size) throws BurgerSTerminalException {
-        LOGGER.debug("REST request to find all products");
-        final Page<ProductDTO> products = productService.findAll(page, size);
-        if (null == products || products.isEmpty()) {
-            throw new BurgerSTerminalException(HttpStatus.NOT_FOUND.value(), "Produits non trouvé");
-        }
+	 * GET  /product : find all products.
+	 *
+	 * @param page
+	 * @param size
+	 * @return all products
+	 * @throws BurgerSTerminalException
+	 */
+	@GetMapping("/products")
+	public ResponseEntity<Page<ProductDTO>> getAllProducts(@RequestParam int page, @RequestParam("size") int size) throws BurgerSTerminalException {
+		LOGGER.debug("REST request to find all products");
+		final Page<ProductDTO> products = productService.findAll(page, size);
+		if (null == products || products.isEmpty()) {
+			throw new BurgerSTerminalException(HttpStatus.NOT_FOUND.value(), "Produits non trouvé");
+		}
 
-        return ResponseEntity.ok(products);
-    }
-    
+		return ResponseEntity.ok(products);
+	}
+
 	@GetMapping("/products/category")
-	public ResponseEntity<Page<ProductDTO>> findProductsByCategoryName(
+	public ResponseEntity<Page<ProductDTO>> getProductsByCategoryName(
 			@RequestParam("page") int page,
 			@RequestParam("size") int size,
 			@RequestParam("categorieName") String categorieName) throws BurgerSTerminalException {
@@ -77,24 +78,30 @@ public class ProductResource {
 		return ResponseEntity.ok(products);
 	}
 
+	/**
+	 * POST  /new/product : save a product.
+	 *
+	 * @param productDTO
+	 * @param id
+	 * @param available
+	 * @param name
+	 * @param price
+	 * @return created product
+	 * @throws BurgerSTerminalException
+	 * @throws URISyntaxException 
+	 */
+	@PostMapping("new/product")
+	public ResponseEntity<ProductDTO> createProduct(@RequestBody @Valid ProductDTO productDTO) throws BurgerSTerminalException, URISyntaxException {
+		LOGGER.debug("REST request to create a product: {}", productDTO);
+		if (null != productDTO.getId()) {
+			throw new BurgerSTerminalException(HttpStatus.BAD_REQUEST.value(),
+					"Un produit ne peut pas déjà avoir un ID.");
+		}
+		ProductDTO result = productService.save(productDTO);
+		return ResponseEntity.created(new URI("/api/product" + result.getId()))
+				.body(result);
+	}
 
-    /**
-     * POST  /product : add new product.
-     *
-     * @param productDTO
-     * @param id
-     * @param available
-     * @param name
-     * @param price
-     * @return created product
-     * @throws BurgerSTerminalException
-     */
-	  @PostMapping("new/product")
-      public ResponseEntity<ProductDTO> addProduct(@RequestBody @Valid ProductDTO productDTO) throws BurgerSTerminalException {
-          LOGGER.debug("REST request to add new product");
-          return new ResponseEntity<ProductDTO>(productService.addProduct(productDTO), HttpStatus.OK);
-      }
-	  
 	/**
 	 * DELETE  /product/{id} : delete a product.
 	 * @param id the id of the productDTO to delete
@@ -106,8 +113,8 @@ public class ProductResource {
 		productService.delete(id);
 		return ResponseEntity.noContent().build();
 	}
-		
-		
+
+
 	/**
 	 * PUT  /product : update a product.
 	 * @param productDTO
@@ -119,7 +126,7 @@ public class ProductResource {
 		LOGGER.debug("REST request to update a product: {}", productDTO);
 		if (null == productDTO.getId()) {
 			throw new BurgerSTerminalException(HttpStatus.BAD_REQUEST.value(),
-					"Un product doit avoir un ID.");
+					"Un produit doit avoir un ID.");
 		}
 		ProductDTO result = productService.update(productDTO);
 		return ResponseEntity.ok()
