@@ -30,13 +30,14 @@ import { ServicesDataService } from '../services/services-data.service';
 import { StepOrderComponent } from '../step-order/step-order.component';
 import { AuthComponent } from './auth.component';
 import { CreateMenuComponent } from '../create-menu/create-menu.component';
+import { CreateProductComponent } from '../create-product/create-product.component';
 
 
 describe('AuthComponent', () => {
   let component: AuthComponent;
   let fixture: ComponentFixture<AuthComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(() => {
     TestBed.configureTestingModule({
       declarations: [
         AppComponent,
@@ -54,6 +55,7 @@ describe('AuthComponent', () => {
         MenuComponent,
         StepOrderComponent,
         CreateMenuComponent,
+        CreateProductComponent,
         OrdersComponent
       ],
       imports: [
@@ -103,7 +105,7 @@ describe('AuthComponent', () => {
       schemas: [CUSTOM_ELEMENTS_SCHEMA]
     })
       .compileComponents();
-  }));
+  });
 
   beforeEach(() => {
     fixture = TestBed.createComponent(AuthComponent);

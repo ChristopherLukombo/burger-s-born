@@ -88,8 +88,7 @@ public class CommandCompoServiceImpl implements CommandCompoService {
 	@Override
 	public List<CommandCompoDTO> findAll() {
 		LOGGER.debug("Request to find all commandCompos");
-		return commandCompoRepository.findAll()
-				.stream()
+		return commandCompoRepository.findAll().stream()
 				.map(commandCompoMapper::commandCompoToCommandCompoDTO)
 				.collect(Collectors.toList());
 	}

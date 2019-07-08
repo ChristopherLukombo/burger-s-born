@@ -1,113 +1,80 @@
-package fr.esgi.unitTests.web;
+package fr.esgi.unitTests.service;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-import fr.esgi.dao.ManagerRepository;
 import fr.esgi.dao.MenuRepository;
-import fr.esgi.dao.ProductRepository;
 import fr.esgi.domain.Category;
 import fr.esgi.domain.Manager;
 import fr.esgi.domain.Menu;
 import fr.esgi.domain.Product;
-import fr.esgi.service.MenuService;
 import fr.esgi.service.dto.MenuDTO;
 import fr.esgi.service.dto.ProductDTO;
 import fr.esgi.service.impl.MenuServiceImpl;
 import fr.esgi.service.mapper.MenuMapper;
 import fr.esgi.service.mapper.ProductMapper;
-import fr.esgi.web.handler.RestResponseEntityExceptionHandler;
-import fr.esgi.web.rest.MenuResource;
 
 @RunWith(MockitoJUnitRunner.Silent.class)
-public class MenuResourceTest {
-
-	private static final String TEST = "TEST";
-
-	private static final String MENU_TASTY = "Menu Tasty";
+public class MenuServiceTest {
+	
+	private static final String STEAK = "steak";
 
 	private static final String PLAT = "PLAT";
 
 	private static final boolean AVAILABLE = true;
 
 	private static final String NAME = "NAME";
+	
+	private static final String MENU_TASTY = "Menu Tasty";
 
 	private static final int PRICE = 1;
 
 	private static final long ID = 1L;
-
-	private MockMvc mockMvc;
 
 	@Mock
 	private MenuRepository menuRepository;
 
 	@Mock
 	private MenuMapper menuMapper;
-
-	@Mock
-	private MenuService menuService;
-
-	@Mock
-	private ManagerRepository managerRepository;
-
-	@Mock
-	private ProductRepository productRepository;
-
+	
 	@Mock
 	private ProductMapper productMapper;
 
 	@InjectMocks
-	private MenuResource menuResource;
-
-	@Before
-	public void init(){
-		MockitoAnnotations.initMocks(this);
-		initMocks();
-		mockMvc = MockMvcBuilders
-				.standaloneSetup(menuResource)
-				.setControllerAdvice(new RestResponseEntityExceptionHandler())
-				.build();
-	}
-
-	private void initMocks() {
-		menuService = new MenuServiceImpl(menuRepository, menuMapper, productMapper);
-		menuResource = new MenuResource(menuService);
-	}
-
+	private MenuServiceImpl menuServiceImpl;
+	
 	private static MenuDTO getMenuDTO() {
 		MenuDTO menuDTO = new MenuDTO();
 		menuDTO.setId(ID);
-		menuDTO.setName(TEST);
-		menuDTO.setPrice(1);
-		menuDTO.setAvailable(true);		
-		menuDTO.setManagerId(1L);
+		menuDTO.setName(MENU_TASTY);
+		menuDTO.setPrice(PRICE);
+		menuDTO.setAvailable(true);
+    	menuDTO.setManagerId(ID);
+    	menuDTO.setProductsDTO(Arrays.asList(getProductDTO()));
+    	
 		return menuDTO;
 	}
-
+	
 	private static Menu getMenu() {
 		Menu menu = new Menu();
 		menu.setId(ID);
@@ -124,7 +91,7 @@ public class MenuResourceTest {
 		manager.setId(ID);
 		return manager;
 	}
-
+	
 	private static ProductDTO getProductDTO() {
 		ProductDTO productDTO = new ProductDTO();
 		productDTO.setId(ID);
@@ -157,7 +124,7 @@ public class MenuResourceTest {
 	}
 	
 	@Test
-	public void shouldFindAllWhenIsOK() throws Exception {
+	public void shouldFindAllWhenIsOK() {
 		// Given 
 		List<Menu> content = new ArrayList<>();
 		content.add(getMenu());
@@ -168,13 +135,11 @@ public class MenuResourceTest {
 		when(menuMapper.menuToMenuDTO((Menu) any())).thenReturn(getMenuDTO());
 
 		// Then
-		mockMvc.perform(get("/api/menu/all?page=0&size=10")
-				.contentType(TestUtil.APPLICATION_JSON_UTF8))
-		.andExpect(status().isOk());
+		assertThat(menuServiceImpl.findAll(0, 10)).isNotEmpty();
 	}
 
 	@Test
-	public void shouldFindAllWhenIsEmpty() throws Exception {
+	public void shouldFindAllWhenIsEmpty() {
 		// Given 
 		List<Menu> content = new ArrayList<>();
 		Page<Menu> menus = new PageImpl<>(content);
@@ -185,14 +150,28 @@ public class MenuResourceTest {
 
 
 		// Then
-		mockMvc.perform(get("/api/menu/all?page=0&size=10")
-				.contentType(TestUtil.APPLICATION_JSON_UTF8))
-		.andExpect(status().isNotFound());
+		assertThat(menuServiceImpl.findAll(0, 10)).isEmpty();
 	}
 
 	@Test
-	public void shouldGetAllTrendsMenusWhenIsOK() throws IOException, Exception {
-		// Given
+	public void shouldFindAllWhenIsKO() {
+		// Given 
+		Page<Menu> menus = null;
+		MenuDTO menuDTO = null;
+
+		// When
+		when(menuRepository.findAll((org.springframework.data.domain.Pageable) any())).thenReturn(menus);
+		when(menuMapper.menuToMenuDTO((Menu) any())).thenReturn(menuDTO);
+
+
+		// Then
+		assertThatThrownBy(() -> menuServiceImpl.findAll(0, 10))
+		.isInstanceOf(NullPointerException.class);
+	}
+	
+	@Test
+	public void shouldFindAllTrendsMenusWhenIsOK() {
+		// Given 
 		List<Menu> menus = new ArrayList<>();
 		menus.add(getMenu());
 
@@ -201,28 +180,77 @@ public class MenuResourceTest {
 		when(menuMapper.menuToMenuDTO((Menu) any())).thenReturn(getMenuDTO());
 
 		// Then
-		mockMvc.perform(get("/api/menus/trends")
-				.contentType(TestUtil.APPLICATION_JSON_UTF8))
-		.andExpect(status().isOk());
-	}
-
-	@Test
-	public void shouldGetAllTrendsMenusWhenIsEmpty() throws IOException, Exception {
-		// Given
-		List<Menu> menus = new ArrayList<>();
-
-		// When
-		when(menuRepository.findAllTrendsMenus(anyString(), anyInt())).thenReturn(menus);
-		when(menuMapper.menuToMenuDTO((Menu) any())).thenReturn(null);
-
-		// Then
-		mockMvc.perform(get("/api/menus/trends")
-				.contentType(TestUtil.APPLICATION_JSON_UTF8))
-		.andExpect(status().isNotFound());
+		assertThat(menuServiceImpl.findAllTrendsMenus()).isNotEmpty();
 	}
 	
 	@Test
-	public void shouldFindProductsByMenuIdWhenIsOK() throws Exception {
+	public void shouldFindAllTrendsMenusWhenIsKO() {
+		// Given 
+		List<Menu> menus = null;
+		MenuDTO menuDTO = null;
+
+		// When
+		when(menuRepository.findAllTrendsMenus(anyString(), anyInt())).thenReturn(menus);
+		when(menuMapper.menuToMenuDTO((Menu) any())).thenReturn(menuDTO);
+
+		// Then
+		assertThatThrownBy(() -> menuServiceImpl.findAllTrendsMenus())
+		.isInstanceOf(NullPointerException.class);
+	}
+	
+	@Test
+	public void shouldFindAllTrendsMenusWhenIsEmpty() {
+		// Given 
+		List<Menu> menus = new ArrayList<>();
+		MenuDTO menuDTO = getMenuDTO();
+
+		// When
+		when(menuRepository.findAllTrendsMenus(anyString(), anyInt())).thenReturn(menus);
+		when(menuMapper.menuToMenuDTO((Menu) any())).thenReturn(menuDTO);
+
+		// Then
+		assertThat(menuServiceImpl.findAllTrendsMenus()).isEmpty();
+	}
+	
+	@Test
+	public void shouldSaveAllWhenIsOK() {
+		// Given 
+		List<Menu> menus = new ArrayList<>();
+		menus.add(getMenu());
+
+		List<MenuDTO> menusDTOs = new ArrayList<>();
+		menusDTOs.add(getMenuDTO());
+
+		MenuDTO menuDTO = getMenuDTO();
+
+		// When
+		when(menuRepository.saveAll(anyList())).thenReturn(menus);
+		when(menuMapper.menuToMenuDTO((Menu) any())).thenReturn(menuDTO);
+
+		// Then
+		assertThat(menuServiceImpl.saveAll(menusDTOs)).isNotEmpty();
+	}
+
+	@Test
+	public void shouldSaveAllWhenIsKO() {
+		// Given 
+		List<Menu> menus = null;
+
+		List<MenuDTO> menusDTOs = null;
+
+		MenuDTO menuDTO = null;
+
+		// When
+		when(menuRepository.saveAll(anyList())).thenReturn(menus);
+		when(menuMapper.menuToMenuDTO((Menu) any())).thenReturn(menuDTO);
+
+		// Then
+		assertThatThrownBy(() -> menuServiceImpl.saveAll(menusDTOs))
+		.isInstanceOf(NullPointerException.class);
+	}
+	
+	@Test
+	public void shouldFindProductsByMenuIdWhenIsOK() {
 		// Given 
 		List<Menu> menus = new ArrayList<>();
 		menus.add(getMenu());
@@ -238,13 +266,11 @@ public class MenuResourceTest {
 		when(productMapper.productToProductDTO((Product) any())).thenReturn(getProductDTO());
 
 		// Then
-		mockMvc.perform(get("/api/menus/products?id=1&categorieName=dessert")
-				.contentType(TestUtil.APPLICATION_JSON_UTF8))
-		.andExpect(status().isOk());
+		assertThat(menuServiceImpl.findProductsByMenuId(ID, PLAT)).isNotEmpty();
 	}
 	
 	@Test
-	public void shouldFindProductsByMenuIdWhenProductIsEmpty() throws Exception {
+	public void shouldFindProductsByMenuIdWhenProductIsEmpty() {
 		// Given 
 		List<Menu> menus = new ArrayList<>();
 		Menu menu = getMenu();
@@ -262,13 +288,11 @@ public class MenuResourceTest {
 		when(productMapper.productToProductDTO((Product) any())).thenReturn(getProductDTO());
 
 		// Then
-		mockMvc.perform(get("/api/menus/products?id=1&categorieName=dessert")
-				.contentType(TestUtil.APPLICATION_JSON_UTF8))
-		.andExpect(status().isOk());
+		assertThat(menuServiceImpl.findProductsByMenuId(ID, STEAK)).isEmpty();
 	}
 	
 	@Test
-	public void shouldFindProductsByMenuIdWhenProductIsKO() throws Exception {
+	public void shouldFindProductsByMenuIdWhenProductIsKO() {
 		// Given 
 		List<Menu> menus = new ArrayList<>();
 		Menu menu = getMenu();
@@ -286,8 +310,7 @@ public class MenuResourceTest {
 		when(productMapper.productToProductDTO((Product) any())).thenReturn(getProductDTO());
 
 		// Then
-		mockMvc.perform(get("/api/menus/products?id=1&categorieName=dessert")
-				.contentType(TestUtil.APPLICATION_JSON_UTF8))
-		.andExpect(status().isOk());
+		assertThat(menuServiceImpl.findProductsByMenuId(ID, STEAK)).isEmpty();
 	}
+	
 }

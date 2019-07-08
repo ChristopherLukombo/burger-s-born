@@ -25,6 +25,7 @@ import { MenuComponent } from '../menu/menu.component';
 import { NavbarComponent } from '../navbar/navbar.component';
 import { OrdersComponent } from '../orders/orders.component';
 import { ProductComponent } from '../product/product.component';
+import { CreateProductComponent } from '../create-product/create-product.component';
 import { RegisterComponent } from '../register/register.component';
 import { AuthProviderService } from '../services/auth-provider.service';
 import { ServicesDataService } from '../services/services-data.service';
@@ -34,22 +35,23 @@ import { CreateMenuComponent } from '../create-menu/create-menu.component';
 describe('ServicesDataService', () => {
   beforeEach(() => TestBed.configureTestingModule({
     declarations: [
-      AppComponent,
-      HomeComponent,
-      RegisterComponent,
-      AuthComponent,
-      DialogSuccessComponent,
-      DialogRedirectionComponent,
-      ProductComponent,
-      NavbarComponent,
-      HeaderComponent,
-      MenuComponent,
-      ImporterComponent,
-      HeaderComponent,
-      MenuComponent,
-      StepOrderComponent,
-      CreateMenuComponent,
-      OrdersComponent
+        AppComponent,
+        HomeComponent,
+        RegisterComponent,
+        AuthComponent,
+        DialogSuccessComponent,
+        DialogRedirectionComponent,
+        ProductComponent,
+        NavbarComponent,
+        HeaderComponent,
+        MenuComponent,
+        ImporterComponent,
+        HeaderComponent,
+        MenuComponent,
+        StepOrderComponent,
+        CreateMenuComponent,
+        CreateProductComponent,
+        OrdersComponent,
     ],
     imports: [
       ReactiveFormsModule,

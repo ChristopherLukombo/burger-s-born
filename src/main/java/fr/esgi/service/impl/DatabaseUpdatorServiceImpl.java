@@ -36,7 +36,7 @@ import fr.esgi.service.dto.ProductDTO;
 @Transactional
 public class DatabaseUpdatorServiceImpl implements DatabaseUpdatorService {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(DatabaseUpdatorService.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(DatabaseUpdatorServiceImpl.class);
 
 	private final ProductService productService;
 
@@ -110,7 +110,7 @@ public class DatabaseUpdatorServiceImpl implements DatabaseUpdatorService {
 			int index = 0;
 
 			while ((line = bufferedReader.readLine()) != null) {
-				if (!isValidFileCSV(line, 0, 5)) {
+				if (!isValidFileCSV(line, 5)) {
 					throw new BurgerSTerminalException(ErrorMessage.THE_FILE_DOES_NOT_CONTAIN_THE_CORRECT_NUMBER_OF_COLUMNS);
 				}
 				String[] theLine = line.split(Constants.COMMA);
@@ -166,9 +166,9 @@ public class DatabaseUpdatorServiceImpl implements DatabaseUpdatorService {
 		return false;
 	}
 
-	private static boolean isValidFileCSV(String line, int index, int countColumns) {
+	private static boolean isValidFileCSV(String line, int countColumns) {
 		String[] firstLine = line.split(Constants.COMMA);
-		return countColumns == firstLine.length && 0 == index;
+		return countColumns == firstLine.length;
 	}	
 
 	// Menus
@@ -234,7 +234,7 @@ public class DatabaseUpdatorServiceImpl implements DatabaseUpdatorService {
 			int index = 0;
 
 			while ((line = bufferedReader.readLine()) != null) {
-				if (!isValidFileCSV(line, index, 4)) {
+				if (!isValidFileCSV(line, 4)) {
 					throw new BurgerSTerminalException(ErrorMessage.THE_FILE_DOES_NOT_CONTAIN_THE_CORRECT_NUMBER_OF_COLUMNS);
 				}
 				String[] theLine = line.split(Constants.COMMA);
