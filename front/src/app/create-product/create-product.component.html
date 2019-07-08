@@ -1,0 +1,56 @@
+<h4>Créer un produit</h4>
+<br>
+
+<!-- <form class="example-form" [formGroup]="registerForm" (ngSubmit)="createProduct()">
+    <div class="alert alert-danger" role="alert" *ngIf="errorMessage">
+        {{errorMessage}}
+    </div>
+    <mat-form-field class="example-full-width">
+        <input matInput placeholder="Nom" name="name" formControlName="name">
+    </mat-form-field>
+
+    <div class="alert alert-danger" role="alert" *ngIf="(submitted && f.name.errors)">
+        <div *ngIf="f.name.errors.required">
+            Le champs est obligatoire
+        </div>
+        <div *ngIf="registerForm.get('name').errors?.serverError">
+            Le champs {{registerForm.get('name').errors?.serverError}}
+        </div>
+    </div>
+
+    <mat-form-field style="width: 100%;">
+        <mat-label>Category</mat-label>
+        <mat-select name="category" formControlName="category">
+          <mat-option *ngFor="let categ of categories" [value]="categ.id">
+            {{categ.name}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+
+    <div class="alert alert-danger" role="alert" *ngIf="(submitted && f.category.errors)">
+        <div *ngIf="f.category.errors.required">
+            Le champs est obligatoire
+        </div>
+        <div *ngIf="registerForm.get('category').errors?.serverError">
+            Le champs {{registerForm.get('category').errors?.serverError}}
+        </div>
+    </div>
+
+    <mat-form-field class="example-full-width">
+        <input matInput type="number" placeholder="Prix" name="price" formControlName="price">
+    </mat-form-field>
+
+    <div class="alert alert-danger" role="alert" *ngIf="(submitted && f.price.errors)">
+        <div *ngIf="f.price.errors.required">
+            Le champs est obligatoire
+        </div>
+        <div *ngIf="registerForm.get('price').errors?.serverError">
+            Le champs {{registerForm.get('price').errors?.serverError}}
+        </div>
+    </div>
+
+
+    <div style="text-align: center;">
+        <button class="btn btn-primary" type="submit">Ajouter</button>
+    </div>
+</!--> -->

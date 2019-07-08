@@ -6,6 +6,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import fr.esgi.service.dto.CommandDTO;
 import fr.esgi.service.dto.ProductDTO;
 
 /**
@@ -28,6 +29,32 @@ public interface ProductService {
 	 * @return the list of entities
 	 */
     List<ProductDTO> saveAll(List<ProductDTO> products);
+    
+    /**
+	 * Add product.
+	 * 
+	 * @param productDTO of entities to save
+	 * @return the entities saved
+	 */
+    ProductDTO addProduct(ProductDTO product);
+    
+    /**
+	 * Delete product.
+	 * 
+	 * @param id the id of the entity
+	 */
+    void delete(Long id);
+    
+    
+    /**
+	 * Update a product.
+	 *
+	 * @param productDTO the entity to update
+	 * @return the persisted entity
+	 */
+	ProductDTO update(ProductDTO productDTO);
+    
+    
     
     /**
      * Find all products by CategoryName.

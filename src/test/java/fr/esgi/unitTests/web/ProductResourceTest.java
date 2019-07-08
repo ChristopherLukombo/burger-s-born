@@ -25,6 +25,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
+import fr.esgi.dao.CategoryRepository;
 import fr.esgi.dao.ProductRepository;
 import fr.esgi.domain.Category;
 import fr.esgi.domain.Command;
@@ -62,6 +63,9 @@ public class ProductResourceTest {
 	
 	@Mock
 	private ProductMapper productMapper;
+	
+	@Mock 
+	private CategoryRepository categoryRepository;
 
 	@Mock
 	private ProductService productService;
@@ -83,7 +87,7 @@ public class ProductResourceTest {
 	}
 
 	private void initMocks() {
-		productService = new ProductServiceImpl(productRepository, productMapper);
+		productService = new ProductServiceImpl(productRepository, productMapper, categoryRepository);
 		productResource = new ProductResource(productService, messageSource);
 	}
 	
@@ -157,7 +161,7 @@ public class ProductResourceTest {
 		when(productMapper.productToProductDTO(((Product) any()))).thenReturn(getProductDTO());
 
 		// Then
-		mockMvc.perform(get("/api/product?page=0&size=10")
+		mockMvc.perform(get("/api/products?page=0&size=10")
 				.contentType(TestUtil.APPLICATION_JSON_UTF8))
 		.andExpect(status().isOk());
 	}
@@ -173,7 +177,7 @@ public class ProductResourceTest {
 		when(productMapper.productToProductDTO(((Product) any()))).thenReturn(getProductDTO());
 
 		// Then
-		mockMvc.perform(get("/api/product?page=0&size=10")
+		mockMvc.perform(get("/api/products?page=0&size=10")
 				.contentType(TestUtil.APPLICATION_JSON_UTF8))
 		.andExpect(status().isNotFound());
 	}
