@@ -175,7 +175,7 @@ export class ProductComponent implements OnInit {
                 this.categories = data['body'];
                 this.findAll(0);
             }, error => {
-                if (error.status == 404) {
+                if (error.status === 404) {
                     this.errorMessage = 'Aucune catégorie de produit enregistré.';
                 }
             });

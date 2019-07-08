@@ -84,11 +84,14 @@ export class CreateProductComponent implements OnInit {
             return;
         }*/
 
-        let product = new Product();
+        const product = new Product();
 
         product.name = name;
         product.categoryId = category;
         product.price = price;
+        product.available = 1;
+        // TODO : ajouter l'id du manager
+        product.managerId = 1;
 
         if (!environment.production) {
             this.logger.debug(AppConstants.CALL_SERVICE, product);
@@ -98,8 +101,8 @@ export class CreateProductComponent implements OnInit {
             .subscribe(data => {
                 this.handleSuccessRegister(getUserId, data);
             }, error => {
-                if(error.status == 403) {
-                    this.errorMessage = "Vous devez être connecté pour pouvoir ajouter un produit.";
+                if(error.status === 403) {
+                    this.errorMessage = 'Vous devez être connecté pour pouvoir ajouter un produit.';
                 }
                 this.handleErrorRegister(error);
             });
@@ -165,9 +168,9 @@ export class CreateProductComponent implements OnInit {
                 this.categories = data['body'];
             }, error => {
                 if(error.status === 404) {
-                    this.errorMessage = "Aucune catégorie de produit enregistrée.";
+                    this.errorMessage = 'Aucune catégorie de produit enregistrée.';
                 } else {
-                    this.errorMessage = "Erreur lors de la récupération des catégories de produit.";
+                    this.errorMessage = 'Erreur lors de la récupération des catégories de produit.';
                 }
             });
     }

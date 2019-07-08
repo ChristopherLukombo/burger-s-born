@@ -1,0 +1,124 @@
+<h4>Les produits</h4>
+<br>
+
+<!-- Messages -->
+<div class="alert alert-success" role="alert" *ngIf="successMessage != null">
+    {{successMessage}}
+</div>
+<div class="alert alert-danger" role="alert" *ngIf="errorMessage != null">
+    {{errorMessage}}
+</div>
+
+<!-- Update product -->
+<div *ngIf="toUpdate && authProviderService.isAuthenticated() && isAdmin" style="margin-bottom: 20px;">
+
+    <form class="example-form" [formGroup]="updateForm" (ngSubmit)="update()">
+        <mat-form-field class="example-full-width">
+            <input matInput placeholder="Nom" name="name" formControlName="name">
+        </mat-form-field>
+
+        <div class="alert alert-danger" role="alert" *ngIf="(submitted && f.name.errors)">
+            <div *ngIf="f.name.errors.required">
+                Le champs est obligatoire
+            </div>
+            <div *ngIf="updateForm.get('name').errors?.serverError">
+                Le champs {{updateForm.get('name').errors?.serverError}}
+            </div>
+        </div>
+
+        <mat-form-field style="width: 100%;">
+            <mat-label>Category</mat-label>
+            <mat-select name="category" formControlName="category">
+                <mat-option *ngFor="let categ of categories" [value]="categ.id">
+                    {{categ.name}}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+
+        <div class="alert alert-danger" role="alert" *ngIf="(submitted && f.category.errors)">
+            <div *ngIf="f.category.errors.required">
+                Le champs est obligatoire
+            </div>
+            <div *ngIf="updateForm.get('category').errors?.serverError">
+                Le champs {{updateForm.get('category').errors?.serverError}}
+            </div>
+        </div>
+
+        <mat-form-field class="example-full-width">
+            <input matInput type="number" placeholder="Prix" name="price" formControlName="price">
+        </mat-form-field>
+
+        <div class="alert alert-danger" role="alert" *ngIf="(submitted && f.price.errors)">
+            <div *ngIf="f.price.errors.required">
+                Le champs est obligatoire
+            </div>
+            <div *ngIf="updateForm.get('price').errors?.serverError">
+                Le champs {{updateForm.get('price').errors?.serverError}}
+            </div>
+        </div>
+
+        <mat-checkbox name="available" formControlName="available">En stock</mat-checkbox>
+
+
+        <div style="text-align: center;">
+            <button class="btn btn-primary" (click)="toUpdate = false;">Annuler</button>
+            <button class="btn btn-success" type="submit" style="margin-left: 10px;">Valider</button>
+        </div>
+    </form>
+
+    <br>
+</div>
+
+<!-- Get all products -->
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Nom</th>
+            <th>Catégorie</th>
+            <th>Prix</th>
+            <th>Disponibilité</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr *ngFor="let product of products">
+            <td>{{product.name}}</td>
+            <td>{{product.categoryName}}</td>
+            <td>{{product.price | number : '1.2-2'}} €</td>
+            <td>
+                <span *ngIf="product.available">En stock</span>
+                <span *ngIf="!product.available">En rupture de stock</span>
+            </td>
+            <td>
+                <button class="btn btn-primary" (click)="initForm(product); toUpdate = true; loadCategories()" 
+                    style="margin-right: 10px;" *ngIf="authProviderService.isAuthenticated() && isAdmin"> Modifier </button>
+                <button class="btn btn-danger" (click)="delete(product.id)" *ngIf="authProviderService.isAuthenticated() && isAdmin"> Supprimer </button>
+            </td>
+        </tr>
+    </tbody>
+</table>
+
+<nav aria-label="Page navigation example" *ngIf="products != null">
+    <ul class="pagination justify-content-end">
+        <div style="width: 100%; margin-top: 8px;">
+            Nombre total de produits : {{totalElements}}
+        </div>
+
+        <div style="display: inherit;" *ngIf="totalElements > 4">
+            <li class="page-item" [ngClass]="{'disabled' : selectedPage == 0}">
+                <button class="page-link" (click)="findAll(selectedPage-1)">Précédent</button>
+            </li>
+            <li class="page-item" [ngClass]="{'disabled' : selectedPage == page-1}" *ngFor="let page of pages">
+                <button class="page-link" (click)="findAll(page-1)">{{page}}</button>
+            </li>
+            <li class="page-item" [ngClass]="{'disabled' : selectedPage == pages[pages.length-1]-1}">
+                <button class="page-link" (click)="findAll(selectedPage+1)">Suivant</button>
+            </li>
+        </div>
+
+    </ul>
+</nav>
+
+<div style="text-align: center; margin-bottom: 20px;" *ngIf="authProviderService.isAuthenticated() && isAdmin">
+    <button class="btn btn-success" routerLink="/createProduct" routerLinkActive="active" style="margin-right: 10px;"> Ajouter un produit </button>
+</div>
