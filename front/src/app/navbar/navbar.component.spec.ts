@@ -2,7 +2,7 @@ import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatCheckboxModule, MatDatepickerModule, MatDialogModule, MatInputModule, MatNativeDateModule, MatStepperModule } from '@angular/material';
+import { MatDatepickerModule, MatDialogModule, MatInputModule, MatNativeDateModule, MatStepperModule, MatCheckboxModule } from '@angular/material';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatSelectModule } from '@angular/material/select';
 import { BrowserModule } from '@angular/platform-browser';
@@ -23,17 +23,18 @@ import { HomeComponent } from '../home/home.component';
 import { ImporterComponent } from '../importer/importer.component';
 import { MenuComponent } from '../menu/menu.component';
 import { NavbarComponent } from '../navbar/navbar.component';
+import { OrdersComponent } from '../orders/orders.component';
 import { ProductComponent } from '../product/product.component';
 import { RegisterComponent } from '../register/register.component';
 import { AuthProviderService } from '../services/auth-provider.service';
 import { ServicesDataService } from '../services/services-data.service';
 import { StepOrderComponent } from '../step-order/step-order.component';
-import { OrdersComponent } from './../orders/orders.component';
 import { CreateMenuComponent } from '../create-menu/create-menu.component';
+import { CreateProductComponent } from '../create-product/create-product.component';
 
-describe('NavbarComponent', () => {
-  let component: NavbarComponent;
-  let fixture: ComponentFixture<NavbarComponent>;
+describe('HomeComponent', () => {
+  let component: HomeComponent;
+  let fixture: ComponentFixture<HomeComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -53,7 +54,8 @@ describe('NavbarComponent', () => {
         MenuComponent,
         StepOrderComponent,
         CreateMenuComponent,
-        OrdersComponent
+        CreateProductComponent,
+        OrdersComponent,
       ],
       imports: [
         ReactiveFormsModule,
@@ -105,7 +107,7 @@ describe('NavbarComponent', () => {
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(NavbarComponent);
+    fixture = TestBed.createComponent(HomeComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

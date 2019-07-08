@@ -1,15 +1,13 @@
 import { HttpErrorResponse, HttpResponse } from '@angular/common/http';
-import { Component, Input, OnInit, Injector } from '@angular/core';
+import { Component, Injector, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material';
-import { TranslateService } from '@ngx-translate/core';
 import { NGXLogger } from 'ngx-logger';
 import { environment } from '../../environments/environment';
-import { Product } from '../../model/model.product';
 import { Category } from '../../model/model.category';
+import { Product } from '../../model/model.product';
 import { AppConstants } from '../app.constants';
 import { DialogSuccessComponent } from '../dialog-success/dialog-success.component';
-import { RoleName } from '../RoleName';
 import { AuthProviderService } from '../services/auth-provider.service';
 import { ServicesDataService } from '../services/services-data.service';
 
@@ -34,7 +32,6 @@ export class CreateProductComponent implements OnInit {
     constructor(
         private servicesDataService: ServicesDataService,
         private logger: NGXLogger,
-        // private translateService: TranslateService,
         protected injector: Injector,
         public authProviderService: AuthProviderService,
         private formBuilder: FormBuilder,
@@ -174,5 +171,4 @@ export class CreateProductComponent implements OnInit {
                 }
             });
     }
-
 }

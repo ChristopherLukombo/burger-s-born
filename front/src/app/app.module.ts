@@ -56,8 +56,8 @@ export function tokenGetter() {
     MenuComponent,
     StepOrderComponent,
     CreateMenuComponent,
-    OrdersComponent,
-    CreateProductComponent
+    CreateProductComponent,
+    OrdersComponent
   ],
   exports: [
     DialogSuccessComponent,

@@ -14,44 +14,14 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { HttpLoaderFactory } from './app.module';
 import { AuthGuard } from './auth.guard';
-import { AuthComponent } from './auth/auth.component';
-import { DialogRedirectionComponent } from './dialog-redirection/dialog-redirection.component';
-import { DialogSuccessComponent } from './dialog-success/dialog-success.component';
-import { HeaderComponent } from './header/header.component';
-import { HomeComponent } from './home/home.component';
-import { ImporterComponent } from './importer/importer.component';
-import { MenuComponent } from './menu/menu.component';
-import { NavbarComponent } from './navbar/navbar.component';
-import { OrdersComponent } from './orders/orders.component';
-import { ProductComponent } from './product/product.component';
-import { CreateProductComponent } from './create-product/create-product.component';
-import { RegisterComponent } from './register/register.component';
 import { AuthProviderService } from './services/auth-provider.service';
 import { ServicesDataService } from './services/services-data.service';
-import { StepOrderComponent } from './step-order/step-order.component';
-import { CreateMenuComponent } from './create-menu/create-menu.component';
 
 describe('AppComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [
         AppComponent,
-        HomeComponent,
-        RegisterComponent,
-        AuthComponent,
-        DialogSuccessComponent,
-        DialogRedirectionComponent,
-        ProductComponent,
-        CreateProductComponent,
-        NavbarComponent,
-        HeaderComponent,
-        MenuComponent,
-        ImporterComponent,
-        HeaderComponent,
-        MenuComponent,
-        StepOrderComponent,
-        CreateMenuComponent,
-        OrdersComponent
       ],
       imports: [
         ReactiveFormsModule,
