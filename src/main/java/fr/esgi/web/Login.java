@@ -42,26 +42,4 @@ public class Login {
     public void setRememberMe(Boolean rememberMe) {
         this.rememberMe = rememberMe;
     }
-
-	@Override
-	public String toString() {
-		StringBuilder builder = new StringBuilder();
-		builder.append("Login [");
-		if (username != null) {
-			builder.append("username=");
-			builder.append(username);
-			builder.append(", ");
-		}
-		if (password != null) {
-			builder.append("password=");
-			builder.append(password);
-			builder.append(", ");
-		}
-		if (rememberMe != null) {
-			builder.append("rememberMe=");
-			builder.append(rememberMe);
-		}
-		builder.append("]");
-		return builder.toString();
-	}
 }

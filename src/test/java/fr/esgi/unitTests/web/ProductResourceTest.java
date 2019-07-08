@@ -1,11 +1,10 @@
-package fr.esgi.unitTests.service;
+package fr.esgi.unitTests.web;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.math.BigDecimal;
 import java.time.ZonedDateTime;
@@ -13,28 +12,36 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 import org.mockito.junit.MockitoJUnitRunner;
+import org.springframework.context.MessageSource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
+import fr.esgi.dao.CategoryRepository;
 import fr.esgi.dao.ProductRepository;
 import fr.esgi.domain.Category;
 import fr.esgi.domain.Command;
 import fr.esgi.domain.Manager;
 import fr.esgi.domain.Menu;
 import fr.esgi.domain.Product;
+import fr.esgi.service.ProductService;
 import fr.esgi.service.dto.ProductDTO;
 import fr.esgi.service.impl.ProductServiceImpl;
 import fr.esgi.service.mapper.ProductMapper;
+import fr.esgi.web.handler.RestResponseEntityExceptionHandler;
+import fr.esgi.web.rest.ProductResource;
 
 @RunWith(MockitoJUnitRunner.Silent.class)
-public class ProductServiceTest {
-
+public class ProductResourceTest {
+	
 	private static final String STEAK = "steak";
 
 	private static final String PLAT = "PLAT";
@@ -48,16 +55,42 @@ public class ProductServiceTest {
 	private static final String TEST = "TEST";
 
 	private static final long ID = 1L;
-
+	
+	private MockMvc mockMvc;
+	
 	@Mock
 	private ProductRepository productRepository;
-
+	
 	@Mock
 	private ProductMapper productMapper;
+	
+	@Mock 
+	private CategoryRepository categoryRepository;
+
+	@Mock
+	private ProductService productService;
+
+	@Mock
+	private MessageSource messageSource;
 
 	@InjectMocks
-	private ProductServiceImpl productServiceImpl;
+	private ProductResource productResource;
 
+	@Before
+	public void init(){
+		MockitoAnnotations.initMocks(this);
+		initMocks();
+		mockMvc = MockMvcBuilders
+				.standaloneSetup(productResource)
+				.setControllerAdvice(new RestResponseEntityExceptionHandler())
+				.build();
+	}
+
+	private void initMocks() {
+		productService = new ProductServiceImpl(productRepository, productMapper, categoryRepository);
+		productResource = new ProductResource(productService, messageSource);
+	}
+	
 	private static ProductDTO getProductDTO() {
 		ProductDTO productDTO = new ProductDTO();
 		productDTO.setId(ID);
@@ -115,9 +148,9 @@ public class ProductServiceTest {
 		command.setSaleId(TEST);
 		return command;
 	}
-
+	
 	@Test
-	public void shouldFindAllWhenIsOK() {
+	public void shouldFindAllWhenIsOK() throws Exception {
 		// Given 
 		List<Product> content = new ArrayList<>();
 		content.add(getProduct());
@@ -128,11 +161,13 @@ public class ProductServiceTest {
 		when(productMapper.productToProductDTO(((Product) any()))).thenReturn(getProductDTO());
 
 		// Then
-		assertThat(productServiceImpl.findAll(0, 10)).isNotEmpty();
+		mockMvc.perform(get("/api/products?page=0&size=10")
+				.contentType(TestUtil.APPLICATION_JSON_UTF8))
+		.andExpect(status().isOk());
 	}
 
 	@Test
-	public void shouldFindAllWhenIsEmpty() {
+	public void shouldFindAllWhenIsEmpty() throws Exception {
 		// Given 
 		List<Product> content = new ArrayList<>();
 		Page<Product> products = new PageImpl<>(content);
@@ -142,63 +177,13 @@ public class ProductServiceTest {
 		when(productMapper.productToProductDTO(((Product) any()))).thenReturn(getProductDTO());
 
 		// Then
-		assertThat(productServiceImpl.findAll(0, 10)).isEmpty();
-	}
-
-	@Test
-	public void shouldFindAllWhenIsKO() {
-		// Given 
-		Page<Product> products = null;
-		ProductDTO productDTO = null;
-
-		// When
-		when(productRepository.findAll((org.springframework.data.domain.Pageable) any())).thenReturn(products);
-		when(productMapper.productToProductDTO(((Product) any()))).thenReturn(productDTO);
-
-		// Then
-		assertThatThrownBy(() -> productServiceImpl.findAll(0, 10))
-		.isInstanceOf(NullPointerException.class);
-	}
-
-	@Test
-	public void shouldSaveAllWhenIsOK() {
-		// Given 
-		List<Product> products = new ArrayList<>();
-		products.add(getProduct());
-
-		List<ProductDTO> productDTOs = new ArrayList<>();
-		productDTOs.add(getProductDTO());
-
-		ProductDTO productDTO = getProductDTO();
-
-		// When
-		when(productRepository.saveAll(anyList())).thenReturn(products);
-		when(productMapper.productToProductDTO(((Product) any()))).thenReturn(productDTO);
-
-		// Then
-		assertThat(productServiceImpl.saveAll(productDTOs)).isNotEmpty();
-	}
-
-	@Test
-	public void shouldSaveAllWhenIsKO() {
-		// Given 
-		List<Product> products = null;
-
-		List<ProductDTO> productDTOs = null;
-
-		ProductDTO productDTO = null;
-
-		// When
-		when(productRepository.saveAll(anyList())).thenReturn(products);
-		when(productMapper.productToProductDTO(((Product) any()))).thenReturn(productDTO);
-
-		// Then
-		assertThatThrownBy(() -> productServiceImpl.saveAll(productDTOs))
-		.isInstanceOf(NullPointerException.class);
+		mockMvc.perform(get("/api/products?page=0&size=10")
+				.contentType(TestUtil.APPLICATION_JSON_UTF8))
+		.andExpect(status().isNotFound());
 	}
 	
 	@Test
-	public void shouldFindProductsByCategoryNameWhenIsOK() {
+	public void shouldFindProductsByCategoryNameWhenIsOK() throws Exception {
 		// Given
 		List<Product> content = new ArrayList<>();
 		content.add(getProduct());
@@ -211,11 +196,13 @@ public class ProductServiceTest {
 		when(productMapper.productToProductDTO(((Product) any()))).thenReturn(productDTO);
 		
 		// Then
-		assertThat(productServiceImpl.findProductsByCategoryName(PageRequest.of(0, 10), PLAT)).isNotEmpty();
+		mockMvc.perform(get("/api/products/category?page=0&size=10&categorieName=plat")
+				.contentType(TestUtil.APPLICATION_JSON_UTF8))
+		.andExpect(status().isOk());
 	}
 	
 	@Test
-	public void shouldFindProductsByCategoryNameWhenIsEmpty() {
+	public void shouldFindProductsByCategoryNameWhenIsEmpty() throws Exception {
 		// Given
 		List<Product> content = new ArrayList<>();
 		Page<Product> page = new PageImpl<>(content);
@@ -227,22 +214,8 @@ public class ProductServiceTest {
 		when(productMapper.productToProductDTO(((Product) any()))).thenReturn(productDTO);
 		
 		// Then
-		assertThat(productServiceImpl.findProductsByCategoryName(PageRequest.of(0, 10), PLAT)).isEmpty();
+		mockMvc.perform(get("/api/products/category?page=0&size=10&categorieName=plat")
+				.contentType(TestUtil.APPLICATION_JSON_UTF8))
+		.andExpect(status().isNotFound());
 	}
-	
-	@Test
-	public void shouldFindProductsByCategoryNameWhenIsKO() {
-		// Given
-		Page<Product> page = null;
-		ProductDTO productDTO = null;
-		
-		// When
-		when(productRepository.findAllByCategoryName((org.springframework.data.domain.Pageable) any(), anyString())).thenReturn(page);
-		when(productMapper.productToProductDTO(((Product) any()))).thenReturn(productDTO);
-		
-		// Then
-		assertThatThrownBy(() -> productServiceImpl.findProductsByCategoryName(PageRequest.of(0, 10), PLAT))
-		.isInstanceOf(NullPointerException.class);
-	}
-	
 }

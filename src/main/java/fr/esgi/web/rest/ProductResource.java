@@ -1,5 +1,7 @@
 package fr.esgi.web.rest;
 
+import javax.validation.Valid;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,7 +10,12 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -31,12 +38,9 @@ public class ProductResource {
 
     private final ProductService productService;
 
-    private final MessageSource messageSource;
-
     @Autowired
     public ProductResource(ProductService productService, MessageSource messageSource) {
 		this.productService = productService;
-		this.messageSource = messageSource;
 	}
 
 
@@ -49,7 +53,7 @@ public class ProductResource {
      * @return all products
      * @throws BurgerSTerminalException
      */
-    @GetMapping("/product")
+    @GetMapping("/products")
     public ResponseEntity<Page<ProductDTO>> findProducts(@RequestParam int page, @RequestParam("size") int size) throws BurgerSTerminalException {
         LOGGER.debug("REST request to find all products");
         final Page<ProductDTO> products = productService.findAll(page, size);
@@ -85,10 +89,41 @@ public class ProductResource {
      * @return created product
      * @throws BurgerSTerminalException
      */
-//    @PostMapping("/product")
-//    public ResponseEntity<ProductDTO> addProduct(@RequestBody @Valid ProductDTO productDTO, @RequestParam("id") Long id, @RequestParam("available") Boolean available, @RequestParam("name") String name, @RequestParam("price") double price) throws BurgerSTerminalException {
-//        LOGGER.debug("REST request to add new product");
-//        return new ResponseEntity<ProductDTO>(productService.addProduct(productDTO, id, available, name, price), HttpStatus.OK);
-//    }
+	  @PostMapping("new/product")
+      public ResponseEntity<ProductDTO> addProduct(@RequestBody @Valid ProductDTO productDTO) throws BurgerSTerminalException {
+          LOGGER.debug("REST request to add new product");
+          return new ResponseEntity<ProductDTO>(productService.addProduct(productDTO), HttpStatus.OK);
+      }
+	  
+	/**
+	 * DELETE  /product/{id} : delete a product.
+	 * @param id the id of the productDTO to delete
+	 * @return the ResponseEntity with status 200 (OK)
+	 */
+	@DeleteMapping("delete/product/{id}")
+	public ResponseEntity<Void> deleteProduct(@PathVariable Long id) {
+		LOGGER.debug("REST request to delete a product: {}", id);
+		productService.delete(id);
+		return ResponseEntity.noContent().build();
+	}
+		
+		
+	/**
+	 * PUT  /product : update a product.
+	 * @param productDTO
+	 * @return the ResponseEntity with status 200 (OK) and with body the assignmentModuleDTO
+	 * @throws BurgerSTerminalException if the id of command is empty.
+	 */
+	@PutMapping("/product")
+	public ResponseEntity<ProductDTO> updateProduct(@RequestBody @Valid ProductDTO productDTO) throws BurgerSTerminalException {
+		LOGGER.debug("REST request to update a product: {}", productDTO);
+		if (null == productDTO.getId()) {
+			throw new BurgerSTerminalException(HttpStatus.BAD_REQUEST.value(),
+					"Un product doit avoir un ID.");
+		}
+		ProductDTO result = productService.update(productDTO);
+		return ResponseEntity.ok()
+				.body(result);
+	}
 
 }

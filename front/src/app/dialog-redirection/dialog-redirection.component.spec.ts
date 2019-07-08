@@ -30,6 +30,7 @@ import { RegisterComponent } from '../register/register.component';
 import { AuthProviderService } from '../services/auth-provider.service';
 import { ServicesDataService } from '../services/services-data.service';
 import { StepOrderComponent } from '../step-order/step-order.component';
+import { CreateProductComponent } from '../create-product/create-product.component';
 
 
 describe('DialogRedirectionComponent', () => {
@@ -54,7 +55,8 @@ describe('DialogRedirectionComponent', () => {
         MenuComponent,
         StepOrderComponent,
         CreateMenuComponent,
-        OrdersComponent
+        CreateProductComponent,
+        OrdersComponent,
       ],
       imports: [
         ReactiveFormsModule,

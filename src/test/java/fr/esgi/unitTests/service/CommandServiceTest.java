@@ -17,12 +17,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -49,12 +47,6 @@ public class CommandServiceTest {
 	
 	@InjectMocks
 	private CommandServiceImpl commandServiceImpl;
-	
-	@Before
-	public void setUp() {
-		MockitoAnnotations.initMocks(this);
-	    commandServiceImpl = new CommandServiceImpl(commandRepository, commandMapper);
-	}
 	
 	private static CommandDTO getCommandDTO() {
 		CommandDTO commandDTO = new CommandDTO();
@@ -162,7 +154,7 @@ public class CommandServiceTest {
 		CommandDTO commandDTO = getCommandDTO();
 		
 		// When
-		when(commandRepository.save(mock(Command.class))).thenReturn(getCommand());
+		when(commandRepository.saveAndFlush(mock(Command.class))).thenReturn(getCommand());
 		when(commandMapper.commandToCommandDTO((Command) any())).thenReturn(commandDTO);
 		
 		// Then
@@ -175,7 +167,7 @@ public class CommandServiceTest {
 		CommandDTO commandDTO = null;
 		
 		// When
-		when(commandRepository.save(mock(Command.class))).thenReturn(getCommand());
+		when(commandRepository.saveAndFlush(mock(Command.class))).thenReturn(getCommand());
 		when(commandMapper.commandToCommandDTO((Command) any())).thenReturn(commandDTO);
 		
 		// Then

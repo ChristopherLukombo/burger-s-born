@@ -30,6 +30,7 @@ import { AuthProviderService } from '../services/auth-provider.service';
 import { ServicesDataService } from '../services/services-data.service';
 import { StepOrderComponent } from '../step-order/step-order.component';
 import { OrdersComponent } from './orders.component';
+import { CreateProductComponent } from '../create-product/create-product.component';
 
 describe('OrdersComponent', () => {
   let component: OrdersComponent;
@@ -53,7 +54,8 @@ describe('OrdersComponent', () => {
         MenuComponent,
         StepOrderComponent,
         CreateMenuComponent,
-        OrdersComponent
+        CreateProductComponent,
+        OrdersComponent,
       ],
       imports: [
         ReactiveFormsModule,

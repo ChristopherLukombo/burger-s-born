@@ -10,16 +10,12 @@
   <a class="nav-link" routerLink="/product" routerLinkActive="active" role="tab">
     Produits
   </a>
-  <a class="nav-link" routerLink="/importer" routerLinkActive="active" role="tab"
-   *ngIf="authProviderService.isAuthenticated() &&  isAdmin">
-    Import
-  </a>
   <a class="nav-link" routerLink="/orders" routerLinkActive="active" role="tab"
   *ngIf="authProviderService.isAuthenticated()">
     Mes commandes
   </a>
   <a class="nav-link" routerLink="/importer" routerLinkActive="active" role="tab"
-  *ngIf="authProviderService.isAuthenticated()">
+  *ngIf="(authProviderService.isAuthenticated() && isAdmin)">
     Import de fichiers
   </a>
   <a class="nav-link" routerLink="/register" routerLinkActive="active" role="tab"

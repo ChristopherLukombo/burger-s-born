@@ -32,7 +32,7 @@ import fr.esgi.service.dto.ProductDTO;
 @RequestMapping("/api")
 public class DatabaseUpdatorResource {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(MenuResource.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(DatabaseUpdatorResource.class);
 	
 	private final DatabaseUpdatorService databaseUpdatorService;
 	
@@ -47,25 +47,20 @@ public class DatabaseUpdatorResource {
 	/**
      * POST : /product/import : Add or Update products from a JSON/CSV file
      *
-     * @param inputFile file used to import product
+     * @param inputfile file used to import product
      * @return Message on the operation
      * @throws BurgerSTerminalException
      */
     @PostMapping(value = "/product/import", headers = "content-type=multipart/*")
     public ResponseEntity<List<ProductDTO>> uploadProductsFile(
-    		@RequestPart("importfile") MultipartFile inputFile, @RequestParam String fileFormat) throws BurgerSTerminalException {
+    		@RequestPart("importfile") MultipartFile inputfile, @RequestParam(required = true) String fileFormat) throws BurgerSTerminalException {
     	List<ProductDTO> importFile;
-    	
-    	if (fileFormat.isEmpty()) {
-			throw new BurgerSTerminalException(ErrorMessage.THE_IMPORT_FILE_IS_EMPTY);
+		if (!fileFormat.equalsIgnoreCase(FilenameUtils.getExtension(inputfile.getOriginalFilename()))) {
+			throw new BurgerSTerminalException(HttpStatus.INTERNAL_SERVER_ERROR.value(), ErrorMessage.THE_FILE_FORMAT_IS_INVALID);
 		}
-		if (!fileFormat.equalsIgnoreCase(FilenameUtils.getExtension(inputFile.getOriginalFilename()))) {
-			throw new BurgerSTerminalException(ErrorMessage.THE_FILE_FORMAT_IS_INVALID);
-		}
-		
-    	LOGGER.debug("Request to import file : {}", inputFile.getName());
+    	LOGGER.debug("Request to import file : {}", inputfile.getName());
     	try {
-    		importFile = databaseUpdatorService.importProductsFile(inputFile, fileFormat);
+    		importFile = databaseUpdatorService.importProductsFile(inputfile, fileFormat);
     	} catch (DataIntegrityViolationException e) {
     		throw new BurgerSTerminalException(HttpStatus.INTERNAL_SERVER_ERROR.value(),
     				messageSource.getMessage(ErrorMessage.ERROR_FAIL_BATCH_IMPORT_PRODUCT, null, getLang("fr")));
@@ -86,16 +81,11 @@ public class DatabaseUpdatorResource {
      */
     @PostMapping(value = "/menu/import", headers = "content-type=multipart/*")
     public ResponseEntity<List<MenuDTO>> uploadMenuFile(
-    		@RequestPart("importfile") MultipartFile inputFile, @RequestParam String fileFormat) throws BurgerSTerminalException {
+    		@RequestPart("importfile") MultipartFile inputFile, @RequestParam(required = true) String fileFormat) throws BurgerSTerminalException {
     	List<MenuDTO> importFile;
-    	
-    	if (fileFormat.isEmpty()) {
-			throw new BurgerSTerminalException(ErrorMessage.THE_IMPORT_FILE_IS_EMPTY);
-		}
 		if (!fileFormat.equalsIgnoreCase(FilenameUtils.getExtension(inputFile.getOriginalFilename()))) {
-			throw new BurgerSTerminalException(ErrorMessage.THE_FILE_FORMAT_IS_INVALID);
+			throw new BurgerSTerminalException(HttpStatus.INTERNAL_SERVER_ERROR.value(), ErrorMessage.THE_FILE_FORMAT_IS_INVALID);
 		}
-    	
     	LOGGER.debug("Request to import file : {}", inputFile.getName());
     	try {
     		importFile = databaseUpdatorService.importMenusFile(inputFile, fileFormat);

@@ -30,26 +30,28 @@ import { AuthProviderService } from '../services/auth-provider.service';
 import { ServicesDataService } from '../services/services-data.service';
 import { StepOrderComponent } from '../step-order/step-order.component';
 import { CreateMenuComponent } from '../create-menu/create-menu.component';
+import { CreateProductComponent } from '../create-product/create-product.component';
 
 describe('AuthProviderService', () => {
   beforeEach(() => TestBed.configureTestingModule({
     declarations: [
-      AppComponent,
-      HomeComponent,
-      RegisterComponent,
-      AuthComponent,
-      DialogSuccessComponent,
-      DialogRedirectionComponent,
-      ProductComponent,
-      NavbarComponent,
-      HeaderComponent,
-      MenuComponent,
-      ImporterComponent,
-      HeaderComponent,
-      MenuComponent,
-      StepOrderComponent,
-      CreateMenuComponent,
-      OrdersComponent
+        AppComponent,
+        HomeComponent,
+        RegisterComponent,
+        AuthComponent,
+        DialogSuccessComponent,
+        DialogRedirectionComponent,
+        ProductComponent,
+        NavbarComponent,
+        HeaderComponent,
+        MenuComponent,
+        ImporterComponent,
+        HeaderComponent,
+        MenuComponent,
+        StepOrderComponent,
+        CreateMenuComponent,
+        CreateProductComponent,
+        OrdersComponent,
     ],
     imports: [
       ReactiveFormsModule,

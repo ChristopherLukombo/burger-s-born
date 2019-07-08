@@ -30,13 +30,14 @@ import { AuthProviderService } from '../services/auth-provider.service';
 import { ServicesDataService } from '../services/services-data.service';
 import { StepOrderComponent } from '../step-order/step-order.component';
 import { CreateMenuComponent } from '../create-menu/create-menu.component';
+import { CreateProductComponent } from '../create-product/create-product.component';
 
 describe('CreateMenuComponent', () => {
   let component: CreateMenuComponent;
   let fixture: ComponentFixture<CreateMenuComponent>;
 
 
-  beforeEach(async(() => {
+  beforeEach(() => {
     TestBed.configureTestingModule({
       declarations: [
         AppComponent,
@@ -54,7 +55,8 @@ describe('CreateMenuComponent', () => {
         MenuComponent,
         StepOrderComponent,
         CreateMenuComponent,
-        OrdersComponent
+        CreateProductComponent,
+        OrdersComponent,
       ],
       imports: [
         ReactiveFormsModule,
@@ -103,7 +105,7 @@ describe('CreateMenuComponent', () => {
       schemas: [CUSTOM_ELEMENTS_SCHEMA]
     })
       .compileComponents();
-  }));
+  });
 
   beforeEach(() => {
     fixture = TestBed.createComponent(CreateMenuComponent);
