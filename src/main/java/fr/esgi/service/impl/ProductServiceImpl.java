@@ -19,7 +19,7 @@ import fr.esgi.service.dto.ProductDTO;
 import fr.esgi.service.mapper.ProductMapper;
 
 /**
- * Service Implementation for managing User.
+ * Service Implementation for managing Product.
  * @author mickael
  */
 @Service("ProductService")
@@ -42,6 +42,7 @@ public class ProductServiceImpl implements ProductService {
 	 * Returns all products
 	 * @return List<Product>
 	 */
+	@Override
 	@Transactional(readOnly = true)
 	public Page<ProductDTO> findAll(int page, int size) {
 		LOGGER.debug("Request to get all products");
@@ -50,7 +51,7 @@ public class ProductServiceImpl implements ProductService {
 	}
 
 	/**
-	 * SaveAll products.
+	 * Save all the products.
 	 * 
 	 * @param productsDTO the list of entities to save
 	 * @return the list of entities
@@ -72,6 +73,7 @@ public class ProductServiceImpl implements ProductService {
 	 * @param ProductDTO
 	 * @return ProductDTO
 	 */
+	@Override
 	public ProductDTO save(ProductDTO productDTO) {
 		LOGGER.debug("Request to save a product: {}", productDTO);
 		Product product = productMapper.productDTOToProduct(productDTO);
@@ -104,8 +106,12 @@ public class ProductServiceImpl implements ProductService {
 		return productMapper.productToProductDTO(product);
 	}
 
-	@Transactional(readOnly = true)
+    /**
+     * Get all the products by Category name.
+     * @return  Page<ProductDTO>
+     */
 	@Override
+	@Transactional(readOnly = true)
 	public Page<ProductDTO> findProductsByCategoryName(Pageable pageable, String categoryName) {
 		LOGGER.debug("Request to find all products by categoryName: {}", categoryName);
 		return productRepository.findAllByCategoryName(pageable, categoryName)

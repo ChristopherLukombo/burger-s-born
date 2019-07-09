@@ -22,6 +22,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.MockitoJUnitRunner;
+import org.springframework.context.MessageSource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.test.web.servlet.MockMvc;
@@ -79,6 +80,9 @@ public class MenuResourceTest {
 
 	@Mock
 	private ProductMapper productMapper;
+	
+	@Mock
+	private MessageSource messageSource;
 
 	@InjectMocks
 	private MenuResource menuResource;
@@ -95,7 +99,7 @@ public class MenuResourceTest {
 
 	private void initMocks() {
 		menuService = new MenuServiceImpl(menuRepository, menuMapper, productMapper);
-		menuResource = new MenuResource(menuService);
+		menuResource = new MenuResource(menuService, messageSource);
 	}
 
 	private static MenuDTO getMenuDTO() {
@@ -238,7 +242,7 @@ public class MenuResourceTest {
 		when(productMapper.productToProductDTO((Product) any())).thenReturn(getProductDTO());
 
 		// Then
-		mockMvc.perform(get("/api/menus/products?id=1&categorieName=dessert")
+		mockMvc.perform(get("/api/menus/products?id=1&categorieName=PLAT")
 				.contentType(TestUtil.APPLICATION_JSON_UTF8))
 		.andExpect(status().isOk());
 	}
@@ -264,7 +268,7 @@ public class MenuResourceTest {
 		// Then
 		mockMvc.perform(get("/api/menus/products?id=1&categorieName=dessert")
 				.contentType(TestUtil.APPLICATION_JSON_UTF8))
-		.andExpect(status().isOk());
+		.andExpect(status().isNotFound());
 	}
 	
 	@Test
@@ -288,6 +292,6 @@ public class MenuResourceTest {
 		// Then
 		mockMvc.perform(get("/api/menus/products?id=1&categorieName=dessert")
 				.contentType(TestUtil.APPLICATION_JSON_UTF8))
-		.andExpect(status().isOk());
+		.andExpect(status().isNotFound());
 	}
 }

@@ -21,6 +21,9 @@
             <div *ngIf="f.name.errors.required">
                 Le champs est obligatoire
             </div>
+            <div *ngIf="f.name.errors.maxlength">
+                Le nom doit contenir au maximun 50 caractères
+            </div>
             <div *ngIf="updateForm.get('name').errors?.serverError">
                 Le champs {{updateForm.get('name').errors?.serverError}}
             </div>
@@ -51,6 +54,9 @@
         <div class="alert alert-danger" role="alert" *ngIf="(submitted && f.price.errors)">
             <div *ngIf="f.price.errors.required">
                 Le champs est obligatoire
+            </div>
+            <div *ngIf="f.price.errors.max">
+                Le prix est au maximun de 5 caractères
             </div>
             <div *ngIf="updateForm.get('price').errors?.serverError">
                 Le champs {{updateForm.get('price').errors?.serverError}}
@@ -90,7 +96,7 @@
                 <span *ngIf="!product.available">En rupture de stock</span>
             </td>
             <td>
-                <button class="btn btn-primary" (click)="initForm(product); toUpdate = true; loadCategories()" 
+                <button class="btn btn-primary" (click)="initForm(product); toUpdate = true; loadCategories()"
                     style="margin-right: 10px;" *ngIf="authProviderService.isAuthenticated() && isAdmin"> Modifier </button>
                 <button class="btn btn-danger" (click)="delete(product.id)" *ngIf="authProviderService.isAuthenticated() && isAdmin"> Supprimer </button>
             </td>

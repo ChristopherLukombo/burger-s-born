@@ -17,22 +17,16 @@ import fr.esgi.service.dto.ProductDTO;
 public interface DatabaseUpdatorService {
 
 	/**
-	 * Import products file in database.
+	 * Import JSON or CSV file of products. 
 	 * 
-	 * @param fileToImport
-	 * @param fileFormat
-	 * @return
-	 * @throws BurgerSTerminalException
+	 * @return the list of entities
 	 */
 	List<ProductDTO> importProductsFile(MultipartFile fileToImport, String fileFormat) throws BurgerSTerminalException;
 
 	/**
-	 * Import Menus file in database.
+	 * Import JSON or CSV file of menus. 
 	 * 
-	 * @param inputFile
-	 * @param fileFormat
-	 * @return
-	 * @throws BurgerSTerminalException
+	 * @return the list of entities
 	 */
 	List<MenuDTO> importMenusFile(MultipartFile inputFile, String fileFormat) throws BurgerSTerminalException;
 }

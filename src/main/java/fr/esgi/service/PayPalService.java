@@ -8,7 +8,7 @@ import fr.esgi.service.dto.CommandDTO;
 import fr.esgi.service.dto.Paypal;
 
 /**
- * Service Interface for managing PayPalService.
+ * Service Interface for managing PayPal.
  */
 @Service
 public interface PayPalService {
@@ -16,7 +16,7 @@ public interface PayPalService {
 	/**
 	 *  Create a payment.
 	 *
-	 * @param commandDTO : commandDTO to create
+	 * @param commandDTO command to create
 	 * @return status
 	 */
 	Map<String, Object> createPayment(CommandDTO commandDTO);

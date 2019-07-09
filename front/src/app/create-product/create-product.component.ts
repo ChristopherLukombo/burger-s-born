@@ -1,4 +1,4 @@
-import { HttpErrorResponse, HttpResponse } from '@angular/common/http';
+import { HttpErrorResponse } from '@angular/common/http';
 import { Component, Injector, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material';
@@ -48,17 +48,9 @@ export class CreateProductComponent implements OnInit {
         const target = {
             name: ['', [Validators.required, Validators.maxLength(50)]],
             category: ['', [Validators.required, Validators.maxLength(50)]],
-            price: ['', [Validators.required, Validators.maxLength(50)]]
+            price: ['', [Validators.required]]
         };
-        if (this.authProviderService.isAuthenticated() &&
-            this.authProviderService.isAdmin()) {
-            const source = {
-                role: ['', [Validators.required]]
-            };
-            this.registerForm = this.formBuilder.group(Object.assign(target, source));
-        } else {
-            this.registerForm = this.formBuilder.group(target);
-        }
+        this.registerForm = this.formBuilder.group(target);
     }
 
     // convenience getter for easy access to form fields
@@ -68,7 +60,7 @@ export class CreateProductComponent implements OnInit {
 
         this.errorMessage = null;
 
-        if(!this.isAdmin || !this.authProviderService.isAuthenticated()) {
+        if (!this.isAdmin || !this.authProviderService.isAuthenticated()) {
             this.errorMessage = 'Vous devez être connecté avec un compte administrateur.';
             return;
         }
@@ -76,22 +68,16 @@ export class CreateProductComponent implements OnInit {
         this.errorMessage = null;
         this.submitted = true;
 
-        const name = this.registerForm.controls.name.value;
-        const category = this.registerForm.controls.category.value;
-        const price = this.registerForm.controls.price.value;
-
-        /*if (this.registerForm.invalid) {
+        if (this.registerForm.invalid) {
             return;
-        }*/
+        }
 
         const product = new Product();
-
-        product.name = name;
-        product.categoryId = category;
-        product.price = price;
+        product.name = this.registerForm.controls.name.value;
+        product.categoryId = this.registerForm.controls.category.value;
+        product.price = this.registerForm.controls.price.value;
         product.available = 1;
-        // TODO : ajouter l'id du manager
-        product.managerId = 1;
+        product.managerId = this.authProviderService.getIdManager();
 
         if (!environment.production) {
             this.logger.debug(AppConstants.CALL_SERVICE, product);
@@ -99,25 +85,13 @@ export class CreateProductComponent implements OnInit {
 
         this.servicesDataService.createProduct(product)
             .subscribe(data => {
-                this.handleSuccessRegister(getUserId, data);
+                this.handleSuccessRegister();
             }, error => {
-                if(error.status === 403) {
-                    this.errorMessage = 'Vous devez être connecté pour pouvoir ajouter un produit.';
-                }
                 this.handleErrorRegister(error);
             });
-
-
-        function getUserId(data) {
-            let userId: number;
-            if ('/api/users/' === data.headers.get('Location').slice(0, 11)) {
-                userId = data.headers.get('Location').slice(11, data.headers.get('Location').length);
-            }
-            return userId;
-        }
     }
 
-    private handleSuccessRegister(getUserId: (data: any) => number, data: HttpResponse<Object>) {
+    private handleSuccessRegister() {
         this.resetForm();
         this.errorMessage = undefined;
         this.openDialogSuccess();
@@ -138,6 +112,8 @@ export class CreateProductComponent implements OnInit {
                 this.errorMessage = error.error;
             } else if (500 === error.status) {
                 this.errorMessage = 'Une erreur serveur s\'est produite';
+            } else if (error.status === 403) {
+                this.errorMessage = 'Vous devez être connecté pour ajouter un produit.';
             }
         }
     }
@@ -167,7 +143,7 @@ export class CreateProductComponent implements OnInit {
             .subscribe(data => {
                 this.categories = data['body'];
             }, error => {
-                if(error.status === 404) {
+                if (error.status === 404) {
                     this.errorMessage = 'Aucune catégorie de produit enregistrée.';
                 } else {
                     this.errorMessage = 'Erreur lors de la récupération des catégories de produit.';

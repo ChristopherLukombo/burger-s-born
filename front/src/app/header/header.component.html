@@ -6,7 +6,7 @@
     *ngIf="authProviderService.isAuthenticated()">
 
 <div style="float: right; margin-right: 5%;">
-    <a class="nav-link" routerLink="/steporder" routerLinkActive="active" role="tab">
+    <a class="nav-link" routerLink="/steporder" routerLinkActive="active" role="tab" *ngIf="authProviderService.isAuthenticated() && !isAdmin">
         <i class="fa fa-shopping-basket" aria-hidden="true"></i>
         Payer
     </a>

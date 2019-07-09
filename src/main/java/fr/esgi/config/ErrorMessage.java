@@ -26,8 +26,21 @@ public final class ErrorMessage {
     
     public static final String USER_DOES_NOT_EXISTS = "error.user.does.not.exists";
     
-  
-
+    public static final String ERROR_CATEGORY_NOT_FOUND = "error.category.not.found";
+    
+    public static final String ERROR_COMMAND_MUST_HAVE_ID = "error.command.must.have.id";
+    public static final String ERROR_COMMAND_NOT_FOUND = "error.command.not.found";
+    public static final String ERROR_NEW_COMMAND_ID_EXIST = "error.new.command.id.exist";
+    public static final String ERROR_NOT_COMMANDS = "error.not.commands";
+    
+    public static final String ERROR_PRODUCT_MUST_HAVE_ID = "error.product.must.have.id";
+    public static final String ERROR_NEW_PRODUCT_ID_EXIST = "error.new.product.id.exist";
+    public static final String ERROR_PRODUCTS_NOT_FOUND = "error.products.not.found";
+    public static final String ERROR_MENUS_NOT_FOUND = "error.menus.not.found";
+    
+    public static final String ERROR_PAYMENT_REFUND = "error.payment.refund";
+    public static final String ERROR_PAYMENT_VALIDATION = "error.payment.validation";
+    public static final String ERROR_PAYMENT_CREATION = "error.payment.creation";
 
     private ErrorMessage() {}
 }

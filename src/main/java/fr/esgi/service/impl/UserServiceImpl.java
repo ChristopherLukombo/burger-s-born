@@ -60,10 +60,12 @@ public class UserServiceImpl implements UserService {
 
 	/**
      * Save the user in database.
+     * 
      * @param userDTO
      * @param password
      * @return UserDTO
      */
+    @Override
     public UserDTO registerUser(UserDTO userDTO, String password) {
         User newUser = new User();
         String encryptedPassword = passwordEncoder.encode(password);
@@ -88,27 +90,32 @@ public class UserServiceImpl implements UserService {
     }
 
     /**
-     * Returns user by login
+     * Get the user by login.
+     * 
      * @param userDTO
      * @return Optional<User>
      */
+    @Override
     public Optional<User> findUserByPseudo(UserDTO userDTO) {
         return userRepository.findOneByPseudoIgnoreCase(userDTO.getPseudo());
     }
 
     /**
-     * Returns user found by email.
-     * @param userDTO
-     * @return Optional<User>
+     * Get the user found by email.
+     * 
+     * @param userDTO the entity to find
+     * @return Optional<User> the persisted entity
      */
+    @Override
     public Optional<User> findUserByEmail(UserDTO userDTO) {
         return userRepository.findOneByEmailIgnoreCase(userDTO.getEmail());
     }
 
     /**
-     * Upload file in folder
-     * @param file
-     * @param userId
+     * Upload file in folder.
+     * 
+     * @param file the file to upload
+     * @param userId the id of user
      * @throws BurgerSTerminalException
      */
     @Override
@@ -130,11 +137,13 @@ public class UserServiceImpl implements UserService {
     }
     
     /**
-     * Download file from pseudo
+     * Download file from pseudo.
+     * 
      * @param pseudo
-     * @return
+     * @return the Map
      * @throws BurgerSTerminalException 
      */
+    @Override
     public Map<String, byte[]> getImageURL(String pseudo) throws BurgerSTerminalException {
     	final Optional<User> user = userRepository.findOneByPseudoIgnoreCase(pseudo);
     	final Map<String, byte[]> content = new HashMap<>();

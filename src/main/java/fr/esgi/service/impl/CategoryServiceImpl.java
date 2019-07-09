@@ -35,8 +35,9 @@ public class CategoryServiceImpl implements CategoryService {
 	}
 
 	/**
-	 * Returns all categories
-	 * @return List<Category>
+	 * Get all the categories.
+	 * 
+	 * @return the list of entities
 	 */
 	@Override
 	@Transactional(readOnly = true)
