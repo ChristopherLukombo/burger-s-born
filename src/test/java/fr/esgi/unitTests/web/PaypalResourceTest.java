@@ -19,6 +19,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.MockitoJUnitRunner;
+import org.springframework.context.MessageSource;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
@@ -67,6 +68,9 @@ public class PaypalResourceTest {
 	@Mock
 	private PayPalService payPalService;
 	
+	@Mock
+	private MessageSource messageSource;
+	
 	@InjectMocks
 	private PayPalResource payPalResource;
 	
@@ -82,7 +86,7 @@ public class PaypalResourceTest {
 
 	private void initMocks() {
 		payPalService = new PayPalServiceImpl(commandService, commandMapper, configurationService);
-		payPalResource = new PayPalResource(payPalService);
+		payPalResource = new PayPalResource(payPalService, messageSource);
 	}
 	
 	private static CommandDTO getCommandDTO() {

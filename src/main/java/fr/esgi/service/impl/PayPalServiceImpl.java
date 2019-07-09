@@ -44,7 +44,7 @@ import fr.esgi.service.dto.Paypal;
 import fr.esgi.service.mapper.CommandMapper;
 
 /**
- * Service Implementation for managing PayPalService.
+ * Service Implementation for managing PayPal.
  */
 @Service("PayPalService")
 public class PayPalServiceImpl implements PayPalService {
@@ -68,7 +68,7 @@ public class PayPalServiceImpl implements PayPalService {
 	/**
 	 *  Create a payment.
 	 *
-	 * @param commandDTO : commandDTO to create
+	 * @param commandDTO command to create
 	 * @return status
 	 */
 	@Override
@@ -236,9 +236,9 @@ public class PayPalServiceImpl implements PayPalService {
 
 		Payment payment = getPayment(paypal);
 		try {
-			APIContext context = getApiContext();
 			PaymentExecution paymentExecution = getPaymentExecution(paypal);
-			Payment createdPayment = payment.execute(context, paymentExecution);
+			APIContext apiContext = getApiContext();
+			Payment createdPayment = payment.execute(apiContext, paymentExecution);
 			if (null != createdPayment) {
 				setStatusCommand(paypal, createdPayment);
 				response.put(Constants.STATUS, Constants.SUCCESS);
@@ -250,11 +250,11 @@ public class PayPalServiceImpl implements PayPalService {
 		return response;
 	}
 
-	private APIContext getApiContext() {
-		return new APIContext(
-				configurationService.getPaypalClientId(),
-				configurationService.getPaypalClientSecret(), Constants.SANDBOX);
-	}
+		private APIContext getApiContext() {
+			return new APIContext(
+					configurationService.getPaypalClientId(),
+					configurationService.getPaypalClientSecret(), Constants.SANDBOX);
+		}
 
 	private Payment getPayment(Paypal paypal) {
 		Payment payment = new Payment();
@@ -291,10 +291,9 @@ public class PayPalServiceImpl implements PayPalService {
 		Optional<CommandDTO> commandDTO = commandService.findOne(commandId);
 		if (commandDTO.isPresent()) {
 			Command command = setToCommand(commandDTO.get());
-			APIContext context = getApiContext();
-			
+
 			Refund refund = new Refund();
-			
+
 			Sale sale = new Sale();
 			sale.setId(command.getSaleId());
 
@@ -306,7 +305,8 @@ public class PayPalServiceImpl implements PayPalService {
 			RefundRequest refundRequest = new RefundRequest();
 
 			try {
-				sale.refund(context, refundRequest);
+				APIContext apiContext = getApiContext();
+				sale.refund(apiContext, refundRequest);
 				commandService.delete(commandId);
 				response.put(Constants.STATUS, Constants.SUCCESS);
 			} catch (PayPalRESTException e) {

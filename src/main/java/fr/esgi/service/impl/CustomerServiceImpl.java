@@ -14,6 +14,9 @@ import fr.esgi.service.CustomerService;
 import fr.esgi.service.dto.CustomerDTO;
 import fr.esgi.service.mapper.CustomerMapper;
 
+/**
+ * Service Implementation for managing Customer.
+ */
 @Service("CustomerService")
 @Transactional
 public class CustomerServiceImpl implements CustomerService {
@@ -31,12 +34,13 @@ public class CustomerServiceImpl implements CustomerService {
 	}
 
 	/**
-     * Returns customer by id.
-     * @param id
-     * @return Optional<CustomerDTO>
+     * Get the customer by id.
+     * 
+     * @param id the id of customer
+     * @return the entity persisted
      */
-    @Transactional(readOnly = true)
 	@Override
+	@Transactional(readOnly = true)
 	public Optional<CustomerDTO> findOne(Long id) {
     	LOGGER.debug("Request to find Customer : {}", id);
 		return customerRepository.findById(id)
@@ -44,13 +48,15 @@ public class CustomerServiceImpl implements CustomerService {
 	}
 
     /**
-     * Returns customer by userName.
+     * Get the customer by userName.
+     * 
      * @param userName
-     * @return Optional<CustomerDTO>
+     * @return the id of customer
      */
-    @Transactional(readOnly = true)
     @Override
+    @Transactional(readOnly = true)
     public Long findByUserName(String userName) {
+    	LOGGER.debug("Request to find Customer : {}", userName);
     	return customerRepository.findByUserName(userName)
     			.map(Customer::getId)
     			.orElse(null);

@@ -98,6 +98,7 @@ public class AccountResource {
    
     /**
      * POST  /register/file/{userId} : update file from userId
+     * 
      * @param file
      * @param userId
      * @return String the status
@@ -121,6 +122,7 @@ public class AccountResource {
 
     /**
      * GET  /users/imageURL/{pseudo} : retrieve image from pseudo.
+     * 
      * @param response
      * @param pseudo
      * @return byte[]

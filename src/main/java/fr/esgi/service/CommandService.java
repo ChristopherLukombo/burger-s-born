@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 import fr.esgi.service.dto.CommandDTO;
 
 /**
- * Service Interface for managing CommandService.
+ * Service Interface for managing Command.
  */
 @Service
 public interface CommandService {

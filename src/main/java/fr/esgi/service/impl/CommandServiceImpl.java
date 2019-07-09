@@ -18,10 +18,10 @@ import fr.esgi.service.dto.CommandDTO;
 import fr.esgi.service.mapper.CommandMapper;
 
 /**
- * Service Implementation for managing CommandServiceImpl.
+ * Service Implementation for managing Command.
  */
-@Transactional
 @Service("CommandService")
+@Transactional
 public class CommandServiceImpl implements CommandService {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(CommandServiceImpl.class);

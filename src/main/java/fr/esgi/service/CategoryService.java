@@ -12,10 +12,11 @@ import fr.esgi.service.dto.CategoryDTO;
  */
 @Service
 public interface CategoryService {
-	
-    /**
-     * Get all category
-     * @return List<CategoryDTO>
-     */
+
+	/**
+	 * Get all the categories.
+	 * 
+	 * @return the list of entities
+	 */
 	List<CategoryDTO> findAll();
 }

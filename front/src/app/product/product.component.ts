@@ -1,9 +1,9 @@
 import { Component, OnInit, Injector } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Product } from "../../model/model.product";
+import { Product } from '../../model/model.product';
 import { ServicesDataService } from '../services/services-data.service';
 import { AuthProviderService } from '../services/auth-provider.service';
-import { HttpErrorResponse } from "@angular/common/http";
+import { HttpErrorResponse } from '@angular/common/http';
 import { Category } from '../../model/model.category';
 
 @Component({
@@ -19,7 +19,7 @@ export class ProductComponent implements OnInit {
     totalElements;
     pages;
     selectedPage = 0;
-    categories;
+    categories: Array<Category>;
     updateForm: FormGroup;
     submitted = false;
     selectedProduct;
@@ -47,18 +47,10 @@ export class ProductComponent implements OnInit {
         const target = {
             name: ['', [Validators.required, Validators.maxLength(50)]],
             category: ['', [Validators.required, Validators.maxLength(50)]],
-            price: ['', [Validators.required, Validators.maxLength(50)]],
+            price: ['', [Validators.required]],
             available: ['', [Validators.required]]
         };
-        if (this.authProviderService.isAuthenticated() &&
-            this.authProviderService.isAdmin()) {
-            const source = {
-                role: ['', [Validators.required]]
-            };
-            this.updateForm = this.formBuilder.group(Object.assign(target, source));
-        } else {
-            this.updateForm = this.formBuilder.group(target);
-        }
+        this.updateForm = this.formBuilder.group(target);
     }
 
     initForm(product) {
@@ -73,7 +65,7 @@ export class ProductComponent implements OnInit {
     // convenience getter for easy access to form fields
     get f() { return this.updateForm.controls; }
 
-    findAll(indexPage) {
+    findAll(indexPage: number) {
         this.servicesDataService.findAllProduct(indexPage)
             .subscribe(data => {
 
@@ -84,8 +76,8 @@ export class ProductComponent implements OnInit {
 
                 for (let i = 0; i < this.products.length; i++) {
                     this.categories.forEach(categ => {
-                        if (this.products[i].categoryId == categ.id) {
-                            this.products[i]['categoryName'] = categ.name;
+                        if (this.products[i].categoryId === categ.id) {
+                            this.products[i].categoryName = categ.name;
                         }
                     });
                 }
@@ -94,12 +86,10 @@ export class ProductComponent implements OnInit {
                 if (err instanceof HttpErrorResponse) {
                     if (403 === err.status) {
                         this.errorMessage = 'Vous n\'êtes pas autorisé à effectuer cette action.';
-                    }
-                    else if (404 === err.status) {
+                    } else if (404 === err.status) {
                         this.errorMessage = 'Aucun produit d\'enregistré.';
                         this.products = null;
-                    }
-                    else {
+                    } else {
                         this.errorMessage = 'Une erreur serveur s\'est produite.';
                     }
                 }
@@ -107,7 +97,7 @@ export class ProductComponent implements OnInit {
             });
     }
 
-    delete(id) {
+    delete(id: number) {
         this.servicesDataService.deleteProduct(id)
             .subscribe(data => {
                 this.successMessage = 'Vous avez supprimé le produit avec succès.';
@@ -136,11 +126,11 @@ export class ProductComponent implements OnInit {
         const price = this.updateForm.controls.price.value;
         const available = this.updateForm.controls.available.value;
 
-        /*if (this.updateForm.invalid) {
+        if (this.updateForm.invalid) {
             return;
-        }*/
+        }
 
-        let product = new Product();
+        const product = new Product();
 
         product.id = this.selectedProduct.id;
         product.name = name;
@@ -157,9 +147,9 @@ export class ProductComponent implements OnInit {
                 this.findAll(this.selectedPage);
                 this.toUpdate = false;
 
-            }, err => {
-                if (err instanceof HttpErrorResponse) {
-                    if (403 === err.status) {
+            }, errorUpdate => {
+                if (errorUpdate instanceof HttpErrorResponse) {
+                    if (403 === errorUpdate.status) {
                         this.errorMessage = 'Vous n\'êtes pas autorisé à effectuer cette action.';
                     } else {
                         this.errorMessage = 'Une erreur serveur s\'est produite.';
@@ -172,13 +162,12 @@ export class ProductComponent implements OnInit {
     public loadCategories(): void {
         this.servicesDataService.findAllCategory()
             .subscribe(data => {
-                this.categories = data['body'];
+                this.categories = data['body'] as Array<Category>;
                 this.findAll(0);
             }, error => {
-                if (error.status == 404) {
+                if (error.status === 404) {
                     this.errorMessage = 'Aucune catégorie de produit enregistré.';
                 }
             });
     }
-
 }

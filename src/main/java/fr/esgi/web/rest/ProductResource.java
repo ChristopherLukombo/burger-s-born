@@ -1,5 +1,10 @@
 package fr.esgi.web.rest;
 
+import static fr.esgi.config.Utils.getLang;
+
+import java.net.URI;
+import java.net.URISyntaxException;
+
 import javax.validation.Valid;
 
 import org.slf4j.Logger;
@@ -20,6 +25,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import fr.esgi.config.ErrorMessage;
 import fr.esgi.exception.BurgerSTerminalException;
 import fr.esgi.service.ProductService;
 import fr.esgi.service.dto.ProductDTO;
@@ -34,82 +40,97 @@ import fr.esgi.service.dto.ProductDTO;
 @RequestMapping("/api")
 public class ProductResource {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(ProductResource.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ProductResource.class);
 
-    private final ProductService productService;
+	private final ProductService productService;
 
-    @Autowired
-    public ProductResource(ProductService productService, MessageSource messageSource) {
+	private final MessageSource messageSource;
+
+	@Autowired
+	public ProductResource(ProductService productService, MessageSource messageSource) {
 		this.productService = productService;
+		this.messageSource = messageSource;
 	}
 
+	/**
+	 * GET  /products : get all the products.
+	 *
+	 * @param page
+	 * @param size
+	 * @return all products
+	 * @throws BurgerSTerminalException
+	 */
+	@GetMapping("/products")
+	public ResponseEntity<Page<ProductDTO>> getAllProducts(@RequestParam int page, @RequestParam("size") int size) throws BurgerSTerminalException {
+		LOGGER.debug("REST request to find all products");
+		final Page<ProductDTO> products = productService.findAll(page, size);
+		if (null == products || products.isEmpty()) {
+			throw new BurgerSTerminalException(HttpStatus.NOT_FOUND.value(), 
+					messageSource.getMessage(ErrorMessage.ERROR_PRODUCTS_NOT_FOUND, null, getLang("fr")));
+		}
 
+		return ResponseEntity.ok(products);
+	}
 
 	/**
-     * GET  /product : find all products.
-     *
-     * @param page
-     * @param size
-     * @return all products
-     * @throws BurgerSTerminalException
-     */
-    @GetMapping("/products")
-    public ResponseEntity<Page<ProductDTO>> findProducts(@RequestParam int page, @RequestParam("size") int size) throws BurgerSTerminalException {
-        LOGGER.debug("REST request to find all products");
-        final Page<ProductDTO> products = productService.findAll(page, size);
-        if (null == products || products.isEmpty()) {
-            throw new BurgerSTerminalException(HttpStatus.NOT_FOUND.value(), "Produits non trouvé");
-        }
-
-        return ResponseEntity.ok(products);
-    }
-    
+	 * GET  /products/category : get all the products by category name.
+	 * 
+	 * @param page
+	 * @param size
+	 * @param categorieName
+	 * @return
+	 * @throws BurgerSTerminalException
+	 */
 	@GetMapping("/products/category")
-	public ResponseEntity<Page<ProductDTO>> findProductsByCategoryName(
+	public ResponseEntity<Page<ProductDTO>> getProductsByCategoryName(
 			@RequestParam("page") int page,
 			@RequestParam("size") int size,
 			@RequestParam("categorieName") String categorieName) throws BurgerSTerminalException {
 		Page<ProductDTO> products = productService.findProductsByCategoryName(PageRequest.of(page, size), categorieName);
 		if (products.isEmpty()) {
 			throw new BurgerSTerminalException(
-					HttpStatus.NOT_FOUND.value(), "Il n'a pas de produits.");
+					HttpStatus.NOT_FOUND.value(), 
+					messageSource.getMessage(ErrorMessage.ERROR_PRODUCTS_NOT_FOUND, null, getLang("fr")));
 		}
 		return ResponseEntity.ok(products);
 	}
 
-
-    /**
-     * POST  /product : add new product.
-     *
-     * @param productDTO
-     * @param id
-     * @param available
-     * @param name
-     * @param price
-     * @return created product
-     * @throws BurgerSTerminalException
-     */
-	  @PostMapping("new/product")
-      public ResponseEntity<ProductDTO> addProduct(@RequestBody @Valid ProductDTO productDTO) throws BurgerSTerminalException {
-          LOGGER.debug("REST request to add new product");
-          return new ResponseEntity<ProductDTO>(productService.addProduct(productDTO), HttpStatus.OK);
-      }
-	  
 	/**
-	 * DELETE  /product/{id} : delete a product.
+	 * POST  /new/product : create a product.
+	 * 
+	 * @param productDTO
+	 * @return
+	 * @throws BurgerSTerminalException
+	 * @throws URISyntaxException
+	 */
+	@PostMapping("/new/product")
+	public ResponseEntity<ProductDTO> createProduct(@RequestBody @Valid ProductDTO productDTO) throws BurgerSTerminalException, URISyntaxException {
+		LOGGER.debug("REST request to create a product: {}", productDTO);
+		if (null != productDTO.getId()) {
+			throw new BurgerSTerminalException(HttpStatus.BAD_REQUEST.value(),
+					messageSource.getMessage(ErrorMessage.ERROR_NEW_PRODUCT_ID_EXIST, null, getLang("fr")));
+		}
+		ProductDTO result = productService.save(productDTO);
+		return ResponseEntity.created(new URI("/api/product" + result.getId()))
+				.body(result);
+	}
+
+	/**
+	 * DELETE  /delete/product/{id} : delete a product.
+	 * 
 	 * @param id the id of the productDTO to delete
 	 * @return the ResponseEntity with status 200 (OK)
 	 */
-	@DeleteMapping("delete/product/{id}")
+	@DeleteMapping("/delete/product/{id}")
 	public ResponseEntity<Void> deleteProduct(@PathVariable Long id) {
 		LOGGER.debug("REST request to delete a product: {}", id);
 		productService.delete(id);
 		return ResponseEntity.noContent().build();
 	}
-		
-		
+
 	/**
 	 * PUT  /product : update a product.
+	 * 
 	 * @param productDTO
 	 * @return the ResponseEntity with status 200 (OK) and with body the assignmentModuleDTO
 	 * @throws BurgerSTerminalException if the id of command is empty.
@@ -119,7 +140,7 @@ public class ProductResource {
 		LOGGER.debug("REST request to update a product: {}", productDTO);
 		if (null == productDTO.getId()) {
 			throw new BurgerSTerminalException(HttpStatus.BAD_REQUEST.value(),
-					"Un product doit avoir un ID.");
+					messageSource.getMessage(ErrorMessage.ERROR_PRODUCT_MUST_HAVE_ID, null, getLang("fr")));
 		}
 		ProductDTO result = productService.update(productDTO);
 		return ResponseEntity.ok()

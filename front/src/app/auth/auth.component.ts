@@ -65,16 +65,16 @@ export class AuthComponent implements OnInit {
        const token = data.body as Token;
 
         this.authProviderService.storeIdCustomer(token.id_customer);
+        this.authProviderService.storeIdManager(token.id_manager);
 
         this.authProviderService.connect.next(this.authProviderService.isAuthenticated());
+        this.authProviderService.admin.next(this.authProviderService.isAdmin());
 
         if ('/steporder' === this.router.url) {
           this.router.navigate(['steporder']);
         } else if ('/auth' === this.router.url) {
           this.router.navigate(['home']);
         }
-
-        this.authProviderService.admin.next(this.authProviderService.isAdmin());
         this.loadImage();
       }, err => {
         if (err instanceof HttpErrorResponse) {

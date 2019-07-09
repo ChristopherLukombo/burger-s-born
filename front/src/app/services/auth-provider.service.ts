@@ -43,6 +43,14 @@ export class AuthProviderService {
     return this.$localStorage.retrieve('id_customer');
   }
 
+  storeIdManager(idManager: number) {
+    this.$localStorage.store('id_manager', idManager);
+  }
+
+  getIdManager() {
+    return this.$localStorage.retrieve('id_manager');
+  }
+
   getToken() {
     return this.$localStorage.retrieve('authenticationToken');
   }

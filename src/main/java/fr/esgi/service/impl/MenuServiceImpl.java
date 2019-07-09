@@ -23,6 +23,9 @@ import fr.esgi.service.dto.ProductDTO;
 import fr.esgi.service.mapper.MenuMapper;
 import fr.esgi.service.mapper.ProductMapper;
 
+/**
+ * Service Implementation for managing Menu.
+ */
 @Transactional
 @Service("MenuService")
 public class MenuServiceImpl implements MenuService {
@@ -42,6 +45,11 @@ public class MenuServiceImpl implements MenuService {
 		this.productMapper = productMapper;
 	}
 
+    /**
+     * Get all the menus.
+     * 
+     * @return the list of entities 
+     */
 	@Override
 	@Transactional(readOnly = true)
 	public Page<MenuDTO> findAll(int page,int size) {
@@ -50,6 +58,11 @@ public class MenuServiceImpl implements MenuService {
 				.map(menuMapper::menuToMenuDTO);
 	}
 	
+    /**
+     * Get all the products by menu id.
+     * 	
+     * @return the list of entities
+     */
 	@Override
 	@Transactional(readOnly = true)
 	public List<ProductDTO> findProductsByMenuId(Long id, String categoryName) {
@@ -67,6 +80,7 @@ public class MenuServiceImpl implements MenuService {
 
 	/**
 	 * Returns the four trends menus.
+	 * 
 	 * @return the list of entities
 	 */
 	@Transactional(readOnly = true)
@@ -80,7 +94,7 @@ public class MenuServiceImpl implements MenuService {
 	}
 
 	/**
-	 * SaveAll menus.
+	 * Save all the menus.
 	 * 
 	 * @param menusDTO the list of entities to save
 	 * @return the list of entities

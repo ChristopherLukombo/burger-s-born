@@ -32,6 +32,9 @@ import fr.esgi.service.ProductService;
 import fr.esgi.service.dto.MenuDTO;
 import fr.esgi.service.dto.ProductDTO;
 
+/**
+ * Service Implementation for managing DatabaseUpdator.
+ */
 @Service("DatabaseUpdatorService")
 @Transactional
 public class DatabaseUpdatorServiceImpl implements DatabaseUpdatorService {
@@ -48,6 +51,11 @@ public class DatabaseUpdatorServiceImpl implements DatabaseUpdatorService {
 		this.menuService = menuService;
 	}
 
+	/**
+	 * Import JSON or CSV file of products. 
+	 * 
+	 * @return the list of entities
+	 */
 	@Override
 	public List<ProductDTO> importProductsFile(MultipartFile fileToImport, String fileFormat) throws BurgerSTerminalException {
 		List<ProductDTO> products = null;
@@ -171,8 +179,11 @@ public class DatabaseUpdatorServiceImpl implements DatabaseUpdatorService {
 		return countColumns == firstLine.length;
 	}	
 
-	// Menus
-
+	/**
+	 * Import JSON or CSV file of menus. 
+	 * 
+	 * @return the list of entities
+	 */
 	@Override
 	public List<MenuDTO> importMenusFile(MultipartFile fileToImport, String fileFormat) throws BurgerSTerminalException {
 		List<MenuDTO> menus = null;

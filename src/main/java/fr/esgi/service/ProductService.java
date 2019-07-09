@@ -6,7 +6,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import fr.esgi.service.dto.CommandDTO;
 import fr.esgi.service.dto.ProductDTO;
 
 /**
@@ -36,7 +35,7 @@ public interface ProductService {
 	 * @param productDTO of entities to save
 	 * @return the entities saved
 	 */
-    ProductDTO addProduct(ProductDTO product);
+    ProductDTO save(ProductDTO product);
     
     /**
 	 * Delete product.

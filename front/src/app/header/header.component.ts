@@ -18,6 +18,7 @@ export class HeaderComponent implements OnInit {
   private language: string;
 
   imageBlobUrl: string | ArrayBuffer | null;
+  isAdmin: boolean;
 
   constructor(
     private logger: NGXLogger,
@@ -30,6 +31,10 @@ export class HeaderComponent implements OnInit {
   ngOnInit() {
     this.language = CountryCode.FR;
     this.injector.get(TranslateService).use(this.language);
+    this.authProviderService.admin.subscribe(value => {
+      this.isAdmin = value;
+    });
+    this.isAdmin = this.isAdmin || this.authProviderService.isAdmin();
     // this.translateService.use(this.language);
     this.loadImage();
   }

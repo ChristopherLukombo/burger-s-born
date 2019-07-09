@@ -1,7 +1,6 @@
 package fr.esgi.service.impl;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
@@ -13,18 +12,14 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import fr.esgi.dao.CategoryRepository;
 import fr.esgi.dao.ProductRepository;
-import fr.esgi.domain.Category;
-import fr.esgi.domain.Command;
 import fr.esgi.domain.Product;
 import fr.esgi.service.ProductService;
-import fr.esgi.service.dto.CommandDTO;
 import fr.esgi.service.dto.ProductDTO;
 import fr.esgi.service.mapper.ProductMapper;
 
 /**
- * Service Implementation for managing User.
+ * Service Implementation for managing Product.
  * @author mickael
  */
 @Service("ProductService")
@@ -34,23 +29,20 @@ public class ProductServiceImpl implements ProductService {
 	private static final Logger LOGGER = LoggerFactory.getLogger(ProductServiceImpl.class);
 
 	private final ProductRepository productRepository;
-	
-	private final CategoryRepository categoryRepository;
 
 	private final ProductMapper productMapper;
 
 	@Autowired
-	public ProductServiceImpl(ProductRepository productRepository, ProductMapper productMapper,
-			CategoryRepository categoryRepository) {
+	public ProductServiceImpl(ProductRepository productRepository, ProductMapper productMapper) {
 		this.productRepository = productRepository;
 		this.productMapper = productMapper;
-		this.categoryRepository = categoryRepository;
 	}
 
 	/**
 	 * Returns all products
 	 * @return List<Product>
 	 */
+	@Override
 	@Transactional(readOnly = true)
 	public Page<ProductDTO> findAll(int page, int size) {
 		LOGGER.debug("Request to get all products");
@@ -59,7 +51,7 @@ public class ProductServiceImpl implements ProductService {
 	}
 
 	/**
-	 * SaveAll products.
+	 * Save all the products.
 	 * 
 	 * @param productsDTO the list of entities to save
 	 * @return the list of entities
@@ -75,32 +67,21 @@ public class ProductServiceImpl implements ProductService {
 				.map(productMapper::productToProductDTO)
 				.collect(Collectors.toList());
 	}
-	
-	
-	/**
-     * Save the product in database.
-     * @param ProductDTO
-     * @return ProductDTO
-     */
-    public ProductDTO addProduct(ProductDTO productDTO) {
-        Product newProduct = new Product();
-        Optional<Category> category = categoryRepository.findById(productDTO.getCategoryId());
-        
-        if(category.isPresent()) {
-        	newProduct.setCategory(category.get());
-        }
-        
-    	newProduct.setName(productDTO.getName());
-    	newProduct.setPrice(productDTO.getPrice());
-    	newProduct.setAvailable(true);
-    	
-    	newProduct = productRepository.save(newProduct);
 
-        LOGGER.debug("Created Information for Product: {}", newProduct);
-        return productMapper.productToProductDTO(newProduct);
-    }
-    
-    /**
+	/**
+	 * Save the product in database.
+	 * @param ProductDTO
+	 * @return ProductDTO
+	 */
+	@Override
+	public ProductDTO save(ProductDTO productDTO) {
+		LOGGER.debug("Request to save a product: {}", productDTO);
+		Product product = productMapper.productDTOToProduct(productDTO);
+		product = productRepository.save(product);
+		return productMapper.productToProductDTO(product);
+	}
+
+	/**
 	 * Delete the "id" product.
 	 *
 	 * @param id the id of the entity
@@ -110,7 +91,7 @@ public class ProductServiceImpl implements ProductService {
 		LOGGER.debug("Request to delete a product");
 		productRepository.deleteById(id);
 	}
-	
+
 	/**
 	 * Update a product.
 	 *
@@ -124,9 +105,13 @@ public class ProductServiceImpl implements ProductService {
 		product = productRepository.saveAndFlush(product);
 		return productMapper.productToProductDTO(product);
 	}
-	
-	@Transactional(readOnly = true)
+
+    /**
+     * Get all the products by Category name.
+     * @return  Page<ProductDTO>
+     */
 	@Override
+	@Transactional(readOnly = true)
 	public Page<ProductDTO> findProductsByCategoryName(Pageable pageable, String categoryName) {
 		LOGGER.debug("Request to find all products by categoryName: {}", categoryName);
 		return productRepository.findAllByCategoryName(pageable, categoryName)

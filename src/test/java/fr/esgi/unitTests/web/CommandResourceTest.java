@@ -26,6 +26,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.MockitoJUnitRunner;
+import org.springframework.context.MessageSource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.test.web.servlet.MockMvc;
@@ -54,6 +55,9 @@ public class CommandResourceTest {
 
 	@Mock
 	private CommandMapper commandMapper;
+	
+	@Mock
+	private MessageSource messageSource;
 
 	@Mock
 	private CommandService commandService;
@@ -73,7 +77,7 @@ public class CommandResourceTest {
 
 	private void initMocks() {
 		commandService = new CommandServiceImpl(commandRepository, commandMapper);
-		commandResource = new CommandResource(commandService);
+		commandResource = new CommandResource(commandService, messageSource);
 	}
 
 	private static CommandDTO getCommandDTO() {

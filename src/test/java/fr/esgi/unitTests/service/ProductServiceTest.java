@@ -4,7 +4,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.math.BigDecimal;
@@ -243,6 +247,74 @@ public class ProductServiceTest {
 		// Then
 		assertThatThrownBy(() -> productServiceImpl.findProductsByCategoryName(PageRequest.of(0, 10), PLAT))
 		.isInstanceOf(NullPointerException.class);
+	}
+	
+	@Test
+	public void shouldSaveWhenIsOK() {
+		// Given
+		ProductDTO productDTO = getProductDTO();
+		
+		// When
+		when(productMapper.productDTOToProduct((ProductDTO) any())).thenReturn(getProduct());
+		when(productRepository.save((Product) any())).thenReturn(getProduct());
+		when(productMapper.productToProductDTO((Product) any())).thenReturn(productDTO);
+		
+		// Then
+		assertThat(productServiceImpl.save(productDTO)).isNotNull();
+	}
+
+	@Test
+	public void shouldSaveWhenIsKO() {
+		// Given
+		ProductDTO productDTO = null;
+		
+		// When
+		when(productMapper.productDTOToProduct((ProductDTO) any())).thenReturn(null);
+		when(productRepository.save((Product) any())).thenReturn(null);
+		when(productMapper.productToProductDTO((Product) any())).thenReturn(productDTO);
+		
+		// Then
+		assertThat(productServiceImpl.save(productDTO)).isNull();
+	}
+	
+	@Test
+	public void shouldDeleteWhenIsOK() {
+		// Given
+		doNothing().when(productRepository).deleteById(anyLong());
+		
+		// When
+		productServiceImpl.delete(anyLong());
+		
+		// Then
+		verify(productRepository, times(1)).deleteById(anyLong());
+	}
+	
+	@Test
+	public void shouldUpdateWhenIsOK() {
+		// Given
+		ProductDTO productDTO = getProductDTO();
+		
+		// When
+		when(productMapper.productDTOToProduct((ProductDTO) any())).thenReturn(getProduct());
+		when(productRepository.saveAndFlush((Product) any())).thenReturn(getProduct());
+		when(productMapper.productToProductDTO((Product) any())).thenReturn(productDTO);
+		
+		// Then
+		assertThat(productServiceImpl.update(productDTO)).isNotNull();
+	}
+
+	@Test
+	public void shouldUpdateWhenIsKO() {
+		// Given
+		ProductDTO productDTO = null;
+		
+		// When
+		when(productMapper.productDTOToProduct((ProductDTO) any())).thenReturn(null);
+		when(productRepository.saveAndFlush((Product) any())).thenReturn(null);
+		when(productMapper.productToProductDTO((Product) any())).thenReturn(productDTO);
+		
+		// Then
+		assertThat(productServiceImpl.update(productDTO)).isNull();
 	}
 	
 }
