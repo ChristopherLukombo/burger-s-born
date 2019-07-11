@@ -18,12 +18,15 @@ import fr.esgi.config.ErrorMessage;
 import fr.esgi.exception.BurgerSTerminalException;
 import fr.esgi.service.CategoryService;
 import fr.esgi.service.dto.CategoryDTO;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 
 /**
  * REST controller for managing category.
  *
  * @author mickael
  */
+@Api(value = "Category")
 @RestController
 @RequestMapping("/api")
 public class CategoryResource {
@@ -48,6 +51,7 @@ public class CategoryResource {
      * @return all categories
      * @throws BurgerSTerminalException
      */
+    @ApiOperation(value = "Find all categories.")
     @GetMapping("/category")
     public ResponseEntity<List<CategoryDTO>> getAllCategories() throws BurgerSTerminalException {
         LOGGER.debug("REST request to find all categories");

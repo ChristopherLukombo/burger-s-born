@@ -29,6 +29,8 @@ import fr.esgi.config.ErrorMessage;
 import fr.esgi.exception.BurgerSTerminalException;
 import fr.esgi.service.ProductService;
 import fr.esgi.service.dto.ProductDTO;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 
 
 /**
@@ -36,6 +38,7 @@ import fr.esgi.service.dto.ProductDTO;
  *
  * @author mickael
  */
+@Api(value = "Product")
 @RestController
 @RequestMapping("/api")
 public class ProductResource {
@@ -60,6 +63,7 @@ public class ProductResource {
 	 * @return all products
 	 * @throws BurgerSTerminalException
 	 */
+	@ApiOperation(value = "Get all the products.")
 	@GetMapping("/products")
 	public ResponseEntity<Page<ProductDTO>> getAllProducts(@RequestParam int page, @RequestParam("size") int size) throws BurgerSTerminalException {
 		LOGGER.debug("REST request to find all products");
@@ -81,6 +85,7 @@ public class ProductResource {
 	 * @return
 	 * @throws BurgerSTerminalException
 	 */
+	@ApiOperation(value = "Get all the products by category name.")
 	@GetMapping("/products/category")
 	public ResponseEntity<Page<ProductDTO>> getProductsByCategoryName(
 			@RequestParam("page") int page,
@@ -103,6 +108,7 @@ public class ProductResource {
 	 * @throws BurgerSTerminalException
 	 * @throws URISyntaxException
 	 */
+	@ApiOperation(value = "Create a product.")
 	@PostMapping("/new/product")
 	public ResponseEntity<ProductDTO> createProduct(@RequestBody @Valid ProductDTO productDTO) throws BurgerSTerminalException, URISyntaxException {
 		LOGGER.debug("REST request to create a product: {}", productDTO);
@@ -121,6 +127,7 @@ public class ProductResource {
 	 * @param id the id of the productDTO to delete
 	 * @return the ResponseEntity with status 200 (OK)
 	 */
+	@ApiOperation(value = "Delete a product.")
 	@DeleteMapping("/delete/product/{id}")
 	public ResponseEntity<Void> deleteProduct(@PathVariable Long id) {
 		LOGGER.debug("REST request to delete a product: {}", id);
@@ -135,6 +142,7 @@ public class ProductResource {
 	 * @return the ResponseEntity with status 200 (OK) and with body the assignmentModuleDTO
 	 * @throws BurgerSTerminalException if the id of command is empty.
 	 */
+	@ApiOperation(value = "Update a product.")
 	@PutMapping("/product")
 	public ResponseEntity<ProductDTO> updateProduct(@RequestBody @Valid ProductDTO productDTO) throws BurgerSTerminalException {
 		LOGGER.debug("REST request to update a product: {}", productDTO);

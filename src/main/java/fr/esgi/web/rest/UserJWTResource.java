@@ -22,11 +22,14 @@ import fr.esgi.security.jwt.TokenProvider;
 import fr.esgi.service.CustomerService;
 import fr.esgi.service.ManagerService;
 import fr.esgi.web.Login;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 
 /**
  * UserJWTController to authenticate users.
  * @author christopher
  */
+@Api(value = "UserJWT")
 @RestController
 @RequestMapping("/api")
 public class UserJWTResource {
@@ -53,6 +56,7 @@ public class UserJWTResource {
      * @param login
      * @return JWTToken
      */
+    @ApiOperation(value = "Authenticate the user and return the token which identify him.")
     @PostMapping("/authenticate")
     public ResponseEntity<JWTToken> authorize(@Valid @RequestBody Login login) {
 

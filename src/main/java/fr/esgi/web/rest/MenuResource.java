@@ -21,7 +21,14 @@ import fr.esgi.exception.BurgerSTerminalException;
 import fr.esgi.service.MenuService;
 import fr.esgi.service.dto.MenuDTO;
 import fr.esgi.service.dto.ProductDTO;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 
+/**
+ * REST controller for managing products.
+ *
+ */
+@Api(value = "DatabaseUpdator")
 @RestController
 @RequestMapping("/api")
 public class MenuResource {
@@ -46,6 +53,7 @@ public class MenuResource {
 	 * @return
 	 * @throws BurgerSTerminalException
 	 */
+	@ApiOperation(value = "Get all the menus.")
 	@GetMapping("/menu/all")
 	public ResponseEntity<Page<MenuDTO>> findAll(@RequestParam int page, @RequestParam("size") int size) throws BurgerSTerminalException {
 		LOGGER.debug("REST request to find all menus");
@@ -65,6 +73,7 @@ public class MenuResource {
 	 * @return
 	 * @throws BurgerSTerminalException 
 	 */
+	@ApiOperation(value = "Get the products by menu id.")
 	@GetMapping("/menus/products")
 	public ResponseEntity<List<ProductDTO>> findProductsByMenuId(@RequestParam Long id, @RequestParam String categorieName) throws BurgerSTerminalException {
 		final List<ProductDTO> productsDTO = menuService.findProductsByMenuId(id, categorieName);
@@ -81,6 +90,7 @@ public class MenuResource {
 	 * @return the ResponseEntity with status 200 (OK)
 	 * @throws BurgerSTerminalException if there is no menus.
 	 */
+	@ApiOperation(value = "Get the four trends menus.")
 	@GetMapping("/menus/trends")
 	public ResponseEntity<List<MenuDTO>> getAllTrendsMenus() throws BurgerSTerminalException {
 		LOGGER.debug("REST request to get all trends menus");

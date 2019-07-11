@@ -24,10 +24,13 @@ import fr.esgi.exception.BurgerSTerminalException;
 import fr.esgi.service.DatabaseUpdatorService;
 import fr.esgi.service.dto.MenuDTO;
 import fr.esgi.service.dto.ProductDTO;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 
 /**
  * REST controller for managing the import
  */
+@Api(value = "DatabaseUpdator")
 @RestController
 @RequestMapping("/api")
 public class DatabaseUpdatorResource {
@@ -51,6 +54,7 @@ public class DatabaseUpdatorResource {
      * @return Message on the operation
      * @throws BurgerSTerminalException
      */
+    @ApiOperation(value = "Add or Update products from a JSON/CSV file.")
     @PostMapping(value = "/product/import", headers = "content-type=multipart/*")
     public ResponseEntity<List<ProductDTO>> uploadProductsFile(
     		@RequestPart("importfile") MultipartFile inputfile, @RequestParam(required = true) String fileFormat) throws BurgerSTerminalException {
@@ -79,6 +83,7 @@ public class DatabaseUpdatorResource {
      * @return Message on the operation
      * @throws BurgerSTerminalException
      */
+    @ApiOperation(value = "Add or Update products from a JSON/CSV file.")
     @PostMapping(value = "/menu/import", headers = "content-type=multipart/*")
     public ResponseEntity<List<MenuDTO>> uploadMenuFile(
     		@RequestPart("importfile") MultipartFile inputFile, @RequestParam(required = true) String fileFormat) throws BurgerSTerminalException {

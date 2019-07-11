@@ -30,10 +30,13 @@ import fr.esgi.config.ErrorMessage;
 import fr.esgi.exception.BurgerSTerminalException;
 import fr.esgi.service.CommandService;
 import fr.esgi.service.dto.CommandDTO;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 
 /**
  * REST controller for managing the command
  */
+@Api(value = "Command")
 @RestController
 @RequestMapping("/api")
 public class CommandResource {
@@ -58,6 +61,7 @@ public class CommandResource {
 	 * @throws URISyntaxException if the Location URI syntax is incorrect
 	 * @throws BurgerSTerminalException if the id of command is not empty.
 	 */
+	@ApiOperation(value = "Get all commands by customerId.")
 	@GetMapping("/commands")
 	public ResponseEntity<Page<CommandDTO>> getAllCommands(
 			@RequestParam("page") int page,
@@ -81,6 +85,7 @@ public class CommandResource {
 	 * @throws URISyntaxException if the Location URI syntax is incorrect
 	 * @throws BurgerSTerminalException if the id of command is not empty.
 	 */
+	@ApiOperation(value = "Create a command.")
 	@PostMapping("/commands")
 	public ResponseEntity<CommandDTO> createCommand(@RequestBody @Valid CommandDTO commandDTO) throws URISyntaxException, BurgerSTerminalException {
 		LOGGER.debug("REST request to create a command: {}", commandDTO);
@@ -100,6 +105,7 @@ public class CommandResource {
 	 * @return the ResponseEntity with status 200 (OK) and with body the assignmentModuleDTO
 	 * @throws BurgerSTerminalException if the id of command is empty.
 	 */
+	@ApiOperation(value = "Update a command.")
 	@PutMapping("/commands")
 	public ResponseEntity<CommandDTO> updateCommand(@RequestBody @Valid CommandDTO commandDTO) throws BurgerSTerminalException {
 		LOGGER.debug("REST request to update a command: {}", commandDTO);
@@ -119,6 +125,7 @@ public class CommandResource {
 	 * @return the ResponseEntity with status 200 (OK) and with body the assignmentModuleDTO
 	 * @throws BurgerSTerminalException if the command does not exists.
 	 */
+	@ApiOperation(value = "Get a command.")
 	@GetMapping("/commands/{id}")
 	public ResponseEntity<CommandDTO> getCommand(@PathVariable Long id) throws BurgerSTerminalException {
 		LOGGER.debug("REST request to get a command: {}", id);
@@ -137,6 +144,7 @@ public class CommandResource {
 	 * @param id the id of the commandDTO to delete
 	 * @return the ResponseEntity with status 200 (OK)
 	 */
+	@ApiOperation(value = "Delete a command.")
 	@DeleteMapping("/commands/{id}")
 	public ResponseEntity<Void> deleteCommand(@PathVariable Long id) {
 		LOGGER.debug("REST request to delete a command: {}", id);

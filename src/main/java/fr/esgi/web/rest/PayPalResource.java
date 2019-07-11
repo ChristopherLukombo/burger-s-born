@@ -23,10 +23,13 @@ import fr.esgi.exception.BurgerSTerminalException;
 import fr.esgi.service.PayPalService;
 import fr.esgi.service.dto.CommandDTO;
 import fr.esgi.service.dto.Paypal;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 
 /**
  * REST controller for managing Paypal payment.
  */
+@Api(value = "PayPal")
 @RestController
 @RequestMapping("/api")
 public class PayPalResource {
@@ -50,6 +53,7 @@ public class PayPalResource {
 	 * @return
 	 * @throws BurgerSTerminalException 
 	 */
+	@ApiOperation(value = "Make a payment.")
 	@PostMapping("/make/payment")
 	public ResponseEntity<Map<String, Object>> makePayment(@RequestBody CommandDTO commandDTO) throws BurgerSTerminalException {
 		LOGGER.debug("REST request to create a command: {}", commandDTO);
@@ -68,6 +72,7 @@ public class PayPalResource {
 	 * @return
 	 * @throws BurgerSTerminalException 
 	 */
+	@ApiOperation(value = "Complete a payment.")
 	@PostMapping("/complete/payment")
 	public ResponseEntity<String> completePayment(@RequestBody @Valid Paypal paypal) throws BurgerSTerminalException {
 		Map<String, Object> completedPayment = payPalService.completePayment(paypal);
@@ -85,6 +90,7 @@ public class PayPalResource {
 	 * @return
 	 * @throws BurgerSTerminalException 
 	 */
+	@ApiOperation(value = "Refund a user.")
 	@PostMapping("/refund/payment/{commandId}")
 	public ResponseEntity<Object> refundPayment(@PathVariable Long commandId) throws BurgerSTerminalException {
 		Map<String, Object> refundPayment = payPalService.refundPayment(commandId);
