@@ -33,11 +33,14 @@ import fr.esgi.exception.BurgerSTerminalException;
 import fr.esgi.service.UserService;
 import fr.esgi.service.dto.UserDTO;
 import fr.esgi.web.ManagedUser;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 
 /**
  * REST controller for managing the current user's account.
  * @author christopher
  */
+@Api(value = "Account")
 @RestController
 @RequestMapping("/api")
 public class AccountResource {
@@ -65,6 +68,7 @@ public class AccountResource {
      * @throws BurgerSTerminalException 
      * @throws URISyntaxException 
      */
+    @ApiOperation(value = "Register the user.")
     @PostMapping("/register")
     public ResponseEntity<Object> registerAccount(
             @RequestBody @Valid ManagedUser managedUser,
@@ -104,6 +108,7 @@ public class AccountResource {
      * @return String the status
      * @throws BurgerSTerminalException
      */
+    @ApiOperation(value = "Update file from userId.")
     @PostMapping("/register/file/{userId}")
     public ResponseEntity<String> uploadFile(
             @RequestPart("file") MultipartFile file,
@@ -128,6 +133,7 @@ public class AccountResource {
      * @return byte[]
      * @throws BurgerSTerminalException
      */
+    @ApiOperation(value = "Retrieve image from pseudo.")
     @GetMapping(value = "/users/imageURL/{pseudo}",
     		produces = {
     				"image/jpg", "image/gif", "image/png", "image/tif"
@@ -160,6 +166,7 @@ public class AccountResource {
      * @param request the HTTP request
      * @return the login if the user is authenticated
      */
+    @ApiOperation(value = "Check if the user is authenticated, and return its login.")
     @GetMapping("/authenticate")
     public ResponseEntity<String> isAuthenticated(HttpServletRequest request) {
         LOGGER.debug("REST request to check if the current user is authenticated");
