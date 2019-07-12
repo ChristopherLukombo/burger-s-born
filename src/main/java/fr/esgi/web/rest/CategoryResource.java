@@ -43,8 +43,6 @@ public class CategoryResource {
 		this.messageSource = messageSource;
 	}
 
-
-
 	/**
      * GET  /category : find all categories.
      *

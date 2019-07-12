@@ -45,6 +45,8 @@ import io.swagger.annotations.ApiOperation;
 @RequestMapping("/api")
 public class AccountResource {
 
+	
+
 	private static final String FR = "fr";
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(AccountResource.class);
@@ -81,7 +83,7 @@ public class AccountResource {
 
         if (!checkPasswordLength(managedUser.getPassword())) {
             throw new BurgerSTerminalException(HttpStatus.BAD_REQUEST.value(),
-                    messageSource.getMessage(ErrorMessage.PASSWORD_IS_NOT_VALID, null, getLang(lang)));
+                    messageSource.getMessage(ErrorMessage.PASS_IS_NOT_VALID, null, getLang(lang)));
         }
 
         if (userService.findUserByPseudo(managedUser).isPresent()) {
@@ -151,7 +153,7 @@ public class AccountResource {
     		imageURL = entry.getValue();
     	} catch (BurgerSTerminalException e) {
     		throw new BurgerSTerminalException(HttpStatus.INTERNAL_SERVER_ERROR.value(),
-    				"Erreur durant la lecture de l'image", e);
+    				ErrorMessage.ERROR_DURING_READING_OF_IMAGE, e);
     	}
 
     	response.setHeader("Content-Disposition", "attachment; filename=" + "file." + contentType.split(Constants.DELIMITER)[1]);
