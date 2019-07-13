@@ -36,13 +36,13 @@ public class WebMvcConfig implements WebMvcConfigurer {
 	}
 	
 	@Bean
-	@Profile("prod & prod")
+	@Profile("dev & prod")
     public LocaleResolver localeResolver() {
         return new CookieLocaleResolver();
     }
 	
     @Bean
-	@Profile("prod & prod")
+	@Profile("dev & prod")
     public LocaleChangeInterceptor localeInterceptor() {
         LocaleChangeInterceptor localeInterceptor = new LocaleChangeInterceptor();
         localeInterceptor.setParamName("lang");
@@ -50,7 +50,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
     }
     
     @Override
-	@Profile("prod & prod")
+	@Profile("dev & prod")
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(localeInterceptor());
     }
