@@ -1,9 +1,8 @@
 package fr.esgi.web.rest;
 
-import static fr.esgi.config.Utils.getLang;
-
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.Locale;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -22,7 +21,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
@@ -44,10 +42,6 @@ import io.swagger.annotations.ApiOperation;
 @RestController
 @RequestMapping("/api")
 public class AccountResource {
-
-	
-
-	private static final String FR = "fr";
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(AccountResource.class);
 
@@ -74,26 +68,26 @@ public class AccountResource {
     @PostMapping("/register")
     public ResponseEntity<Object> registerAccount(
             @RequestBody @Valid ManagedUser managedUser,
-            @RequestParam(required = false, defaultValue = FR) String lang
+            Locale locale
     ) throws BurgerSTerminalException, URISyntaxException {
         if (null != managedUser.getId()) {
             throw new BurgerSTerminalException(HttpStatus.BAD_REQUEST.value(),
-                    messageSource.getMessage(ErrorMessage.ERROR_NEW_USER_CANNOT_ALREADY_HAVE_AN_ID, null, getLang(lang)));
+                    messageSource.getMessage(ErrorMessage.ERROR_NEW_USER_CANNOT_ALREADY_HAVE_AN_ID, null, locale));
         }
 
         if (!checkPasswordLength(managedUser.getPassword())) {
             throw new BurgerSTerminalException(HttpStatus.BAD_REQUEST.value(),
-                    messageSource.getMessage(ErrorMessage.PASS_IS_NOT_VALID, null, getLang(lang)));
+                    messageSource.getMessage(ErrorMessage.PASS_IS_NOT_VALID, null, locale));
         }
 
         if (userService.findUserByPseudo(managedUser).isPresent()) {
             throw new BurgerSTerminalException(HttpStatus.BAD_REQUEST.value(),
-                    messageSource.getMessage(ErrorMessage.PSEUDO_IS_ALREADY_REGISTERED, null, getLang(lang)));
+                    messageSource.getMessage(ErrorMessage.PSEUDO_IS_ALREADY_REGISTERED, null, locale));
         }
 
         if (userService.findUserByEmail(managedUser).isPresent()) {
             throw new BurgerSTerminalException(HttpStatus.BAD_REQUEST.value(),
-                    messageSource.getMessage(ErrorMessage.EMAIL_IS_ALREADY_USED, null, getLang(lang)));
+                    messageSource.getMessage(ErrorMessage.EMAIL_IS_ALREADY_USED, null, locale));
         }
 
         UserDTO userDTO = userService.registerUser(managedUser, managedUser.getPassword());
@@ -114,17 +108,17 @@ public class AccountResource {
     @PostMapping("/register/file/{userId}")
     public ResponseEntity<String> uploadFile(
             @RequestPart("file") MultipartFile file,
-            @PathVariable("userId") Long userId) throws BurgerSTerminalException {
+            @PathVariable("userId") Long userId,
+            Locale locale) throws BurgerSTerminalException {
         LOGGER.info("Call API service store ...");
         try {
             this.userService.store(file, userId);
         } catch (Exception e) {
             throw new BurgerSTerminalException(HttpStatus.INTERNAL_SERVER_ERROR.value(),
-                    messageSource.getMessage(ErrorMessage.ERROR_FAIL_TO_UPLOAD, null, getLang(FR)) +
+                    messageSource.getMessage(ErrorMessage.ERROR_FAIL_TO_UPLOAD, null, locale) +
                             file.getOriginalFilename(), e);
         }
-        return ResponseEntity.ok()
-                .body("Successfully uploaded : " + file.getOriginalFilename());
+        return ResponseEntity.ok().build();
     }
 
     /**

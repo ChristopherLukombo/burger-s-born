@@ -2,6 +2,7 @@ package fr.esgi.service.impl;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -188,6 +189,8 @@ public class UserServiceImpl implements UserService {
     }
 
     private void sendFileToFolder(MultipartFile file, Path path) throws IOException {
-        Files.copy(file.getInputStream(), path.resolve(file.getOriginalFilename()));
+        Path resolve = path.resolve(file.getOriginalFilename());
+		InputStream inputStream = file.getInputStream();
+		Files.copy(inputStream, resolve);
     }
 }

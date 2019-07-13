@@ -1,7 +1,6 @@
 package fr.esgi.web.rest;
 
-import static fr.esgi.config.Utils.getLang;
-
+import java.util.Locale;
 import java.util.Map;
 
 import javax.validation.Valid;
@@ -55,12 +54,12 @@ public class PayPalResource {
 	 */
 	@ApiOperation(value = "Make a payment.")
 	@PostMapping("/make/payment")
-	public ResponseEntity<Map<String, Object>> makePayment(@RequestBody CommandDTO commandDTO) throws BurgerSTerminalException {
+	public ResponseEntity<Map<String, Object>> makePayment(@RequestBody CommandDTO commandDTO, Locale locale) throws BurgerSTerminalException {
 		LOGGER.debug("REST request to create a command: {}", commandDTO);
 		Map<String, Object> creationPayment = payPalService.createPayment(commandDTO);
 		if (null == creationPayment) {
 			throw new BurgerSTerminalException(HttpStatus.INTERNAL_SERVER_ERROR.value(),
-					messageSource.getMessage(ErrorMessage.ERROR_PAYMENT_CREATION, null, getLang("fr")));
+					messageSource.getMessage(ErrorMessage.ERROR_PAYMENT_CREATION, null, locale));
 		}
 		return ResponseEntity.ok().body(creationPayment);
 	}
@@ -74,11 +73,11 @@ public class PayPalResource {
 	 */
 	@ApiOperation(value = "Complete a payment.")
 	@PostMapping("/complete/payment")
-	public ResponseEntity<String> completePayment(@RequestBody @Valid Paypal paypal) throws BurgerSTerminalException {
+	public ResponseEntity<String> completePayment(@RequestBody @Valid Paypal paypal, Locale locale) throws BurgerSTerminalException {
 		Map<String, Object> completedPayment = payPalService.completePayment(paypal);
 		if (null == completedPayment) {
 			throw new BurgerSTerminalException(HttpStatus.INTERNAL_SERVER_ERROR.value(),
-					messageSource.getMessage(ErrorMessage.ERROR_PAYMENT_VALIDATION, null, getLang("fr")));
+					messageSource.getMessage(ErrorMessage.ERROR_PAYMENT_VALIDATION, null, locale));
 		}
 		return ResponseEntity.ok().body(completedPayment.toString());
 	}
@@ -92,11 +91,11 @@ public class PayPalResource {
 	 */
 	@ApiOperation(value = "Refund a user.")
 	@PostMapping("/refund/payment/{commandId}")
-	public ResponseEntity<Object> refundPayment(@PathVariable Long commandId) throws BurgerSTerminalException {
+	public ResponseEntity<Object> refundPayment(@PathVariable Long commandId, Locale locale) throws BurgerSTerminalException {
 		Map<String, Object> refundPayment = payPalService.refundPayment(commandId);
 		if (null == refundPayment) {
 			throw new BurgerSTerminalException(HttpStatus.INTERNAL_SERVER_ERROR.value(),
-					messageSource.getMessage(ErrorMessage.ERROR_PAYMENT_REFUND, null, getLang("fr")));
+					messageSource.getMessage(ErrorMessage.ERROR_PAYMENT_REFUND, null, locale));
 		}
 		return ResponseEntity.ok().build();
 	}

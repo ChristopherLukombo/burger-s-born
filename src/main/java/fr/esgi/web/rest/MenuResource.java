@@ -1,8 +1,7 @@
 package fr.esgi.web.rest;
 
-import static fr.esgi.config.Utils.getLang;
-
 import java.util.List;
+import java.util.Locale;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -55,12 +54,12 @@ public class MenuResource {
 	 */
 	@ApiOperation(value = "Get all the menus.")
 	@GetMapping("/menu/all")
-	public ResponseEntity<Page<MenuDTO>> findAll(@RequestParam int page, @RequestParam("size") int size) throws BurgerSTerminalException {
+	public ResponseEntity<Page<MenuDTO>> findAll(@RequestParam int page, @RequestParam("size") int size, Locale locale) throws BurgerSTerminalException {
 		LOGGER.debug("REST request to find all menus");
 		final Page<MenuDTO> menus = menuService.findAll(page, size);
 		if (null == menus || menus.isEmpty()) {
 			throw new BurgerSTerminalException(HttpStatus.NOT_FOUND.value(),
-					messageSource.getMessage(ErrorMessage.ERROR_MENUS_NOT_FOUND, null, getLang("fr")));
+					messageSource.getMessage(ErrorMessage.ERROR_MENUS_NOT_FOUND, null, locale));
 		}
 		return ResponseEntity.ok(menus);
 	}
@@ -75,11 +74,11 @@ public class MenuResource {
 	 */
 	@ApiOperation(value = "Get the products by menu id.")
 	@GetMapping("/menus/products")
-	public ResponseEntity<List<ProductDTO>> findProductsByMenuId(@RequestParam Long id, @RequestParam String categorieName) throws BurgerSTerminalException {
+	public ResponseEntity<List<ProductDTO>> findProductsByMenuId(@RequestParam Long id, @RequestParam String categorieName, Locale locale) throws BurgerSTerminalException {
 		final List<ProductDTO> productsDTO = menuService.findProductsByMenuId(id, categorieName);
 		if (null == productsDTO || productsDTO.isEmpty()) {
 			throw new BurgerSTerminalException(HttpStatus.NOT_FOUND.value(),
-					messageSource.getMessage(ErrorMessage.ERROR_PRODUCTS_NOT_FOUND, null, getLang("fr")));
+					messageSource.getMessage(ErrorMessage.ERROR_PRODUCTS_NOT_FOUND, null, locale));
 		}
 		return ResponseEntity.ok(productsDTO);
 	}
@@ -92,12 +91,12 @@ public class MenuResource {
 	 */
 	@ApiOperation(value = "Get the four trends menus.")
 	@GetMapping("/menus/trends")
-	public ResponseEntity<List<MenuDTO>> getAllTrendsMenus() throws BurgerSTerminalException {
+	public ResponseEntity<List<MenuDTO>> getAllTrendsMenus(Locale locale) throws BurgerSTerminalException {
 		LOGGER.debug("REST request to get all trends menus");
 		final List<MenuDTO> menusDTO = menuService.findAllTrendsMenus();
 		if (menusDTO.isEmpty()) {
 			throw new BurgerSTerminalException(HttpStatus.NOT_FOUND.value(), 
-					messageSource.getMessage(ErrorMessage.ERROR_MENUS_NOT_FOUND, null, getLang("fr")));
+					messageSource.getMessage(ErrorMessage.ERROR_MENUS_NOT_FOUND, null, locale));
 		}
 		return ResponseEntity.ok(menusDTO);
 	}
