@@ -2,18 +2,23 @@ package fr.esgi.config;
 
 import java.io.IOException;
 
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
+import org.springframework.web.servlet.LocaleResolver;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import org.springframework.web.servlet.i18n.CookieLocaleResolver;
+import org.springframework.web.servlet.i18n.LocaleChangeInterceptor;
 import org.springframework.web.servlet.resource.PathResourceResolver;
 
-@Profile("prod")
 @Configuration
+@Profile("prod")
 public class WebMvcConfig implements WebMvcConfigurer {
-
+	
 	@Override
 	public void addResourceHandlers(ResourceHandlerRegistry registry) {
 		registry.addResourceHandler("/**")
@@ -29,4 +34,24 @@ public class WebMvcConfig implements WebMvcConfigurer {
 			}
 		});
 	}
+	
+	@Bean
+	@Profile("prod & prod")
+    public LocaleResolver localeResolver() {
+        return new CookieLocaleResolver();
+    }
+	
+    @Bean
+	@Profile("prod & prod")
+    public LocaleChangeInterceptor localeInterceptor() {
+        LocaleChangeInterceptor localeInterceptor = new LocaleChangeInterceptor();
+        localeInterceptor.setParamName("lang");
+        return localeInterceptor;
+    }
+    
+    @Override
+	@Profile("prod & prod")
+    public void addInterceptors(InterceptorRegistry registry) {
+        registry.addInterceptor(localeInterceptor());
+    }
 }

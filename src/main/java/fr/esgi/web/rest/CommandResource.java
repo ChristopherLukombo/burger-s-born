@@ -1,9 +1,8 @@
 package fr.esgi.web.rest;
 
-import static fr.esgi.config.Utils.getLang;
-
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.Locale;
 import java.util.Optional;
 
 import javax.validation.Valid;
@@ -66,12 +65,13 @@ public class CommandResource {
 	public ResponseEntity<Page<CommandDTO>> getAllCommands(
 			@RequestParam("page") int page,
 			@RequestParam("size") int size,
-			@RequestParam("customerId") Long customerId) throws URISyntaxException, BurgerSTerminalException {
+			@RequestParam("customerId") Long customerId,
+			Locale locale) throws URISyntaxException, BurgerSTerminalException {
 		LOGGER.debug("REST request to get all commands: {} {} {}", page, size, customerId);
 		Page<CommandDTO> commandDTOs = commandService.findAllByCustomerId(PageRequest.of(page, size), customerId);
 		if (commandDTOs.isEmpty()) {
 			throw new BurgerSTerminalException(HttpStatus.NOT_FOUND.value(),
-					messageSource.getMessage(ErrorMessage.ERROR_NOT_COMMANDS, null, getLang("fr")));
+					messageSource.getMessage(ErrorMessage.ERROR_NOT_COMMANDS, null, locale));
 		}
 		return ResponseEntity.ok()
 				.body(commandDTOs);
@@ -87,11 +87,11 @@ public class CommandResource {
 	 */
 	@ApiOperation(value = "Create a command.")
 	@PostMapping("/commands")
-	public ResponseEntity<CommandDTO> createCommand(@RequestBody @Valid CommandDTO commandDTO) throws URISyntaxException, BurgerSTerminalException {
+	public ResponseEntity<CommandDTO> createCommand(@RequestBody @Valid CommandDTO commandDTO, Locale locale) throws URISyntaxException, BurgerSTerminalException {
 		LOGGER.debug("REST request to create a command: {}", commandDTO);
 		if (null != commandDTO.getId()) {
 			throw new BurgerSTerminalException(HttpStatus.BAD_REQUEST.value(),
-					messageSource.getMessage(ErrorMessage.ERROR_NEW_COMMAND_ID_EXIST, null, getLang("fr")));
+					messageSource.getMessage(ErrorMessage.ERROR_NEW_COMMAND_ID_EXIST, null, locale));
 		}
 		CommandDTO result = commandService.save(commandDTO);
 		return ResponseEntity.created(new URI("/commands/" + result.getId()))
@@ -107,11 +107,11 @@ public class CommandResource {
 	 */
 	@ApiOperation(value = "Update a command.")
 	@PutMapping("/commands")
-	public ResponseEntity<CommandDTO> updateCommand(@RequestBody @Valid CommandDTO commandDTO) throws BurgerSTerminalException {
+	public ResponseEntity<CommandDTO> updateCommand(@RequestBody @Valid CommandDTO commandDTO, Locale locale) throws BurgerSTerminalException {
 		LOGGER.debug("REST request to update a command: {}", commandDTO);
 		if (null == commandDTO.getId()) {
 			throw new BurgerSTerminalException(HttpStatus.BAD_REQUEST.value(),
-					messageSource.getMessage(ErrorMessage.ERROR_COMMAND_MUST_HAVE_ID, null, getLang("fr")));
+					messageSource.getMessage(ErrorMessage.ERROR_COMMAND_MUST_HAVE_ID, null, locale));
 		} 
 		CommandDTO result = commandService.update(commandDTO);
 		return ResponseEntity.ok()
@@ -127,14 +127,14 @@ public class CommandResource {
 	 */
 	@ApiOperation(value = "Get a command.")
 	@GetMapping("/commands/{id}")
-	public ResponseEntity<CommandDTO> getCommand(@PathVariable Long id) throws BurgerSTerminalException {
+	public ResponseEntity<CommandDTO> getCommand(@PathVariable Long id, Locale locale) throws BurgerSTerminalException {
 		LOGGER.debug("REST request to get a command: {}", id);
 		Optional<CommandDTO> commandDTO = commandService.findOne(id);
 		if (commandDTO.isPresent()) {
 			return ResponseEntity.ok().body(commandDTO.get());
 		} else {
 			throw new BurgerSTerminalException(HttpStatus.NOT_FOUND.value(), 
-					messageSource.getMessage(ErrorMessage.ERROR_COMMAND_NOT_FOUND, null, getLang("fr")));
+					messageSource.getMessage(ErrorMessage.ERROR_COMMAND_NOT_FOUND, null, locale));
 		}
 	}
 

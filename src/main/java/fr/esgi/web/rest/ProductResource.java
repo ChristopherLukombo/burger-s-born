@@ -1,9 +1,8 @@
 package fr.esgi.web.rest;
 
-import static fr.esgi.config.Utils.getLang;
-
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.Locale;
 
 import javax.validation.Valid;
 
@@ -65,12 +64,12 @@ public class ProductResource {
 	 */
 	@ApiOperation(value = "Get all the products.")
 	@GetMapping("/products")
-	public ResponseEntity<Page<ProductDTO>> getAllProducts(@RequestParam int page, @RequestParam("size") int size) throws BurgerSTerminalException {
+	public ResponseEntity<Page<ProductDTO>> getAllProducts(@RequestParam int page, @RequestParam("size") int size, Locale locale) throws BurgerSTerminalException {
 		LOGGER.debug("REST request to find all products");
 		final Page<ProductDTO> products = productService.findAll(page, size);
 		if (null == products || products.isEmpty()) {
 			throw new BurgerSTerminalException(HttpStatus.NOT_FOUND.value(), 
-					messageSource.getMessage(ErrorMessage.ERROR_PRODUCTS_NOT_FOUND, null, getLang("fr")));
+					messageSource.getMessage(ErrorMessage.ERROR_PRODUCTS_NOT_FOUND, null, locale));
 		}
 
 		return ResponseEntity.ok(products);
@@ -90,12 +89,13 @@ public class ProductResource {
 	public ResponseEntity<Page<ProductDTO>> getProductsByCategoryName(
 			@RequestParam("page") int page,
 			@RequestParam("size") int size,
-			@RequestParam("categorieName") String categorieName) throws BurgerSTerminalException {
+			@RequestParam("categorieName") String categorieName,
+			Locale locale) throws BurgerSTerminalException {
 		Page<ProductDTO> products = productService.findProductsByCategoryName(PageRequest.of(page, size), categorieName);
 		if (products.isEmpty()) {
 			throw new BurgerSTerminalException(
 					HttpStatus.NOT_FOUND.value(), 
-					messageSource.getMessage(ErrorMessage.ERROR_PRODUCTS_NOT_FOUND, null, getLang("fr")));
+					messageSource.getMessage(ErrorMessage.ERROR_PRODUCTS_NOT_FOUND, null, locale));
 		}
 		return ResponseEntity.ok(products);
 	}
@@ -110,11 +110,11 @@ public class ProductResource {
 	 */
 	@ApiOperation(value = "Create a product.")
 	@PostMapping("/new/product")
-	public ResponseEntity<ProductDTO> createProduct(@RequestBody @Valid ProductDTO productDTO) throws BurgerSTerminalException, URISyntaxException {
+	public ResponseEntity<ProductDTO> createProduct(@RequestBody @Valid ProductDTO productDTO, Locale locale) throws BurgerSTerminalException, URISyntaxException {
 		LOGGER.debug("REST request to create a product: {}", productDTO);
 		if (null != productDTO.getId()) {
 			throw new BurgerSTerminalException(HttpStatus.BAD_REQUEST.value(),
-					messageSource.getMessage(ErrorMessage.ERROR_NEW_PRODUCT_ID_EXIST, null, getLang("fr")));
+					messageSource.getMessage(ErrorMessage.ERROR_NEW_PRODUCT_ID_EXIST, null, locale));
 		}
 		ProductDTO result = productService.save(productDTO);
 		return ResponseEntity.created(new URI("/api/product" + result.getId()))
@@ -144,11 +144,11 @@ public class ProductResource {
 	 */
 	@ApiOperation(value = "Update a product.")
 	@PutMapping("/product")
-	public ResponseEntity<ProductDTO> updateProduct(@RequestBody @Valid ProductDTO productDTO) throws BurgerSTerminalException {
+	public ResponseEntity<ProductDTO> updateProduct(@RequestBody @Valid ProductDTO productDTO, Locale locale) throws BurgerSTerminalException {
 		LOGGER.debug("REST request to update a product: {}", productDTO);
 		if (null == productDTO.getId()) {
 			throw new BurgerSTerminalException(HttpStatus.BAD_REQUEST.value(),
-					messageSource.getMessage(ErrorMessage.ERROR_PRODUCT_MUST_HAVE_ID, null, getLang("fr")));
+					messageSource.getMessage(ErrorMessage.ERROR_PRODUCT_MUST_HAVE_ID, null, locale));
 		}
 		ProductDTO result = productService.update(productDTO);
 		return ResponseEntity.ok()

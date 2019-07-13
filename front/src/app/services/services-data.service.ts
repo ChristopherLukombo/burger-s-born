@@ -20,11 +20,8 @@ export class ServicesDataService {
     /******************************REGISTRER**********************************************************/
     save(user: User, lang: string): Observable<HttpResponse<Object>> {
         const params = new HttpParams().set('lang', lang);
-        // let headers = new HttpHeaders().set('Content-Type', 'application/json');
-        // .set('Authorization', 'Bearer ' + this.authProviderService.getToken());
         return this.http.post<HttpResponse<Object>>(this.resourceUrl + '/register', user, { params, observe: 'response' });
     }
-
 
     uploadFile(file: File, userId: number) {
         const formdata: FormData = new FormData();
@@ -63,7 +60,7 @@ export class ServicesDataService {
     }
 
     /***************************************Product**********************************************************/
-    public findAllProduct(indexPage): Observable<HttpResponse<Object>> {
+    public findAllProduct(indexPage: number): Observable<HttpResponse<Object>> {
         return this.http.get<HttpResponse<Object>>(this.resourceUrl + '/products?page=' + indexPage + '&size=4', { observe: 'response' });
     }
 
@@ -72,7 +69,7 @@ export class ServicesDataService {
         return this.http.post<HttpResponse<Object>>(this.resourceUrl + '/new/product', product, { headers, observe: 'response' });
     }
 
-    public deleteProduct(id: Number): Observable<HttpResponse<Object>> {
+    public deleteProduct(id: number): Observable<HttpResponse<Object>> {
         const headers = new HttpHeaders({ 'Authorization': 'Bearer ' + this.authProviderService.getToken() });
         return this.http.delete<HttpResponse<Object>>(this.resourceUrl + '/delete/product/' + id, { headers, observe: 'response' });
     }
@@ -83,7 +80,7 @@ export class ServicesDataService {
     }
 
     /*****************************************MENU**********************************************************/
-    public findAllMenus(indexPage): Observable<HttpResponse<Object>> {
+    public findAllMenus(indexPage: number): Observable<HttpResponse<Object>> {
         return this.http.get<HttpResponse<Object>>(this.resourceUrl + '/menu/all?page=' + indexPage + '&size=4', { observe: 'response' });
     }
 

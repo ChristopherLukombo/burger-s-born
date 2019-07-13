@@ -1,8 +1,7 @@
 package fr.esgi.web.rest;
 
-import static fr.esgi.config.Utils.getLang;
-
 import java.util.List;
+import java.util.Locale;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -51,12 +50,12 @@ public class CategoryResource {
      */
     @ApiOperation(value = "Find all categories.")
     @GetMapping("/category")
-    public ResponseEntity<List<CategoryDTO>> getAllCategories() throws BurgerSTerminalException {
+    public ResponseEntity<List<CategoryDTO>> getAllCategories(Locale locale) throws BurgerSTerminalException {
         LOGGER.debug("REST request to find all categories");
         final List<CategoryDTO> categories = categoryService.findAll();
         if (null == categories || categories.isEmpty()) {
             throw new BurgerSTerminalException(HttpStatus.NOT_FOUND.value(), 
-            		messageSource.getMessage(ErrorMessage.ERROR_CATEGORY_NOT_FOUND, null, getLang("fr")));
+            		messageSource.getMessage(ErrorMessage.ERROR_CATEGORY_NOT_FOUND, null, locale));
         }
         return ResponseEntity.ok(categories);
     }
