@@ -65,12 +65,11 @@ public class MenuResource {
 	
 	@ApiOperation(value = "Create a menu")
 	@PostMapping("/new/menu")
-	public ResponseEntity<MenuDTO> createMenu(@RequestBody @Valid MenuDTO menuDTO,@RequestParam("id") Long id , Locale locale) throws NoSuchMessageException, BurgerSTerminalException, URISyntaxException{
+	public ResponseEntity<MenuDTO> createMenu(@RequestBody @Valid MenuDTO menuDTO, Locale locale) throws NoSuchMessageException, BurgerSTerminalException, URISyntaxException{
 		LOGGER.debug("REST request to create a menu: {}", menuDTO);
 		if (null != menuDTO.getId()) {
 			throw new BurgerSTerminalException(HttpStatus.BAD_REQUEST.value(), messageSource.getMessage(ErrorMessage.ERROR_NEW_PRODUCT_ID_EXIST, null, locale));
 		}
-		menuDTO.setManagerId(id);
 		MenuDTO result = menuService.save(menuDTO);
 		return ResponseEntity.created(new URI("/api/menu" + result.getId()))
 				.body(result);

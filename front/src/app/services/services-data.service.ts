@@ -91,13 +91,20 @@ export class ServicesDataService {
          {headers, observe: 'response' });
     }
 
-    public registerMenu(menu: Menu, id: string, lang: string): Observable<HttpResponse<Object>> {
-        const params = new HttpParams();
-        params
-            .append('lang', lang)
-            .append('&id', id);
-       return this.http.post<HttpResponse<Object>>(this.resourceUrl + '/new/menu', menu, { params, observe: 'response' });
+    public registerMenu(menu: Menu): Observable<HttpResponse<Object>> {
+        const headers = new HttpHeaders({ 'Authorization': 'Bearer ' + this.authProviderService.getToken() });
+       return this.http.post<HttpResponse<Object>>(this.resourceUrl + '/new/menu', menu, { headers, observe: 'response' });
 
+    }
+
+    public updateMenu(menu: Menu): Observable<HttpResponse<Object>> {
+        const headers = new HttpHeaders({ 'Authorization': 'Bearer ' + this.authProviderService.getToken() });
+        return this.http.put<HttpResponse<Object>>(this.resourceUrl + '/menu', menu, { headers, observe: 'response' });
+    }
+
+    public deleteMenu(id: number): Observable<HttpResponse<Object>> {
+        const headers = new HttpHeaders({ 'Authorization': 'Bearer ' + this.authProviderService.getToken() });
+        return this.http.delete<HttpResponse<Object>>(this.resourceUrl + '/delete/menu/'+id, { headers, observe: 'response' });
     }
 
     findProductsByCategoryName(indexPage: number, categorieName: string): Observable<HttpResponse<Object>> {

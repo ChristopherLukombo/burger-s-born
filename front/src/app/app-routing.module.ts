@@ -19,6 +19,7 @@ const routes: Routes = [
   {path: 'auth', component: AuthComponent},
   {path: 'product', component: ProductComponent},
   {path: 'createProduct', component: CreateProductComponent},
+  {path: 'createMenu', component: CreateMenuComponent},
   {path: 'menu' , component: MenuComponent},
   {path: 'importer', component: ImporterComponent},
   {path: 'steporder' , component: StepOrderComponent},

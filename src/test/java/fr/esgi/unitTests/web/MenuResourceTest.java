@@ -98,7 +98,7 @@ public class MenuResourceTest {
 	}
 
 	private void initMocks() {
-		menuService = new MenuServiceImpl(menuRepository, menuMapper, productMapper);
+		menuService = new MenuServiceImpl(menuRepository, menuMapper, productMapper, productRepository);
 		menuResource = new MenuResource(menuService, messageSource);
 	}
 
