@@ -42,4 +42,34 @@ public interface MenuService {
 	 * @return the list of entities
 	 */
 	List<MenuDTO> saveAll(List<MenuDTO> menusDTO);
+	
+	
+	/**
+	 * Save a menu.
+	 * 
+	 * @param menusDTO 
+	 * @return the entitie
+	 */
+	MenuDTO save(MenuDTO menDTO);
+	
+	/**
+	 * delete a menus.
+	 * 
+	 * @param id
+	 * @return the list of entities
+	 */
+	void delete(Long id);
+	
+	
+	/**
+	 *update menu.
+	 * 
+	 * @param id
+	 * @return menuDTO
+	 */
+	MenuDTO update(MenuDTO menuDTO);
+	
+	MenuDTO addProductInMenu(Long idMenu,Long idProduct);
+	
+	MenuDTO removeProductInMenu(Long idMenu,Long idProduct);
 }
