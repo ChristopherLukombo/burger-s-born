@@ -190,10 +190,10 @@ export class StepOrderComponent implements OnInit {
   }
 
   createPayment(): void {
-    this.resetPreferences();
     const command = this.getCommand();
     this.servicesDataService.createPayment(command)
       .subscribe(data => {
+        this.resetPreferences();
         const payment = data.body as Payment;
         if (payment.redirect_url) {
           (window as any).location.replace(payment.redirect_url);

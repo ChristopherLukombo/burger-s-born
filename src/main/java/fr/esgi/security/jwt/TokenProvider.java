@@ -11,6 +11,8 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Component;
 
+import fr.esgi.enums.RoleName;
+
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
@@ -23,8 +25,6 @@ import java.util.stream.Collectors;
 public class TokenProvider {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(TokenProvider.class);
-
-    private static final String ROLE = "ROLE";
 
 	private static final String USER = "USER";
 
@@ -68,7 +68,7 @@ public class TokenProvider {
 
         return Jwts.builder()
                 .setSubject(USER)
-                .claim(AUTHORITIES_KEY, ROLE)
+                .claim(AUTHORITIES_KEY, RoleName.ROLE_ADMIN.name())
                 .signWith(SignatureAlgorithm.HS512, secretKey)
                 .setExpiration(validity)
                 .compact();

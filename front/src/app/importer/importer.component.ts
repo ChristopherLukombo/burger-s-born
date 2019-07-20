@@ -155,6 +155,8 @@ export class ImporterComponent implements OnInit {
                 });
             } else if (400 === error.status) {
                 this.errorMessage = error.error;
+            } else if (401 === error.status) {
+                this.errorMessage = error.error;
             } else if (500 === error.status) {
                 this.errorMessage = error.error;
             }

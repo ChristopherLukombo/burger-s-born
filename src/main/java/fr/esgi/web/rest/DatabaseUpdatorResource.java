@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import fr.esgi.annotation.Authorized;
 import fr.esgi.config.ErrorMessage;
 import fr.esgi.exception.BurgerSTerminalException;
 import fr.esgi.service.DatabaseUpdatorService;
@@ -53,6 +54,7 @@ public class DatabaseUpdatorResource {
      * @return Message on the operation
      * @throws BurgerSTerminalException
      */
+    @Authorized(values = { "ROLE_ADMIN" })
     @ApiOperation(value = "Add or Update products from a JSON/CSV file.")
     @PostMapping(value = "/product/import", headers = "content-type=multipart/*")
     public ResponseEntity<List<ProductDTO>> uploadProductsFile(
@@ -82,6 +84,7 @@ public class DatabaseUpdatorResource {
      * @return Message on the operation
      * @throws BurgerSTerminalException
      */
+    @Authorized(values = { "ROLE_ADMIN" })
     @ApiOperation(value = "Add or Update products from a JSON/CSV file.")
     @PostMapping(value = "/menu/import", headers = "content-type=multipart/*")
     public ResponseEntity<List<MenuDTO>> uploadMenuFile(

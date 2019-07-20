@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import fr.esgi.annotation.Authorized;
 import fr.esgi.config.ErrorMessage;
 import fr.esgi.exception.BurgerSTerminalException;
 import fr.esgi.service.ProductService;
@@ -71,8 +72,7 @@ public class ProductResource {
 			throw new BurgerSTerminalException(HttpStatus.NOT_FOUND.value(), 
 					messageSource.getMessage(ErrorMessage.ERROR_PRODUCTS_NOT_FOUND, null, locale));
 		}
-
-		return ResponseEntity.ok(products);
+		return ResponseEntity.ok().body(products);
 	}
 
 	/**
@@ -97,7 +97,7 @@ public class ProductResource {
 					HttpStatus.NOT_FOUND.value(), 
 					messageSource.getMessage(ErrorMessage.ERROR_PRODUCTS_NOT_FOUND, null, locale));
 		}
-		return ResponseEntity.ok(products);
+		return ResponseEntity.ok().body(products);
 	}
 
 	/**
@@ -108,6 +108,7 @@ public class ProductResource {
 	 * @throws BurgerSTerminalException
 	 * @throws URISyntaxException
 	 */
+	@Authorized(values = { "ROLE_ADMIN" })
 	@ApiOperation(value = "Create a product.")
 	@PostMapping("/new/product")
 	public ResponseEntity<ProductDTO> createProduct(@RequestBody @Valid ProductDTO productDTO, Locale locale) throws BurgerSTerminalException, URISyntaxException {
@@ -127,6 +128,7 @@ public class ProductResource {
 	 * @param id the id of the productDTO to delete
 	 * @return the ResponseEntity with status 200 (OK)
 	 */
+	@Authorized(values = { "ROLE_ADMIN" })
 	@ApiOperation(value = "Delete a product.")
 	@DeleteMapping("/delete/product/{id}")
 	public ResponseEntity<Void> deleteProduct(@PathVariable Long id) {
@@ -142,6 +144,7 @@ public class ProductResource {
 	 * @return the ResponseEntity with status 200 (OK) and with body the assignmentModuleDTO
 	 * @throws BurgerSTerminalException if the id of command is empty.
 	 */
+	@Authorized(values = { "ROLE_ADMIN" })
 	@ApiOperation(value = "Update a product.")
 	@PutMapping("/product")
 	public ResponseEntity<ProductDTO> updateProduct(@RequestBody @Valid ProductDTO productDTO, Locale locale) throws BurgerSTerminalException {
@@ -151,8 +154,7 @@ public class ProductResource {
 					messageSource.getMessage(ErrorMessage.ERROR_PRODUCT_MUST_HAVE_ID, null, locale));
 		}
 		ProductDTO result = productService.update(productDTO);
-		return ResponseEntity.ok()
-				.body(result);
+		return ResponseEntity.ok().body(result);
 	}
 
 }

@@ -110,6 +110,8 @@ export class CreateProductComponent implements OnInit {
                 });
             } else if (400 === error.status) {
                 this.errorMessage = error.error;
+            } else if (401 === error.status) {
+                this.errorMessage = error.error;
             } else if (500 === error.status) {
                 this.errorMessage = 'Une erreur serveur s\'est produite';
             } else if (error.status === 403) {
