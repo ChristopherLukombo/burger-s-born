@@ -22,7 +22,7 @@ public interface CommandRepository extends JpaRepository<Command, Long> {
 
 	@Query("SELECT c FROM Command c "
 			+ "WHERE c.customer.id = :customerId "
-			+ "AND orderStatus = :orderStatus")
+			+ "AND orderStatus = :orderStatus ORDER BY date DESC")
 	Page<Command> findAllByCustomerId(Pageable pageable,
 			@Param("customerId") Long customerId,
 			@Param("orderStatus") String orderStatus);

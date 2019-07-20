@@ -82,6 +82,15 @@ export class AuthProviderService {
     return RoleName.ROLE_ADMIN === decodedToken.auth;
   }
 
+  getRole(): string {
+    const helper = new JwtHelperService();
+    const decodedToken = helper.decodeToken(this.getToken());
+    if (!decodedToken) {
+      return '';
+    }
+    return decodedToken.auth;
+  }
+
   getPseudo(): string {
     const helper = new JwtHelperService();
     const decodedToken = helper.decodeToken(this.getToken());
