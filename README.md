@@ -38,3 +38,7 @@ SEMAPHORE : https://semaphoreci.com/christopherlukombo/burger-s-terminal
 SONARCLOUD : https://sonarcloud.io/dashboard?id=ChristopherLukombo_burger-s-terminal
 
 HEALTHCHECK : http://localhost:9000/actuator/health/
+
+Pour activer le profile prod utiliser la variable de conf suivante : 
+
+-Dspring.profiles.active=prod

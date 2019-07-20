@@ -1,6 +1,6 @@
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { TestBed } from '@angular/core/testing';
+import { async, TestBed } from '@angular/core/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatCheckboxModule, MatDatepickerModule, MatDialogModule, MatInputModule, MatNativeDateModule, MatStepperModule } from '@angular/material';
 import { MatRadioModule } from '@angular/material/radio';
@@ -16,6 +16,8 @@ import { AppComponent } from '../app.component';
 import { HttpLoaderFactory } from '../app.module';
 import { AuthGuard } from '../auth.guard';
 import { AuthComponent } from '../auth/auth.component';
+import { CreateMenuComponent } from '../create-menu/create-menu.component';
+import { CreateProductComponent } from '../create-product/create-product.component';
 import { DialogRedirectionComponent } from '../dialog-redirection/dialog-redirection.component';
 import { DialogSuccessComponent } from '../dialog-success/dialog-success.component';
 import { HeaderComponent } from '../header/header.component';
@@ -25,15 +27,13 @@ import { MenuComponent } from '../menu/menu.component';
 import { NavbarComponent } from '../navbar/navbar.component';
 import { OrdersComponent } from '../orders/orders.component';
 import { ProductComponent } from '../product/product.component';
-import { CreateProductComponent } from '../create-product/create-product.component';
 import { RegisterComponent } from '../register/register.component';
 import { AuthProviderService } from '../services/auth-provider.service';
 import { ServicesDataService } from '../services/services-data.service';
 import { StepOrderComponent } from '../step-order/step-order.component';
-import { CreateMenuComponent } from '../create-menu/create-menu.component';
 
 describe('ServicesDataService', () => {
-  beforeEach(() => TestBed.configureTestingModule({
+  beforeEach(async(() => TestBed.configureTestingModule({
     declarations: [
         AppComponent,
         HomeComponent,
@@ -98,7 +98,7 @@ describe('ServicesDataService', () => {
       MatDatepickerModule,
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
-  }));
+  })));
 
   it('should be created', () => {
     const service: ServicesDataService = TestBed.get(ServicesDataService);
