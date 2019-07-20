@@ -109,6 +109,8 @@ export class ProductComponent implements OnInit {
                 if (err instanceof HttpErrorResponse) {
                     if (403 === err.status) {
                         this.errorMessage = 'Vous n\'êtes pas autorisé à effectuer cette action.';
+                    } else if (401 === err.status) {
+                        this.errorMessage = err.error;
                     } else {
                         this.errorMessage = 'Une erreur serveur s\'est produite.';
                     }
@@ -149,8 +151,12 @@ export class ProductComponent implements OnInit {
 
             }, errorUpdate => {
                 if (errorUpdate instanceof HttpErrorResponse) {
-                    if (403 === errorUpdate.status) {
+                    if (400 === errorUpdate.status) {
+                        this.errorMessage = errorUpdate.error;
+                    } else if (403 === errorUpdate.status) {
                         this.errorMessage = 'Vous n\'êtes pas autorisé à effectuer cette action.';
+                    } else if (401 === errorUpdate.status) {
+                        this.errorMessage = errorUpdate.error;
                     } else {
                         this.errorMessage = 'Une erreur serveur s\'est produite.';
                     }

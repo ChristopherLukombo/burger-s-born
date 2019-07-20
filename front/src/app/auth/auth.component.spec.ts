@@ -15,6 +15,8 @@ import { AppRoutingModule } from '../app-routing.module';
 import { AppComponent } from '../app.component';
 import { HttpLoaderFactory } from '../app.module';
 import { AuthGuard } from '../auth.guard';
+import { CreateMenuComponent } from '../create-menu/create-menu.component';
+import { CreateProductComponent } from '../create-product/create-product.component';
 import { DialogRedirectionComponent } from '../dialog-redirection/dialog-redirection.component';
 import { DialogSuccessComponent } from '../dialog-success/dialog-success.component';
 import { HeaderComponent } from '../header/header.component';
@@ -29,15 +31,13 @@ import { AuthProviderService } from '../services/auth-provider.service';
 import { ServicesDataService } from '../services/services-data.service';
 import { StepOrderComponent } from '../step-order/step-order.component';
 import { AuthComponent } from './auth.component';
-import { CreateMenuComponent } from '../create-menu/create-menu.component';
-import { CreateProductComponent } from '../create-product/create-product.component';
 
 
 describe('AuthComponent', () => {
   let component: AuthComponent;
   let fixture: ComponentFixture<AuthComponent>;
 
-  beforeEach(() => {
+  beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [
         AppComponent,
@@ -105,7 +105,7 @@ describe('AuthComponent', () => {
       schemas: [CUSTOM_ELEMENTS_SCHEMA]
     })
       .compileComponents();
-  });
+  }));
 
   beforeEach(() => {
     fixture = TestBed.createComponent(AuthComponent);

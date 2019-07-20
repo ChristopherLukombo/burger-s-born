@@ -43,6 +43,7 @@ public final class ErrorMessage {
     public static final String ERROR_PAYMENT_CREATION = "error.payment.creation";
 
     public static final String ERROR_DURING_READING_OF_IMAGE = "error.image.reading";
+    public static final String ERROR_USER_ROLE_REQUIRED_ACTION = "error.user.role.required.action";
     
     private ErrorMessage() {}
 }
