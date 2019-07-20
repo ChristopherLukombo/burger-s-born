@@ -49,6 +49,18 @@ public class ProductServiceImpl implements ProductService {
 		return productRepository.findAll(PageRequest.of(page, size))
 				.map(productMapper::productToProductDTO);
 	}
+	
+	/**
+	 * Get all products
+	 * @return list of entities
+	 */
+	@Override
+	public List<ProductDTO> findAll() {
+		LOGGER.debug("Request to get all products");
+		return productRepository.findAll().stream()
+				.map(productMapper::productToProductDTO)
+				.collect(Collectors.toList());
+	}
 
 	/**
 	 * Save all the products.
@@ -116,5 +128,19 @@ public class ProductServiceImpl implements ProductService {
 		LOGGER.debug("Request to find all products by categoryName: {}", categoryName);
 		return productRepository.findAllByCategoryName(pageable, categoryName)
 				.map(productMapper::productToProductDTO);
+	}
+
+	 /**
+     * Find all products by menuId.
+     * 
+     * @param menuId : the id of menu.
+     * @return the list of entities.
+     */
+	@Override
+	public List<ProductDTO> findProductsByMenuId(Long menuId) {
+		LOGGER.debug("Request to find all products by menuId: {}", menuId);
+		return productRepository.findAllByMenuId(menuId).stream()
+				.map(productMapper::productToProductDTO)
+				.collect(Collectors.toList());
 	}
 }

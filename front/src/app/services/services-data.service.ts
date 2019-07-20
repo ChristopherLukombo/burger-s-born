@@ -64,6 +64,16 @@ export class ServicesDataService {
         return this.http.get<HttpResponse<Object>>(this.resourceUrl + '/products?page=' + indexPage + '&size=4', { observe: 'response' });
     }
 
+    public getAllProduct(): Observable<HttpResponse<Object>> {
+        const headers = new HttpHeaders({ 'Authorization': 'Bearer ' + this.authProviderService.getToken() });
+        return this.http.get<HttpResponse<Object>>(this.resourceUrl + '/products/all', { headers, observe: 'response' });
+    }
+
+    public getProductsByMenuId(menuId: number): Observable<HttpResponse<Object>> {
+        const headers = new HttpHeaders({ 'Authorization': 'Bearer ' + this.authProviderService.getToken() });
+        return this.http.get<HttpResponse<Object>>(this.resourceUrl + '/product/' + `${menuId}`, { headers, observe: 'response' });
+    }
+
     public createProduct(product: Product): Observable<HttpResponse<Object>> {
         const headers = new HttpHeaders({ 'Authorization': 'Bearer ' + this.authProviderService.getToken() });
         return this.http.post<HttpResponse<Object>>(this.resourceUrl + '/new/product', product, { headers, observe: 'response' });

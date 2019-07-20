@@ -15,7 +15,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import fr.esgi.config.Constants;
 import fr.esgi.dao.MenuRepository;
-import fr.esgi.dao.ProductRepository;
 import fr.esgi.domain.Menu;
 import fr.esgi.domain.Product;
 import fr.esgi.service.MenuService;
@@ -34,19 +33,16 @@ public class MenuServiceImpl implements MenuService {
 	private static final Logger LOGGER = LoggerFactory.getLogger(MenuServiceImpl.class);
 
 	private final MenuRepository menuRepository;
-	
-	private final ProductRepository productRepo;
 
 	private final MenuMapper menuMapper;
 
 	private final ProductMapper productMapper;
 
 	@Autowired
-	public MenuServiceImpl(MenuRepository menuRepository, MenuMapper menuMapper, ProductMapper productMapper,ProductRepository productRepo) {
+	public MenuServiceImpl(MenuRepository menuRepository, MenuMapper menuMapper, ProductMapper productMapper) {
 		this.menuRepository = menuRepository;
 		this.menuMapper = menuMapper;
 		this.productMapper = productMapper;
-		this.productRepo = productRepo;
 	}
 
 	/**
@@ -134,49 +130,6 @@ public class MenuServiceImpl implements MenuService {
 	public MenuDTO save(MenuDTO menuDTO) {
 		Menu menu = menuMapper.menuDTOToMenu(menuDTO);	
 		menu = menuRepository.save(menu);
-		return menuMapper.menuToMenuDTO(menu);
-	}
-
-	@Override
-	public MenuDTO addProductInMenu(Long idMenu, Long idProduct) {
-		
-		Optional<Menu> menuOptional = menuRepository.findById(idMenu);
-		Optional<Product> productOptional = productRepo.findById(idProduct);
-		
-		if(!menuOptional.isPresent() || !productOptional.isPresent()) {
-			return null;
-		}
-		
-		Menu menu = menuOptional.get();
-		Product product = productOptional.get();
-		
-		MenuDTO menuDTO = menuMapper.menuToMenuDTO(menu);
-		ProductDTO productDTO = productMapper.productToProductDTO(product);
-		
-		menu.getProducts().add(product);
-		menu = menuRepository.saveAndFlush(menu);
-		
-		return menuMapper.menuToMenuDTO(menu);
-	}
-
-	@Override
-	public MenuDTO removeProductInMenu(Long idMenu, Long idProduct) {
-		Optional<Menu> menuOptional = menuRepository.findById(idMenu);
-		Optional<Product> productOptional = productRepo.findById(idProduct);
-		
-		if(!menuOptional.isPresent() || !productOptional.isPresent()) {
-			return null;
-		}
-		
-		Menu menu = menuOptional.get();
-		Product product = productOptional.get();
-		
-		MenuDTO menuDTO = menuMapper.menuToMenuDTO(menu);
-		ProductDTO productDTO = productMapper.productToProductDTO(product);
-		
-		menu.getProducts().remove(product);
-		menu = menuRepository.saveAndFlush(menu);
-		
 		return menuMapper.menuToMenuDTO(menu);
 	}
 }

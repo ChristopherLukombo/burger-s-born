@@ -68,8 +68,4 @@ public interface MenuService {
 	 * @return menuDTO
 	 */
 	MenuDTO update(MenuDTO menuDTO);
-	
-	MenuDTO addProductInMenu(Long idMenu,Long idProduct);
-	
-	MenuDTO removeProductInMenu(Long idMenu,Long idProduct);
 }

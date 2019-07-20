@@ -1,6 +1,6 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, Injector, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, NgModel } from '@angular/forms';
 import { MatDialog } from '@angular/material';
 import { NGXLogger } from 'ngx-logger';
 import { environment } from '../../environments/environment';
@@ -27,7 +27,12 @@ export class CreateMenuComponent implements OnInit {
    submitted = false;
    errorMessage: string;
 
-   isAdmin: boolean
+   isAdmin: boolean;
+
+   products: Array<Product> = [];
+
+   selectedProducts: any[];
+   toCheck = false;
 
 
   constructor(
@@ -42,6 +47,7 @@ export class CreateMenuComponent implements OnInit {
   ngOnInit() {
     this.createForm();
     this.isAdmin = this.authProviderService.isAdmin();
+   this.getProducts();
   }
 
    private createForm() {
@@ -76,6 +82,8 @@ export class CreateMenuComponent implements OnInit {
     menu.name = this.registerForm.controls.name.value;
     menu.price = this.registerForm.controls.price.value;
     menu.managerId = this.authProviderService.getIdManager();
+    menu.productsDTO = this.selectedProducts;
+    menu.available = true;
 
     if (!environment.production) {
         this.logger.debug(AppConstants.CALL_SERVICE, menu);
@@ -88,6 +96,8 @@ export class CreateMenuComponent implements OnInit {
             }, error => {
            this.handleErrorRegister(error);
          });
+
+         this.selectedProducts = null;
    }
 
    private handleSuccessRegister() {
@@ -136,4 +146,29 @@ export class CreateMenuComponent implements OnInit {
            }
        );
    }
+
+   equals(objOne, objTwo) {
+    if (typeof objOne !== 'undefined' && typeof objTwo !== 'undefined') {
+      return objOne.id === objTwo.id;
+    }
+  }
+
+  selectAll(checkAll, select: NgModel, values) {
+    if (checkAll) {
+      this.toCheck = checkAll;
+      select.update.emit(values);
+    } else {
+      select.update.emit([]);
+    }
+  }
+
+  getProducts() {
+    this.servicesDataService.getAllProduct()
+    .subscribe(data => {
+      console.log(data.body);
+      this.products = data.body as Array<Product>;
+    }, err => {
+      this.products = [];
+    });
+  }
 }

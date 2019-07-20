@@ -30,7 +30,6 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import fr.esgi.dao.ManagerRepository;
 import fr.esgi.dao.MenuRepository;
-import fr.esgi.dao.ProductRepository;
 import fr.esgi.domain.Category;
 import fr.esgi.domain.Manager;
 import fr.esgi.domain.Menu;
@@ -76,9 +75,6 @@ public class MenuResourceTest {
 	private ManagerRepository managerRepository;
 
 	@Mock
-	private ProductRepository productRepository;
-
-	@Mock
 	private ProductMapper productMapper;
 	
 	@Mock
@@ -98,7 +94,7 @@ public class MenuResourceTest {
 	}
 
 	private void initMocks() {
-		menuService = new MenuServiceImpl(menuRepository, menuMapper, productMapper, productRepository);
+		menuService = new MenuServiceImpl(menuRepository, menuMapper, productMapper);
 		menuResource = new MenuResource(menuService, messageSource);
 	}
 

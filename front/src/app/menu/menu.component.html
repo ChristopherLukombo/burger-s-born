@@ -46,10 +46,35 @@
             </div>
         </div>
 
+        <mat-list-item class="primary-imenu-item" role="listitem">
+          <mat-form-field class="select-form">
+              <mat-select
+              placeholder="Produits"
+              name="product"
+              class="filter-select"
+              [compareWith]="equals"
+              multiple
+              [(ngModel)]="selectedProducts"
+              [ngModelOptions]="{standalone: true}"
+              #productSelect="ngModel"
+              >
+                <mat-option disabled="disabled" class="filter-option">
+                  <input type="checkbox" (click)="selectAll(checkAll.checked, productSelect, products)" #checkAll>
+                </mat-option>
+                <mat-option *ngFor="let product of products" [value]="product">
+                  {{product.name}}
+                </mat-option>
+              </mat-select>
+          </mat-form-field>
+        </mat-list-item>
+
+        <div>
+          <mat-checkbox name="available" formControlName="available">En stock</mat-checkbox>
+        </div>
 
         <div style="text-align: center;">
             <button class="btn btn-primary" (click)="toUpdate = false;">Annuler</button>
-            <button class="btn btn-success" type="submit" style="margin-left: 10px;">Valider</button>
+            <button class="btn btn-success" (click)="update()" type="submit" style="margin-left: 10px;">Valider</button>
         </div>
     </form>
 
@@ -70,7 +95,7 @@
     <td>{{menu.price | number : '1.2-2'}} €</td>
 
     <td>
-      <button class="btn btn-primary" (click)="initForm(menu); toUpdate=true" style="margin-right: 10px;" *ngIf="authProviderService.isAuthenticated() && isAdmin"> Modifier </button>
+      <button class="btn btn-primary" (click)="initForm(menu); toUpdate=true;getProducts(menu.id);" style="margin-right: 10px;" *ngIf="authProviderService.isAuthenticated() && isAdmin"> Modifier </button>
       <button class="btn btn-danger" (click)="delete(menu.id)" *ngIf="authProviderService.isAuthenticated() && isAdmin"> Supprimer </button>
     </td>
   </tr>

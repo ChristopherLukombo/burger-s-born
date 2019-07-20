@@ -37,7 +37,7 @@ import io.swagger.annotations.ApiOperation;
  * REST controller for managing products.
  *
  */
-@Api(value = "DatabaseUpdator")
+@Api(value = "MenuResource")
 @RestController
 @RequestMapping("/api")
 public class MenuResource {
@@ -54,7 +54,6 @@ public class MenuResource {
 		this.messageSource = messageSource;
 	}
 	
-	
 	/**
 	 * POST /menu/create : Create a menu
 	 * @throws BurgerSTerminalException 
@@ -62,44 +61,17 @@ public class MenuResource {
 	 * @throws URISyntaxException 
 	 * 
 	 */
-	
 	@ApiOperation(value = "Create a menu")
 	@PostMapping("/new/menu")
-	public ResponseEntity<MenuDTO> createMenu(@RequestBody @Valid MenuDTO menuDTO, Locale locale) throws NoSuchMessageException, BurgerSTerminalException, URISyntaxException{
+	public ResponseEntity<MenuDTO> createMenu(@RequestBody @Valid MenuDTO menuDTO, Locale locale) throws BurgerSTerminalException, URISyntaxException{
 		LOGGER.debug("REST request to create a menu: {}", menuDTO);
 		if (null != menuDTO.getId()) {
-			throw new BurgerSTerminalException(HttpStatus.BAD_REQUEST.value(), messageSource.getMessage(ErrorMessage.ERROR_NEW_PRODUCT_ID_EXIST, null, locale));
+			throw new BurgerSTerminalException(HttpStatus.BAD_REQUEST.value(), messageSource.getMessage("Erreur nouveau menu", null, locale));
 		}
 		MenuDTO result = menuService.save(menuDTO);
 		return ResponseEntity.created(new URI("/api/menu" + result.getId()))
 				.body(result);
 	}
-	
-	
-@ApiOperation(value="Add product in menu")	
-@PutMapping("/new/product/menu")
-public ResponseEntity<MenuDTO> addProduct(@RequestParam("menu_id") Long idMenu,@RequestParam("product_id") Long idProduct,Locale locale) throws NoSuchMessageException, BurgerSTerminalException, URISyntaxException{
-	LOGGER.debug("REST request to add product in a menu: {}", idMenu);
-	if (idMenu == null || idProduct == null) {
-		throw new BurgerSTerminalException(HttpStatus.BAD_REQUEST.value(), messageSource.getMessage(ErrorMessage.ERROR_NEW_PRODUCT_ID_EXIST, null, locale));
-	}
-	MenuDTO result = menuService.addProductInMenu(idMenu, idProduct);
-	return ResponseEntity.created(new URI("/api/menu" + result.getId()))
-			.body(result);
-}
-
-
-@ApiOperation(value="Remove product in menu")	
-@PutMapping("/remove/product/menu")
-public ResponseEntity<MenuDTO> removeProduct(@RequestParam("menu_id") Long idMenu,@RequestParam("product_id") Long idProduct,Locale locale) throws NoSuchMessageException, BurgerSTerminalException, URISyntaxException{
-	LOGGER.debug("REST request to add product in a menu: {}", idMenu);
-	if (idMenu == null || idProduct == null) {
-		throw new BurgerSTerminalException(HttpStatus.BAD_REQUEST.value(), messageSource.getMessage(ErrorMessage.ERROR_NEW_PRODUCT_ID_EXIST, null, locale));
-	}
-	MenuDTO result = menuService.removeProductInMenu(idMenu, idProduct);
-	return ResponseEntity.created(new URI("/api/menu" + result.getId()))
-			.body(result);
-}
 
 	/**
 	 * GET  /menu/all : get all the menus.
@@ -194,7 +166,4 @@ public ResponseEntity<MenuDTO> removeProduct(@RequestParam("menu_id") Long idMen
 		return ResponseEntity.ok()
 				.body(result);
 	}
-
-	
-	
 }
