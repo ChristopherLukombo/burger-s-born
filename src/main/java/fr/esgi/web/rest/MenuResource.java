@@ -42,7 +42,7 @@ import io.swagger.annotations.ApiOperation;
 @RestController
 @RequestMapping("/api")
 public class MenuResource {
-	
+
 	private static final Logger LOGGER = LoggerFactory.getLogger(MenuResource.class);
 
 	private final MenuService menuService;
@@ -54,7 +54,7 @@ public class MenuResource {
 		this.menuService = menuService;
 		this.messageSource = messageSource;
 	}
-	
+
 	/**
 	 * POST /menu/create : Create a menu
 	 * @throws BurgerSTerminalException 
@@ -68,7 +68,7 @@ public class MenuResource {
 	public ResponseEntity<MenuDTO> createMenu(@RequestBody @Valid MenuDTO menuDTO, Locale locale) throws BurgerSTerminalException, URISyntaxException{
 		LOGGER.debug("REST request to create a menu: {}", menuDTO);
 		if (null != menuDTO.getId()) {
-			throw new BurgerSTerminalException(HttpStatus.BAD_REQUEST.value(), messageSource.getMessage("Erreur nouveau menu", null, locale));
+			throw new BurgerSTerminalException(HttpStatus.BAD_REQUEST.value(), messageSource.getMessage(ErrorMessage.ERROR_NEW_MENU_ID_EXIST, null, locale));
 		}
 		MenuDTO result = menuService.save(menuDTO);
 		return ResponseEntity.created(new URI("/api/menu" + result.getId()))
@@ -92,7 +92,7 @@ public class MenuResource {
 			throw new BurgerSTerminalException(HttpStatus.NOT_FOUND.value(),
 					messageSource.getMessage(ErrorMessage.ERROR_MENUS_NOT_FOUND, null, locale));
 		}
-		return ResponseEntity.ok(menus);
+		return ResponseEntity.ok().body(menus);
 	}
 
 	/**
@@ -111,7 +111,7 @@ public class MenuResource {
 			throw new BurgerSTerminalException(HttpStatus.NOT_FOUND.value(),
 					messageSource.getMessage(ErrorMessage.ERROR_PRODUCTS_NOT_FOUND, null, locale));
 		}
-		return ResponseEntity.ok(productsDTO);
+		return ResponseEntity.ok().body(productsDTO);
 	}
 
 	/**
@@ -129,10 +129,9 @@ public class MenuResource {
 			throw new BurgerSTerminalException(HttpStatus.NOT_FOUND.value(), 
 					messageSource.getMessage(ErrorMessage.ERROR_MENUS_NOT_FOUND, null, locale));
 		}
-		return ResponseEntity.ok(menusDTO);
+		return ResponseEntity.ok().body(menusDTO);
 	}
-	
-	
+
 	/**
 	 * 
 	 * DELETE /delete/menu/{id}
@@ -147,14 +146,13 @@ public class MenuResource {
 		menuService.delete(id);
 		return ResponseEntity.noContent().build();
 	}
-	
-	
+
 	/**
 	 * PUT  /menu : update a menu.
 	 * 
 	 * @param menutDTO
-	 * @return the ResponseEntity with status 200 (OK) and with body the assignmentModuleDTO
-	 * @throws BurgerSTerminalException if the id of command is empty.
+	 * @return the ResponseEntity with status 200 (OK) and with body the menuDTO
+	 * @throws BurgerSTerminalException if the id is empty.
 	 */
 	@Authorized(values = { "ROLE_ADMIN" })
 	@ApiOperation(value = "Update a menu.")
@@ -163,10 +161,9 @@ public class MenuResource {
 		LOGGER.debug("REST request to update a menu: {}", menuDTO);
 		if(menuDTO.getId() == null) {
 			throw new BurgerSTerminalException(HttpStatus.BAD_REQUEST.value(),
-					messageSource.getMessage(ErrorMessage.ERROR_PRODUCT_MUST_HAVE_ID, null, locale));
+					messageSource.getMessage(ErrorMessage.ERROR_MENU_MUST_HAVE_ID, null, locale));
 		}
 		MenuDTO result = menuService.update(menuDTO);
-		return ResponseEntity.ok()
-				.body(result);
+		return ResponseEntity.ok().body(result);
 	}
 }

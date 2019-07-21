@@ -38,6 +38,9 @@ public final class ErrorMessage {
     public static final String ERROR_PRODUCTS_NOT_FOUND = "error.products.not.found";
     public static final String ERROR_MENUS_NOT_FOUND = "error.menus.not.found";
     
+    public static final String ERROR_MENU_MUST_HAVE_ID = "error.menu.must.have.id";
+    public static final String ERROR_NEW_MENU_ID_EXIST = " error.new.menu.id.exist";
+    
     public static final String ERROR_PAYMENT_REFUND = "error.payment.refund";
     public static final String ERROR_PAYMENT_VALIDATION = "error.payment.validation";
     public static final String ERROR_PAYMENT_CREATION = "error.payment.creation";
