@@ -72,6 +72,7 @@ public class MenuServiceImpl implements MenuService {
 			return map.get().stream()
 					.filter(p -> categoryName.equalsIgnoreCase(p.getCategory().getName()))
 					.map(productMapper::productToProductDTO)
+					.distinct()
 					.collect(Collectors.toList());
 		} else {
 			return Collections.emptyList();
@@ -98,7 +99,7 @@ public class MenuServiceImpl implements MenuService {
 	 * 
 	 * @param menusDTO the list of entities to save
 	 * @return the list of entities
-	 */
+	 */	
 	@Override
 	public List<MenuDTO> saveAll(List<MenuDTO> menusDTO) {
 		LOGGER.debug("Request to save all menus");
@@ -111,13 +112,23 @@ public class MenuServiceImpl implements MenuService {
 				.collect(Collectors.toList());
 	}
 
+	/**
+	 * Delete the "id" menu.
+	 *
+	 * @param id the id of the entity
+	 */
 	@Override
 	public void delete(Long id) {
 		LOGGER.debug("Request to delete a menu");
 		menuRepository.deleteById(id);
-
 	}
 
+	/**
+	 * Update a menu.
+	 *
+	 * @param menuDTO the entity to update
+	 * @return the persisted entity
+	 */
 	@Override
 	public MenuDTO update(MenuDTO menuDTO) {
 		LOGGER.debug("Request to update a menu: {}", menuDTO);
@@ -126,8 +137,15 @@ public class MenuServiceImpl implements MenuService {
 		return menuMapper.menuToMenuDTO(menu); 
 	}
 
+	/**
+	 * Save a menu.
+	 *
+	 * @param menuDTO the entity to save
+	 * @return the persisted entity
+	 */
 	@Override
 	public MenuDTO save(MenuDTO menuDTO) {
+		LOGGER.debug("Request to save a menu: {}", menuDTO);
 		Menu menu = menuMapper.menuDTOToMenu(menuDTO);	
 		menu = menuRepository.save(menu);
 		return menuMapper.menuToMenuDTO(menu);

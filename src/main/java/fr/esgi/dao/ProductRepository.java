@@ -24,9 +24,10 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
 	 @Query("SELECT p FROM Product p WHERE lower(p.category.name) LIKE concat('%',lower(:categoryName),'%')")
 	 Page<Product> findAllByCategoryName(Pageable pageable, @Param("categoryName") String categoryName);
 	 
-	 @Query(value = "SELECT * "
-			 + "FROM menu_products, product "
-			 + "WHERE menu_products.products_id = product.id "
-			 + "AND menu_products.menus_id = :menuId", nativeQuery = true)
+	 @Query(value = "SELECT DISTINCT products_id, p.* "
+			 + "FROM menu_products m "
+			 + "INNER JOIN product p "
+			 + "ON m.products_id = p.id "
+			 + "WHERE m.menus_id = :menuId", nativeQuery = true)
 	 List<Product> findAllByMenuId(@Param("menuId") Long menuId);
 }

@@ -1,12 +1,12 @@
-import { Component, OnInit, Injector } from '@angular/core';
-import {ServicesDataService} from '../services/services-data.service';
-import {HttpErrorResponse} from '@angular/common/http';
-import { Menu } from '../../model/model.menu';
-import { FormBuilder, FormGroup, Validators, NgModel } from '@angular/forms';
-import { AuthProviderService } from '../services/auth-provider.service';
-import { Product } from 'src/model/model.product';
-import { Observable } from 'rxjs/Observable';
+import { HttpErrorResponse } from '@angular/common/http';
+import { Component, Injector, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, NgModel, Validators } from '@angular/forms';
 import 'rxjs/add/observable/forkJoin';
+import { Product } from 'src/model/model.product';
+import { Menu } from '../../model/model.menu';
+import { AuthProviderService } from '../services/auth-provider.service';
+import { ServicesDataService } from '../services/services-data.service';
+import { Category } from 'src/model/model.category';
 
 @Component({
   selector: 'app-menu',
@@ -25,10 +25,14 @@ export class MenuComponent implements OnInit {
   selectedMenu;
   toUpdate: boolean;
   isAdmin: boolean;
-  products: Array<Product> = [];
+  products;
+  categories;
 
   selectedProducts: any[];
   toCheck = false;
+  checked = false;
+
+
 
   constructor(
     private servicesDataService: ServicesDataService,
@@ -39,72 +43,86 @@ export class MenuComponent implements OnInit {
 
   ngOnInit() {
     this.authProviderService.admin.subscribe(value => {
-        this.isAdmin = value;
+      this.isAdmin = value;
     });
     this.isAdmin = this.isAdmin || this.authProviderService.isAdmin();
     this.createForm();
+    this.loadCategories();
     this.findAll(0);
+    this.getAllProducts();
   }
 
-private createForm() {
-  const target = {
-    name: ['', [Validators.required, Validators.maxLength(50)]],
-    price: ['', [Validators.required]],
-    available: ['', [Validators.required]]
+  private getAllProducts() {
+    this.servicesDataService.getAllProduct()
+      .subscribe(data => {
+        this.products = data.body as Array<Product>;
+      }, err => {
+        this.products = [];
+      });
+  }
 
-  };
-  this.updateForm = this.formBuilder.group(target);
+  private createForm() {
+    const target = {
+      name: ['', [Validators.required, Validators.maxLength(50)]],
+      price: ['', [Validators.required]],
+      available: ['', []]
 
-}
+    };
+    this.updateForm = this.formBuilder.group(target);
+  }
 
   initForm(menu) {
     this.selectedMenu = menu;
     this.updateForm.controls.name.setValue(this.selectedMenu.name);
     this.updateForm.controls.price.setValue(this.selectedMenu.price);
     this.updateForm.controls.available.setValue(this.selectedMenu.available);
-   }
+  }
 
-   get f() { return this.updateForm.controls; }
+  get f() { return this.updateForm.controls; }
 
 
   findAll(indexPage: number) {
     this.servicesDataService.findAllMenus(indexPage)
-        .subscribe(data => {
-
-          this.menus = data.body['content'];
-          this.totalElements = data.body['totalElements'];
-          this.pages = Array(data.body['totalPages']).fill(0).map((x, i) => i + 1);
-          this.selectedPage = indexPage;
-
-
-        }, err => {
-          if (err instanceof HttpErrorResponse) {
-            if (403 === err.status) {
-              this.errorMessage = 'Vous n\'êtes pas autorisé à effectuer cette action.';
-            } else if (404 === err.status) {
-              this.errorMessage = 'Aucun menu d\'enregistré.';
-              this.menus = null;
-            } else {
-              this.errorMessage = 'Une erreur serveur s\'est produite.';
-            }
+      .subscribe(data => {
+        this.menus = data.body['content'];
+        this.totalElements = data.body['totalElements'];
+        this.pages = Array(data.body['totalPages']).fill(0).map((x, i) => i + 1);
+        this.selectedPage = indexPage;
+      }, err => {
+        if (err instanceof HttpErrorResponse) {
+          if (403 === err.status) {
+            this.errorMessage = 'Vous n\'êtes pas autorisé à effectuer cette action.';
+          } else if (404 === err.status) {
+            this.errorMessage = 'Aucun menu d\'enregistré.';
+            this.menus = null;
+          } else {
+            this.errorMessage = 'Une erreur serveur s\'est produite.';
           }
-          this.successMessage = null;
-        });
+        }
+        this.successMessage = null;
+      });
   }
 
-  getProducts(menuId: number) {
-    this.servicesDataService.getAllProduct()
+  public getSelectedProducts(menuId: number) {
+    this.servicesDataService.getProductsByMenuId(menuId)
       .subscribe(data => {
-        this.products = data.body as Array<Product>;
-        this.servicesDataService.getProductsByMenuId(menuId)
-          .subscribe(data1 => {
-            this.selectedProducts = data1.body as Array<Product>;
-          }, err1 => {
-            this.selectedProducts = [];
+        // Mapping categories with products
+        for (let i = 0; i < this.products.length; i++) {
+          this.categories.forEach(categ => {
+            if (this.products[i].categoryId === categ.id) {
+              this.products[i].categoryName = categ.name;
+            }
           });
+        }
+        this.selectedProducts = data.body as Array<Product>;
+        if (this.selectedProducts.length === this.products.length && this.selectedProducts.length > 0) {
+          this.checked = true;
+        } else {
+          this.checked = false;
+        }
       }, err => {
-        this.products = [];
         this.selectedProducts = [];
+        this.checked = false;
       });
   }
 
@@ -126,7 +144,7 @@ private createForm() {
   delete(id: number) {
     this.servicesDataService.deleteMenu(id)
       .subscribe(data => {
-        this.successMessage = 'Vous avez supprimé le menu'
+        this.successMessage = 'Vous avez supprimé le menu';
         this.errorMessage = null;
         this.findAll(this.selectedPage);
       }, err => {
@@ -139,7 +157,6 @@ private createForm() {
         }
         this.successMessage = null;
       });
-
   }
 
   update() {
@@ -150,7 +167,7 @@ private createForm() {
     const price = this.updateForm.controls.price.value;
     const available = this.updateForm.controls.available.value;
     if (this.updateForm.invalid) {
-        return;
+      return;
     }
 
     const menu = new Menu();
@@ -163,22 +180,33 @@ private createForm() {
     menu.productsDTO = this.selectedProducts;
 
     this.servicesDataService.updateMenu(menu)
-        .subscribe(data => {
-            this.successMessage = 'Vous avez modifié le menu avec succès.';
-            this.errorMessage = null;
+      .subscribe(data => {
+        this.successMessage = 'Vous avez modifié le menu avec succès.';
+        this.errorMessage = null;
 
-            this.findAll(this.selectedPage);
-            this.toUpdate = false;
+        this.findAll(this.selectedPage);
+        this.toUpdate = false;
 
-        }, errorUpdate => {
-            if (errorUpdate instanceof HttpErrorResponse) {
-                if (403 === errorUpdate.status) {
-                    this.errorMessage = 'Vous n\'êtes pas autorisé à effectuer cette action.';
-                } else {
-                    this.errorMessage = 'Une erreur serveur s\'est produite.';
-                }
-            }
-            this.successMessage = null;
-        });
-      }
+      }, errorUpdate => {
+        if (errorUpdate instanceof HttpErrorResponse) {
+          if (403 === errorUpdate.status) {
+            this.errorMessage = 'Vous n\'êtes pas autorisé à effectuer cette action.';
+          } else {
+            this.errorMessage = 'Une erreur serveur s\'est produite.';
+          }
+        }
+        this.successMessage = null;
+      });
   }
+  
+  private loadCategories(): void {
+    this.servicesDataService.findAllCategory()
+      .subscribe(data => {
+        this.categories = data['body'] as Array<Category>;
+      }, error => {
+        if (error.status === 404) {
+          this.errorMessage = 'Aucune catégorie de produit enregistré.';
+        }
+      });
+  }
+}

@@ -21,7 +21,7 @@
 
 
   <mat-form-field class="example-full-width">
-    <input matInput placeholder="Prix" name="price" formControlName="price" >
+    <input matInput type="number" placeholder="Prix" name="price" formControlName="price" >
   </mat-form-field>
 
  <div class="alert alert-danger" role="alert" *ngIf="(submitted && f.price.errors)">
@@ -48,8 +48,8 @@
           <mat-option disabled="disabled" class="filter-option">
             <input type="checkbox" (click)="selectAll(checkAll.checked, productSelect, products)" #checkAll>
           </mat-option>
-          <mat-option *ngFor="let product of products" [value]="product">
-            {{product.name}} - {{product.price | number : '1.2-2'}} €
+          <mat-option *ngFor="let product of products" [value]="product" (click)="fillPrice()">
+            {{product.name}} - {{product.price | number : '1.2-2'}} € - {{product.categoryName}}
           </mat-option>
         </mat-select>
     </mat-form-field>
