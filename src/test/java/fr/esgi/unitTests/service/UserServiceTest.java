@@ -31,8 +31,10 @@ import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import fr.esgi.config.ConfigurationService;
+import fr.esgi.dao.CustomerRepository;
 import fr.esgi.dao.RoleRepository;
 import fr.esgi.dao.UserRepository;
+import fr.esgi.domain.Customer;
 import fr.esgi.domain.Role;
 import fr.esgi.domain.User;
 import fr.esgi.enums.RoleName;
@@ -65,6 +67,9 @@ public class UserServiceTest {
     
     @Mock
     private ConfigurationService configurationService;
+    
+    @Mock
+    private CustomerRepository customerRepository;
 
     @InjectMocks
     private UserServiceImpl userServiceImpl;
@@ -160,6 +165,7 @@ public class UserServiceTest {
         // When
         when(roleRepository.findById(anyLong())).thenReturn(Optional.of(role));
         when(userRepository.save(mock(User.class))).thenReturn(user);
+    	when(customerRepository.save((Customer) any())).thenReturn(new Customer());
         when(userMapper.userToUserDTO((User) any())).thenReturn(userDTO);
         
         // Then
@@ -177,6 +183,7 @@ public class UserServiceTest {
         // When
         when(roleRepository.findById(anyLong())).thenReturn(Optional.empty());
         when(userRepository.save((User) any())).thenReturn(user);
+        when(customerRepository.save((Customer) any())).thenReturn(new Customer());
         when(userMapper.userToUserDTO((User) any())).thenReturn(userDTO);
         
         // Then
@@ -191,6 +198,7 @@ public class UserServiceTest {
         // When
         when(roleRepository.findById(anyLong())).thenReturn(Optional.empty());
         when(userRepository.save(mock(User.class))).thenReturn(null);
+        when(customerRepository.save((Customer) any())).thenReturn(null);
         when(userMapper.userToUserDTO((User) any())).thenReturn(null);
 
         // Then

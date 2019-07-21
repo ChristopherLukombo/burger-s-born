@@ -21,8 +21,10 @@ import org.springframework.web.multipart.MultipartFile;
 import fr.esgi.config.ConfigurationService;
 import fr.esgi.config.Constants;
 import fr.esgi.config.ErrorMessage;
+import fr.esgi.dao.CustomerRepository;
 import fr.esgi.dao.RoleRepository;
 import fr.esgi.dao.UserRepository;
+import fr.esgi.domain.Customer;
 import fr.esgi.domain.Role;
 import fr.esgi.domain.User;
 import fr.esgi.exception.BurgerSTerminalException;
@@ -48,15 +50,18 @@ public class UserServiceImpl implements UserService {
     private final UserMapper userMapper;
     
     private final ConfigurationService configurationService;
+    
+    private final CustomerRepository customerRepository;
 
     @Autowired
     public UserServiceImpl(PasswordEncoder passwordEncoder, UserRepository userRepository,
-			RoleRepository roleRepository, UserMapper userMapper, ConfigurationService configurationService) {
+			RoleRepository roleRepository, UserMapper userMapper, ConfigurationService configurationService, CustomerRepository customerRepository) {
 		this.passwordEncoder = passwordEncoder;
 		this.userRepository = userRepository;
 		this.roleRepository = roleRepository;
 		this.userMapper = userMapper;
 		this.configurationService = configurationService;
+		this.customerRepository = customerRepository;
 	}
 
 	/**
@@ -85,8 +90,12 @@ public class UserServiceImpl implements UserService {
         }
         newUser.setActivated(true);
         newUser = userRepository.save(newUser);
-
-        LOGGER.debug("Created Information for User: {}", newUser);
+        
+        Customer customer = new Customer();
+        customer.setUser(newUser);
+		customerRepository.save(customer);
+        
+		LOGGER.debug("Created Information for User: {}", newUser);
         return userMapper.userToUserDTO(newUser);
     }
 

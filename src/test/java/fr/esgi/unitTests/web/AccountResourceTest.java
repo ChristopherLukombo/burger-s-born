@@ -38,8 +38,10 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import fr.esgi.config.ConfigurationService;
+import fr.esgi.dao.CustomerRepository;
 import fr.esgi.dao.RoleRepository;
 import fr.esgi.dao.UserRepository;
+import fr.esgi.domain.Customer;
 import fr.esgi.domain.Role;
 import fr.esgi.domain.User;
 import fr.esgi.service.UserService;
@@ -80,6 +82,9 @@ public class AccountResourceTest {
 
 	@Mock
 	private ConfigurationService configurationService;
+	
+	@Mock
+	private CustomerRepository customerRepository;
 
 	@InjectMocks
 	private AccountResource accountResource;
@@ -101,7 +106,7 @@ public class AccountResourceTest {
 	}
 
 	private void initMocks() {
-		userService = new UserServiceImpl(passwordEncoder, userRepository, roleRepository, userMapper, configurationService);
+		userService = new UserServiceImpl(passwordEncoder, userRepository, roleRepository, userMapper, configurationService, customerRepository);
 		accountResource = new AccountResource(userService, messageSource);
 	}
 
@@ -176,6 +181,7 @@ public class AccountResourceTest {
 		// When
 		when(roleRepository.findById(anyLong())).thenReturn(Optional.empty());
 		when(userRepository.save((User) any())).thenReturn(null);
+		when(customerRepository.save((Customer) any())).thenReturn(new Customer());
 		when(userMapper.userToUserDTO((User) any())).thenReturn(userDTO);
 
 		// Then
@@ -202,6 +208,7 @@ public class AccountResourceTest {
 		// When
 		when(roleRepository.findById(anyLong())).thenReturn(Optional.empty());
 		when(userRepository.save(mock(User.class))).thenReturn(null);
+		when(customerRepository.save((Customer) any())).thenReturn(null);
 		when(userMapper.userToUserDTO((User) any())).thenReturn(null);
 
 		// Then
