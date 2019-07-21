@@ -4,7 +4,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.math.BigDecimal;
@@ -159,6 +163,48 @@ public class ProductServiceTest {
 		assertThatThrownBy(() -> productServiceImpl.findAll(0, 10))
 		.isInstanceOf(NullPointerException.class);
 	}
+	
+	@Test
+	public void shouldFindAllInListWhenIsOK() {
+		// Given 
+		List<Product> products = new ArrayList<>();
+		products.add(getProduct());
+
+		// When
+		when(productRepository.findAll()).thenReturn(products);
+		when(productMapper.productToProductDTO(((Product) any()))).thenReturn(getProductDTO());
+
+		// Then
+		assertThat(productServiceImpl.findAll()).isNotEmpty();
+	}
+
+	@Test
+	public void shouldFindAllInListWhenIsEmpty() {
+		// Given 
+		List<Product> products = new ArrayList<>();
+
+		// When
+		when(productRepository.findAll()).thenReturn(products);
+		when(productMapper.productToProductDTO(((Product) any()))).thenReturn(getProductDTO());
+
+		// Then
+		assertThat(productServiceImpl.findAll()).isEmpty();
+	}
+
+	@Test
+	public void shouldFindAllInListWhenIsKO() {
+		// Given 
+		List<Product> products = null;
+		ProductDTO productDTO = null;
+
+		// When
+		when(productRepository.findAll()).thenReturn(products);
+		when(productMapper.productToProductDTO(((Product) any()))).thenReturn(productDTO);
+
+		// Then
+		assertThatThrownBy(() -> productServiceImpl.findAll())
+		.isInstanceOf(NullPointerException.class);
+	}
 
 	@Test
 	public void shouldSaveAllWhenIsOK() {
@@ -243,6 +289,119 @@ public class ProductServiceTest {
 		// Then
 		assertThatThrownBy(() -> productServiceImpl.findProductsByCategoryName(PageRequest.of(0, 10), PLAT))
 		.isInstanceOf(NullPointerException.class);
+	}
+	
+	@Test
+	public void shouldFindProductsByMenuIdWhenIsOK() {
+		// Given
+		List<Product> products = new ArrayList<>();
+		products.add(getProduct());
+		
+		ProductDTO productDTO = getProductDTO();
+		
+		// When
+		when(productRepository.findAllByMenuId(anyLong())).thenReturn(products);
+		when(productMapper.productToProductDTO(((Product) any()))).thenReturn(productDTO);
+		
+		// Then
+		assertThat(productServiceImpl.findProductsByMenuId(ID)).isNotEmpty();
+	}
+	
+	@Test
+	public void shouldFindProductsByMenuIdWhenIsEmpty() {
+		// Given
+		List<Product> products = new ArrayList<>();
+		ProductDTO productDTO = getProductDTO();
+		
+		// When
+		when(productRepository.findAllByMenuId(anyLong())).thenReturn(products);
+		when(productMapper.productToProductDTO(((Product) any()))).thenReturn(productDTO);
+		
+		// Then
+		assertThat(productServiceImpl.findProductsByMenuId(ID)).isEmpty();
+	}
+	
+	@Test
+	public void shouldFindProductsByMenuIdWhenIsKO() {
+		// Given
+		List<Product> products = null;
+		ProductDTO productDTO = null;
+		
+		// When
+		when(productRepository.findAllByMenuId(anyLong())).thenReturn(products);
+		when(productMapper.productToProductDTO(((Product) any()))).thenReturn(productDTO);
+		
+		// Then
+		assertThatThrownBy(() -> productServiceImpl.findProductsByMenuId(ID))
+		.isInstanceOf(NullPointerException.class);
+	}
+	
+	@Test
+	public void shouldSaveWhenIsOK() {
+		// Given
+		ProductDTO productDTO = getProductDTO();
+		
+		// When
+		when(productMapper.productDTOToProduct((ProductDTO) any())).thenReturn(getProduct());
+		when(productRepository.save((Product) any())).thenReturn(getProduct());
+		when(productMapper.productToProductDTO((Product) any())).thenReturn(productDTO);
+		
+		// Then
+		assertThat(productServiceImpl.save(productDTO)).isNotNull();
+	}
+
+	@Test
+	public void shouldSaveWhenIsKO() {
+		// Given
+		ProductDTO productDTO = null;
+		
+		// When
+		when(productMapper.productDTOToProduct((ProductDTO) any())).thenReturn(null);
+		when(productRepository.save((Product) any())).thenReturn(null);
+		when(productMapper.productToProductDTO((Product) any())).thenReturn(productDTO);
+		
+		// Then
+		assertThat(productServiceImpl.save(productDTO)).isNull();
+	}
+	
+	@Test
+	public void shouldDeleteWhenIsOK() {
+		// Given
+		doNothing().when(productRepository).deleteById(anyLong());
+		
+		// When
+		productServiceImpl.delete(anyLong());
+		
+		// Then
+		verify(productRepository, times(1)).deleteById(anyLong());
+	}
+	
+	@Test
+	public void shouldUpdateWhenIsOK() {
+		// Given
+		ProductDTO productDTO = getProductDTO();
+		
+		// When
+		when(productMapper.productDTOToProduct((ProductDTO) any())).thenReturn(getProduct());
+		when(productRepository.saveAndFlush((Product) any())).thenReturn(getProduct());
+		when(productMapper.productToProductDTO((Product) any())).thenReturn(productDTO);
+		
+		// Then
+		assertThat(productServiceImpl.update(productDTO)).isNotNull();
+	}
+
+	@Test
+	public void shouldUpdateWhenIsKO() {
+		// Given
+		ProductDTO productDTO = null;
+		
+		// When
+		when(productMapper.productDTOToProduct((ProductDTO) any())).thenReturn(null);
+		when(productRepository.saveAndFlush((Product) any())).thenReturn(null);
+		when(productMapper.productToProductDTO((Product) any())).thenReturn(productDTO);
+		
+		// Then
+		assertThat(productServiceImpl.update(productDTO)).isNull();
 	}
 	
 }

@@ -1,9 +1,15 @@
 package fr.esgi.unitTests.web;
 
+import static fr.esgi.unitTests.web.TestUtil.convertObjectToJsonBytes;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.math.BigDecimal;
@@ -87,7 +93,7 @@ public class ProductResourceTest {
 	}
 
 	private void initMocks() {
-		productService = new ProductServiceImpl(productRepository, productMapper, categoryRepository);
+		productService = new ProductServiceImpl(productRepository, productMapper);
 		productResource = new ProductResource(productService, messageSource);
 	}
 	
@@ -183,6 +189,68 @@ public class ProductResourceTest {
 	}
 	
 	@Test
+	public void shouldFindAllInListWhenIsOK() throws Exception {
+		// Given 
+		List<Product> products = new ArrayList<>();
+		products.add(getProduct());
+
+		// When
+		when(productRepository.findAll()).thenReturn(products);
+		when(productMapper.productToProductDTO(((Product) any()))).thenReturn(getProductDTO());
+
+		// Then
+		mockMvc.perform(get("/api/products/all")
+				.contentType(TestUtil.APPLICATION_JSON_UTF8))
+		.andExpect(status().isOk());
+	}
+
+	@Test
+	public void shouldFindAllInListWhenIsEmpty() throws Exception {
+		// Given 
+		List<Product> products = new ArrayList<>();
+
+		// When
+		when(productRepository.findAll()).thenReturn(products);
+		when(productMapper.productToProductDTO(((Product) any()))).thenReturn(getProductDTO());
+
+		// Then
+		mockMvc.perform(get("/api/products/all")
+				.contentType(TestUtil.APPLICATION_JSON_UTF8))
+		.andExpect(status().isNotFound());
+	}
+	
+	@Test
+	public void shouldFindAllByMenuIdWhenIsOK() throws Exception {
+		// Given 
+		List<Product> products = new ArrayList<>();
+		products.add(getProduct());
+
+		// When
+		when(productRepository.findAllByMenuId(anyLong())).thenReturn(products);
+		when(productMapper.productToProductDTO(((Product) any()))).thenReturn(getProductDTO());
+
+		// Then
+		mockMvc.perform(get("/api/product/1")
+				.contentType(TestUtil.APPLICATION_JSON_UTF8))
+		.andExpect(status().isOk());
+	}
+
+	@Test
+	public void shouldFindAllByMenuIdWhenIsEmpty() throws Exception {
+		// Given 
+		List<Product> products = new ArrayList<>();
+
+		// When
+		when(productRepository.findAllByMenuId(anyLong())).thenReturn(products);
+		when(productMapper.productToProductDTO(((Product) any()))).thenReturn(getProductDTO());
+
+		// Then
+		mockMvc.perform(get("/api/product/1")
+				.contentType(TestUtil.APPLICATION_JSON_UTF8))
+		.andExpect(status().isNotFound());
+	}
+	
+	@Test
 	public void shouldFindProductsByCategoryNameWhenIsOK() throws Exception {
 		// Given
 		List<Product> content = new ArrayList<>();
@@ -217,5 +285,80 @@ public class ProductResourceTest {
 		mockMvc.perform(get("/api/products/category?page=0&size=10&categorieName=plat")
 				.contentType(TestUtil.APPLICATION_JSON_UTF8))
 		.andExpect(status().isNotFound());
+	}
+	
+	@Test
+	public void shouldCreateProductWhenIsOK() throws Exception {
+		// Given
+		ProductDTO productDTO = getProductDTO();
+		productDTO.setId(null);
+		
+		// When
+		when(productMapper.productDTOToProduct((ProductDTO) any())).thenReturn(getProduct());
+		when(productRepository.save((Product) any())).thenReturn(getProduct());
+		when(productMapper.productToProductDTO((Product) any())).thenReturn(productDTO);
+		
+		// Then
+		mockMvc.perform(post("/api/new/product")
+				.contentType(TestUtil.APPLICATION_JSON_UTF8)
+				.content(convertObjectToJsonBytes(productDTO)))
+		.andExpect(status().isCreated());
+	}
+	
+	@Test
+	public void shouldCreateProductWhenIsKO() throws Exception {
+		// Given
+		ProductDTO productDTO = getProductDTO();
+		
+		// Then
+		mockMvc.perform(post("/api/new/product")
+				.contentType(TestUtil.APPLICATION_JSON_UTF8)
+				.content(convertObjectToJsonBytes(productDTO)))
+		.andExpect(status().isBadRequest());
+	}
+	
+	@Test
+	public void shouldUpdateProductWhenIsOK() throws Exception {
+		// Given
+		ProductDTO productDTO = getProductDTO();
+		
+		// When
+		when(productMapper.productDTOToProduct((ProductDTO) any())).thenReturn(getProduct());
+		when(productRepository.saveAndFlush((Product) any())).thenReturn(getProduct());
+		when(productMapper.productToProductDTO((Product) any())).thenReturn(productDTO);
+		
+		// Then
+		mockMvc.perform(put("/api/product")
+				.contentType(TestUtil.APPLICATION_JSON_UTF8)
+				.content(convertObjectToJsonBytes(productDTO)))
+		.andExpect(status().isOk());
+	}
+	
+	@Test
+	public void shouldUpdateProductWhenIsKO() throws Exception {
+		// Given
+		ProductDTO productDTO = getProductDTO();
+		productDTO.setId(null);
+		
+		// Then
+		mockMvc.perform(put("/api/product")
+				.contentType(TestUtil.APPLICATION_JSON_UTF8)
+				.content(convertObjectToJsonBytes(productDTO)))
+		.andExpect(status().isBadRequest());
+	}
+	
+	@Test
+	public void shouldDeleteWhenIsOK() throws Exception {
+		// Given
+		ProductDTO productDTO = getProductDTO();
+		productDTO.setId(null);
+
+		// When
+		doNothing().when(productRepository).deleteById(anyLong());
+
+		// Then
+		mockMvc.perform(delete("/api/delete/product/1")
+				.contentType(TestUtil.APPLICATION_JSON_UTF8))
+		.andExpect(status().isNoContent());
 	}
 }

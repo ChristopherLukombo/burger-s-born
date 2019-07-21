@@ -2,6 +2,8 @@
  * Ce fichier détaille les manipulations à faire pour que le projet soit fonctionnel pour la prochaine personne.
  */
  
+ Faire un npm install
+ ------------------------------------------------------------------------------------------------------------------------ 
 Ajouter les variables de conf suivantes : 
 # PayPal
 app.paypal.clientId = AS4JkgIxyobqUg7oEdIdHB4H-CDOmuXyPkzR_vZBH0PXp_NKxxYVkBP-xMxQQjbHDMtbm7sv2_VLXQg7

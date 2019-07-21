@@ -66,7 +66,8 @@
 			src/main/java/fr/esgi/config/**/*.*,
 			src/main/java/fr/esgi/security/**/*.*,
 			src/main/java/fr/esgi/dao/**/*.*,
-			src/main/java/fr/esgi/exception/**/*.*
+			src/main/java/fr/esgi/exception/**/*.*,
+			src/main/java/fr/esgi/annotation/**/*.*
 		</sonar.exclusions>
 	</properties>
 
@@ -225,6 +226,14 @@
 						</configuration>
 					</execution>
 				</executions>
+			</plugin>
+			<plugin>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>2.12.1</version><!--$NO-MVN-MAN-VER$-->
+				<configuration>
+					<argLine>-server -ea -XX:MaxPermSize=256m -Xmx4g
+						-XX:-UseSplitVerifier ${argLine}</argLine>
+				</configuration>
 			</plugin>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>

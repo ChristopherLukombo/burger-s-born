@@ -43,6 +43,14 @@ export class AuthProviderService {
     return this.$localStorage.retrieve('id_customer');
   }
 
+  storeIdManager(idManager: number) {
+    this.$localStorage.store('id_manager', idManager);
+  }
+
+  getIdManager() {
+    return this.$localStorage.retrieve('id_manager');
+  }
+
   getToken() {
     return this.$localStorage.retrieve('authenticationToken');
   }
@@ -72,6 +80,15 @@ export class AuthProviderService {
       return false;
     }
     return RoleName.ROLE_ADMIN === decodedToken.auth;
+  }
+
+  getRole(): string {
+    const helper = new JwtHelperService();
+    const decodedToken = helper.decodeToken(this.getToken());
+    if (!decodedToken) {
+      return '';
+    }
+    return decodedToken.auth;
   }
 
   getPseudo(): string {

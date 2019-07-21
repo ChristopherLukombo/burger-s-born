@@ -1,11 +1,16 @@
 package fr.esgi.unitTests.web;
 
+import static fr.esgi.unitTests.web.TestUtil.convertObjectToJsonBytes;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.io.IOException;
@@ -22,6 +27,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.MockitoJUnitRunner;
+import org.springframework.context.MessageSource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.test.web.servlet.MockMvc;
@@ -29,7 +35,6 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import fr.esgi.dao.ManagerRepository;
 import fr.esgi.dao.MenuRepository;
-import fr.esgi.dao.ProductRepository;
 import fr.esgi.domain.Category;
 import fr.esgi.domain.Manager;
 import fr.esgi.domain.Menu;
@@ -75,10 +80,10 @@ public class MenuResourceTest {
 	private ManagerRepository managerRepository;
 
 	@Mock
-	private ProductRepository productRepository;
-
-	@Mock
 	private ProductMapper productMapper;
+	
+	@Mock
+	private MessageSource messageSource;
 
 	@InjectMocks
 	private MenuResource menuResource;
@@ -95,7 +100,7 @@ public class MenuResourceTest {
 
 	private void initMocks() {
 		menuService = new MenuServiceImpl(menuRepository, menuMapper, productMapper);
-		menuResource = new MenuResource(menuService);
+		menuResource = new MenuResource(menuService, messageSource);
 	}
 
 	private static MenuDTO getMenuDTO() {
@@ -238,7 +243,7 @@ public class MenuResourceTest {
 		when(productMapper.productToProductDTO((Product) any())).thenReturn(getProductDTO());
 
 		// Then
-		mockMvc.perform(get("/api/menus/products?id=1&categorieName=dessert")
+		mockMvc.perform(get("/api/menus/products?id=1&categorieName=PLAT")
 				.contentType(TestUtil.APPLICATION_JSON_UTF8))
 		.andExpect(status().isOk());
 	}
@@ -264,7 +269,7 @@ public class MenuResourceTest {
 		// Then
 		mockMvc.perform(get("/api/menus/products?id=1&categorieName=dessert")
 				.contentType(TestUtil.APPLICATION_JSON_UTF8))
-		.andExpect(status().isOk());
+		.andExpect(status().isNotFound());
 	}
 	
 	@Test
@@ -288,6 +293,81 @@ public class MenuResourceTest {
 		// Then
 		mockMvc.perform(get("/api/menus/products?id=1&categorieName=dessert")
 				.contentType(TestUtil.APPLICATION_JSON_UTF8))
+		.andExpect(status().isNotFound());
+	}
+	
+	@Test
+	public void shouldCreateMenuWhenIsOK() throws Exception {
+		// Given
+		MenuDTO menuDTO = getMenuDTO();
+		menuDTO.setId(null);
+		
+		// When
+		when(menuMapper.menuDTOToMenu((MenuDTO) any())).thenReturn(getMenu());
+		when(menuRepository.save((Menu) any())).thenReturn(getMenu());
+		when(menuMapper.menuToMenuDTO((Menu) any())).thenReturn(menuDTO);
+		
+		// Then
+		mockMvc.perform(post("/api/new/menu")
+				.contentType(TestUtil.APPLICATION_JSON_UTF8)
+				.content(convertObjectToJsonBytes(menuDTO)))
+		.andExpect(status().isCreated());
+	}
+	
+	@Test
+	public void shouldCreateMenuWhenIsKO() throws Exception {
+		// Given
+		MenuDTO menuDTO = getMenuDTO();
+		
+		// Then
+		mockMvc.perform(post("/api/new/menu")
+				.contentType(TestUtil.APPLICATION_JSON_UTF8)
+				.content(convertObjectToJsonBytes(menuDTO)))
+		.andExpect(status().isBadRequest());
+	}
+	
+	@Test
+	public void shouldUpdateMenuWhenIsOK() throws Exception {
+		// Given
+		MenuDTO menuDTO = getMenuDTO();
+		
+		// When
+		when(menuMapper.menuDTOToMenu((MenuDTO) any())).thenReturn(getMenu());
+		when(menuRepository.saveAndFlush((Menu) any())).thenReturn(getMenu());
+		when(menuMapper.menuToMenuDTO((Menu) any())).thenReturn(menuDTO);
+		
+		// Then
+		mockMvc.perform(put("/api/menu")
+				.contentType(TestUtil.APPLICATION_JSON_UTF8)
+				.content(convertObjectToJsonBytes(menuDTO)))
 		.andExpect(status().isOk());
+	}
+	
+	@Test
+	public void shouldUpdateMenuWhenIsKO() throws Exception {
+		// Given
+		MenuDTO menuDTO = getMenuDTO();
+		menuDTO.setId(null);
+		
+		// Then
+		mockMvc.perform(put("/api/menu")
+				.contentType(TestUtil.APPLICATION_JSON_UTF8)
+				.content(convertObjectToJsonBytes(menuDTO)))
+		.andExpect(status().isBadRequest());
+	}
+	
+	@Test
+	public void shouldDeleteWhenIsOK() throws Exception {
+		// Given
+		MenuDTO menuDTO = getMenuDTO();
+		menuDTO.setId(null);
+
+		// When
+		doNothing().when(menuRepository).deleteById(anyLong());
+
+		// Then
+		mockMvc.perform(delete("/api/delete/menu/1")
+				.contentType(TestUtil.APPLICATION_JSON_UTF8))
+		.andExpect(status().isNoContent());
 	}
 }

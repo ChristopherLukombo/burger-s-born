@@ -1,7 +1,7 @@
 package fr.esgi.service.impl;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import fr.esgi.dao.CategoryRepository;
-import fr.esgi.domain.Category;
 import fr.esgi.service.CategoryService;
 import fr.esgi.service.dto.CategoryDTO;
 import fr.esgi.service.mapper.CategoryMapper;
@@ -36,20 +35,16 @@ public class CategoryServiceImpl implements CategoryService {
 	}
 
 	/**
-	 * Returns all categories
-	 * @return List<Category>
+	 * Get all the categories.
+	 * 
+	 * @return the list of entities
 	 */
+	@Override
 	@Transactional(readOnly = true)
 	public List<CategoryDTO> findAll() {
 		LOGGER.debug("Request to get all categories");
-		
-		List<Category> categories = categoryRepository.findAll();
-		List<CategoryDTO> result = new ArrayList<CategoryDTO>();
-		
-		for(Category categ : categories) {
-			result.add(categoryMapper.categoryToCategoryDTO(categ));
-		}
-		
-		return result;
+		return categoryRepository.findAll().stream()
+				.map(categoryMapper::categoryToCategoryDTO)
+				.collect(Collectors.toList());
 	}
 }

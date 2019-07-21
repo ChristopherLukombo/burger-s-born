@@ -1,7 +1,7 @@
 <h4>Créer un produit</h4>
 <br>
 
-<!-- <form class="example-form" [formGroup]="registerForm" (ngSubmit)="createProduct()">
+ <form class="example-form" [formGroup]="registerForm" (ngSubmit)="createProduct()">
     <div class="alert alert-danger" role="alert" *ngIf="errorMessage">
         {{errorMessage}}
     </div>
@@ -12,6 +12,9 @@
     <div class="alert alert-danger" role="alert" *ngIf="(submitted && f.name.errors)">
         <div *ngIf="f.name.errors.required">
             Le champs est obligatoire
+        </div>
+        <div *ngIf="f.name.errors.maxlength">
+            Le nom doit contenir au maximun 50 caractères
         </div>
         <div *ngIf="registerForm.get('name').errors?.serverError">
             Le champs {{registerForm.get('name').errors?.serverError}}
@@ -44,6 +47,9 @@
         <div *ngIf="f.price.errors.required">
             Le champs est obligatoire
         </div>
+        <div *ngIf="f.price.errors.max">
+            Le prix est au maximun de 5 caractères
+        </div>
         <div *ngIf="registerForm.get('price').errors?.serverError">
             Le champs {{registerForm.get('price').errors?.serverError}}
         </div>
@@ -53,4 +59,3 @@
     <div style="text-align: center;">
         <button class="btn btn-primary" type="submit">Ajouter</button>
     </div>
-</!--> -->

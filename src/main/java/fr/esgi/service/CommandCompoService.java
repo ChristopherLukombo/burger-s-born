@@ -9,7 +9,7 @@ import fr.esgi.domain.CommandCompoID;
 import fr.esgi.service.dto.CommandCompoDTO;
 
 /**
- * Service Interface for managing CommandCompoService.
+ * Service Interface for managing CommandCompo.
  */
 @Service
 public interface CommandCompoService {

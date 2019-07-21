@@ -44,7 +44,7 @@ import fr.esgi.service.dto.Paypal;
 import fr.esgi.service.mapper.CommandMapper;
 
 /**
- * Service Implementation for managing PayPalService.
+ * Service Implementation for managing PayPal.
  */
 @Service("PayPalService")
 public class PayPalServiceImpl implements PayPalService {
@@ -68,7 +68,7 @@ public class PayPalServiceImpl implements PayPalService {
 	/**
 	 *  Create a payment.
 	 *
-	 * @param commandDTO : commandDTO to create
+	 * @param commandDTO command to create
 	 * @return status
 	 */
 	@Override
@@ -85,7 +85,7 @@ public class PayPalServiceImpl implements PayPalService {
 				response.put(Constants.REDIRECT_URL, getRedirectUrl(createdPayment));
 				commandDTO.setOrderStatus(Constants.WAITTING);
 				commandDTO.setPaymentId(createdPayment.getId());
-				Command command = setToCommand(commandDTO);
+				Command command = toCommand(commandDTO);
 				commandDTO.setPrice(BigDecimal.valueOf((getPrice(command.getProducts(), command.getMenus()))));
 				CommandDTO result = commandService.save(commandDTO);
 				if (null != result) {
@@ -100,16 +100,16 @@ public class PayPalServiceImpl implements PayPalService {
 
 	private Transaction createTransaction(CommandDTO commandDTO) {
 		ItemList itemList = new ItemList();
-		Command command = setToCommand(commandDTO);
+		Command command = toCommand(commandDTO);
 		List<Item> items = getItems(command);
-		itemList.setItems(items);
 		Double price = getPrice(command.getProducts(), command.getMenus());
+		itemList.setItems(items);
 		Details details = getDetails((price != null) ? price : 0);
 		Amount amount = getAmount(details, price);
 		return getTransaction(itemList, amount);
 	}
 
-	private Command setToCommand(CommandDTO commandDTO) {
+	private Command toCommand(CommandDTO commandDTO) {
 		return commandMapper.commandDTOToCommand(commandDTO);
 	}
 
@@ -171,14 +171,12 @@ public class PayPalServiceImpl implements PayPalService {
 	private List<Item> getItems(Command command) {
 		List<Item> items = new ArrayList<>();
 		for (Menu menu : command.getMenus()) {
-			for (Product product : menu.getProducts()) {
-				Item secondItem = new Item();
-				secondItem.setName(product.getName());
-				secondItem.setPrice(String.valueOf(product.getPrice()));
-				secondItem.setCurrency(Constants.EUR);
-				secondItem.setQuantity(String.valueOf(1));
-				items.add(secondItem);
-			}
+			Item item = new Item();
+			item.setName(menu.getName());
+			item.setPrice(String.valueOf(menu.getPrice()));
+			item.setCurrency(Constants.EUR);
+			item.setQuantity(String.valueOf(1));
+			items.add(item);
 		}
 		getOptionalProducts(command, items);
 
@@ -236,9 +234,9 @@ public class PayPalServiceImpl implements PayPalService {
 
 		Payment payment = getPayment(paypal);
 		try {
-			APIContext context = getApiContext();
 			PaymentExecution paymentExecution = getPaymentExecution(paypal);
-			Payment createdPayment = payment.execute(context, paymentExecution);
+			APIContext apiContext = getApiContext();
+			Payment createdPayment = payment.execute(apiContext, paymentExecution);
 			if (null != createdPayment) {
 				setStatusCommand(paypal, createdPayment);
 				response.put(Constants.STATUS, Constants.SUCCESS);
@@ -290,23 +288,22 @@ public class PayPalServiceImpl implements PayPalService {
 		Map<String, Object> response = new HashMap<>();
 		Optional<CommandDTO> commandDTO = commandService.findOne(commandId);
 		if (commandDTO.isPresent()) {
-			Command command = setToCommand(commandDTO.get());
-			APIContext context = getApiContext();
-			
+			CommandDTO result = commandDTO.get();
 			Refund refund = new Refund();
-			
+
 			Sale sale = new Sale();
-			sale.setId(command.getSaleId());
+			sale.setId(result.getSaleId());
 
 			Amount amount = new Amount();
-			amount.setTotal(String.valueOf(command.getPrice()));
+			amount.setTotal(String.valueOf(result.getPrice()));
 			amount.setCurrency(Constants.EUR);
 			refund.setAmount(amount);
 
 			RefundRequest refundRequest = new RefundRequest();
 
 			try {
-				sale.refund(context, refundRequest);
+				APIContext apiContext = getApiContext();
+				sale.refund(apiContext, refundRequest);
 				commandService.delete(commandId);
 				response.put(Constants.STATUS, Constants.SUCCESS);
 			} catch (PayPalRESTException e) {

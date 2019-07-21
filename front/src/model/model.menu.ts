@@ -5,6 +5,7 @@ export class Menu {
         public name?: string,
         public price?: number,
         public available?: boolean,
+        public managerId?: number,
         public productsDTO?: Array<Product>
     ) {}
 }

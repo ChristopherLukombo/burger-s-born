@@ -10,7 +10,6 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,12 +20,16 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import fr.esgi.security.jwt.JWTConfigurer;
 import fr.esgi.security.jwt.TokenProvider;
 import fr.esgi.service.CustomerService;
+import fr.esgi.service.ManagerService;
 import fr.esgi.web.Login;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 
 /**
  * UserJWTController to authenticate users.
  * @author christopher
  */
+@Api(value = "UserJWT")
 @RestController
 @RequestMapping("/api")
 public class UserJWTResource {
@@ -37,12 +40,15 @@ public class UserJWTResource {
     
     private final CustomerService customerService;
     
+    private final ManagerService managerService;
+    
     @Autowired
 	public UserJWTResource(TokenProvider tokenProvider, AuthenticationManager authenticationManager,
-			CustomerService customerService) {
+			CustomerService customerService, ManagerService managerService) {
 		this.tokenProvider = tokenProvider;
 		this.authenticationManager = authenticationManager;
 		this.customerService = customerService;
+		this.managerService = managerService;
 	}
 
 	/**
@@ -50,6 +56,7 @@ public class UserJWTResource {
      * @param login
      * @return JWTToken
      */
+    @ApiOperation(value = "Authenticate the user and return the token which identify him.")
     @PostMapping("/authenticate")
     public ResponseEntity<JWTToken> authorize(@Valid @RequestBody Login login) {
 
@@ -62,8 +69,9 @@ public class UserJWTResource {
         String jwt = tokenProvider.createToken(authentication, rememberMe);
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.add(JWTConfigurer.AUTHORIZATION_HEADER, "Bearer " + jwt);
-       
-        return new ResponseEntity<>(new JWTToken(jwt, customerService.findByUserName(login.getUsername())), httpHeaders, HttpStatus.OK);
+        final Long idCustomer = customerService.findByUserName(login.getUsername());
+        final Long idManager = managerService.findByUserName(login.getUsername());
+		return new ResponseEntity<>(new JWTToken(jwt, idCustomer, idManager), httpHeaders, HttpStatus.OK);
     }
 
     /**
@@ -73,10 +81,12 @@ public class UserJWTResource {
 
         private String idToken;
         private Long idCustomer;
+        private Long idManager;
 
-        JWTToken(String idToken, Long idCustomer) {
+		public JWTToken(String idToken, Long idCustomer, Long idManager) {
 			this.idToken = idToken;
 			this.idCustomer = idCustomer;
+			this.idManager = idManager;
 		}
 
 		@JsonProperty("id_token")
@@ -96,10 +106,14 @@ public class UserJWTResource {
 	    void setIdCustomer(Long idCustomer) {
 			this.idCustomer = idCustomer;
 		}
-    }
-    
-    @GetMapping("/user/current")
-    public ResponseEntity<Object> getUser() {
-    	return ResponseEntity.ok(SecurityContextHolder.getContext().getAuthentication().getPrincipal());
+
+	    @JsonProperty("id_manager")
+		Long getIdManager() {
+			return idManager;
+		}
+
+		void setIdManager(Long idManager) {
+			this.idManager = idManager;
+		}
     }
 }
