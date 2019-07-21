@@ -54,7 +54,7 @@ const routes: Routes = [
     component: StepOrderComponent
   },
   {
-    path: 'newMenu',
+    path: 'createMenu',
     canActivate: [AuthGuard],
     data: { roles: [RoleName.ROLE_ADMIN] },
     component: CreateMenuComponent

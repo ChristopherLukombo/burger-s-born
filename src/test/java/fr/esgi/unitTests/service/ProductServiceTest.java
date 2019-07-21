@@ -163,6 +163,48 @@ public class ProductServiceTest {
 		assertThatThrownBy(() -> productServiceImpl.findAll(0, 10))
 		.isInstanceOf(NullPointerException.class);
 	}
+	
+	@Test
+	public void shouldFindAllInListWhenIsOK() {
+		// Given 
+		List<Product> products = new ArrayList<>();
+		products.add(getProduct());
+
+		// When
+		when(productRepository.findAll()).thenReturn(products);
+		when(productMapper.productToProductDTO(((Product) any()))).thenReturn(getProductDTO());
+
+		// Then
+		assertThat(productServiceImpl.findAll()).isNotEmpty();
+	}
+
+	@Test
+	public void shouldFindAllInListWhenIsEmpty() {
+		// Given 
+		List<Product> products = new ArrayList<>();
+
+		// When
+		when(productRepository.findAll()).thenReturn(products);
+		when(productMapper.productToProductDTO(((Product) any()))).thenReturn(getProductDTO());
+
+		// Then
+		assertThat(productServiceImpl.findAll()).isEmpty();
+	}
+
+	@Test
+	public void shouldFindAllInListWhenIsKO() {
+		// Given 
+		List<Product> products = null;
+		ProductDTO productDTO = null;
+
+		// When
+		when(productRepository.findAll()).thenReturn(products);
+		when(productMapper.productToProductDTO(((Product) any()))).thenReturn(productDTO);
+
+		// Then
+		assertThatThrownBy(() -> productServiceImpl.findAll())
+		.isInstanceOf(NullPointerException.class);
+	}
 
 	@Test
 	public void shouldSaveAllWhenIsOK() {
@@ -246,6 +288,51 @@ public class ProductServiceTest {
 		
 		// Then
 		assertThatThrownBy(() -> productServiceImpl.findProductsByCategoryName(PageRequest.of(0, 10), PLAT))
+		.isInstanceOf(NullPointerException.class);
+	}
+	
+	@Test
+	public void shouldFindProductsByMenuIdWhenIsOK() {
+		// Given
+		List<Product> products = new ArrayList<>();
+		products.add(getProduct());
+		
+		ProductDTO productDTO = getProductDTO();
+		
+		// When
+		when(productRepository.findAllByMenuId(anyLong())).thenReturn(products);
+		when(productMapper.productToProductDTO(((Product) any()))).thenReturn(productDTO);
+		
+		// Then
+		assertThat(productServiceImpl.findProductsByMenuId(ID)).isNotEmpty();
+	}
+	
+	@Test
+	public void shouldFindProductsByMenuIdWhenIsEmpty() {
+		// Given
+		List<Product> products = new ArrayList<>();
+		ProductDTO productDTO = getProductDTO();
+		
+		// When
+		when(productRepository.findAllByMenuId(anyLong())).thenReturn(products);
+		when(productMapper.productToProductDTO(((Product) any()))).thenReturn(productDTO);
+		
+		// Then
+		assertThat(productServiceImpl.findProductsByMenuId(ID)).isEmpty();
+	}
+	
+	@Test
+	public void shouldFindProductsByMenuIdWhenIsKO() {
+		// Given
+		List<Product> products = null;
+		ProductDTO productDTO = null;
+		
+		// When
+		when(productRepository.findAllByMenuId(anyLong())).thenReturn(products);
+		when(productMapper.productToProductDTO(((Product) any()))).thenReturn(productDTO);
+		
+		// Then
+		assertThatThrownBy(() -> productServiceImpl.findProductsByMenuId(ID))
 		.isInstanceOf(NullPointerException.class);
 	}
 	

@@ -9,6 +9,77 @@
   {{errorMessage}}
 </div>
 
+<!-- Update product -->
+<div *ngIf="toUpdate && authProviderService.isAuthenticated() && isAdmin" style="margin-bottom: 20px;">
+
+    <form class="example-form" [formGroup]="updateForm" (ngSubmit)="update()">
+        <mat-form-field class="example-full-width">
+            <input matInput placeholder="Nom" name="name" formControlName="name">
+        </mat-form-field>
+
+        <div class="alert alert-danger" role="alert" *ngIf="(submitted && f.name.errors)">
+            <div *ngIf="f.name.errors.required">
+                Le champs est obligatoire
+            </div>
+            <div *ngIf="f.name.errors.maxlength">
+                Le nom doit contenir au maximun 50 caractères
+            </div>
+            <div *ngIf="updateForm.get('name').errors?.serverError">
+                Le champs {{updateForm.get('name').errors?.serverError}}
+            </div>
+        </div>
+
+
+        <mat-form-field class="example-full-width">
+            <input matInput type="number" placeholder="Prix" name="price" formControlName="price">
+        </mat-form-field>
+
+        <div class="alert alert-danger" role="alert" *ngIf="(submitted && f.price.errors)">
+            <div *ngIf="f.price.errors.required">
+                Le champs est obligatoire
+            </div>
+            <div *ngIf="f.price.errors.max">
+                Le prix est au maximun de 5 caractères
+            </div>
+            <div *ngIf="updateForm.get('price').errors?.serverError">
+                Le champs {{updateForm.get('price').errors?.serverError}}
+            </div>
+        </div>
+
+        <mat-list-item class="primary-imenu-item" role="listitem">
+          <mat-form-field class="select-form">
+              <mat-select
+              placeholder="Produits"
+              name="product"
+              class="filter-select"
+              [compareWith]="equals"
+              multiple
+              [(ngModel)]="selectedProducts"
+              [ngModelOptions]="{standalone: true}"
+              #productSelect="ngModel"
+              >
+                <mat-option disabled="disabled" class="filter-option">
+                  <input type="checkbox" (click)="selectAll(checkAll.checked, productSelect, products)" #checkAll>
+                </mat-option>
+                <mat-option *ngFor="let product of products" [value]="product">
+                  {{product.name}}
+                </mat-option>
+              </mat-select>
+          </mat-form-field>
+        </mat-list-item>
+
+        <div>
+          <mat-checkbox name="available" formControlName="available">En stock</mat-checkbox>
+        </div>
+
+        <div style="text-align: center;">
+            <button class="btn btn-primary" (click)="toUpdate = false;">Annuler</button>
+            <button class="btn btn-success" (click)="update()" type="submit" style="margin-left: 10px;">Valider</button>
+        </div>
+    </form>
+
+    <br>
+</div>
 
 <table class="table table-striped">
   <thead>
@@ -24,8 +95,8 @@
     <td>{{menu.price | number : '1.2-2'}} €</td>
 
     <td>
-      <button class="btn btn-primary" (click)="null" style="margin-right: 10px;" *ngIf="authProviderService.isAuthenticated() && isAdmin"> Modifier </button>
-      <button class="btn btn-danger" (click)="null" *ngIf="authProviderService.isAuthenticated() && isAdmin"> Supprimer </button>
+      <button class="btn btn-primary" (click)="initForm(menu); toUpdate=true;getProducts(menu.id);" style="margin-right: 10px;" *ngIf="authProviderService.isAuthenticated() && isAdmin"> Modifier </button>
+      <button class="btn btn-danger" (click)="delete(menu.id)" *ngIf="authProviderService.isAuthenticated() && isAdmin"> Supprimer </button>
     </td>
   </tr>
   </tbody>
@@ -54,5 +125,5 @@
 </nav>
 
 <div style="text-align: center;">
-  <button class="btn btn-success" (click)="onNavigateToNewMenu()" *ngIf="authProviderService.isAuthenticated() && isAdmin"> Ajouter un menu </button>
+  <button class="btn btn-success" routerLink="/createMenu" routerLinkActive="active" *ngIf="authProviderService.isAuthenticated() && isAdmin"> Ajouter un menu </button>
 </div>

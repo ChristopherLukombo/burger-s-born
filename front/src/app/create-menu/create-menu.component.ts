@@ -1,13 +1,20 @@
-import {Component, Injector, OnInit} from '@angular/core';
-import {Router} from '@angular/router';
+import { HttpErrorResponse } from '@angular/common/http';
+import { Component, Injector, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, Validators, NgModel } from '@angular/forms';
+import { MatDialog } from '@angular/material';
+import { NGXLogger } from 'ngx-logger';
+import { environment } from '../../environments/environment';
+import { Category } from '../../model/model.category';
+import { Product } from '../../model/model.product';
+import { AppConstants } from '../app.constants';
+import { DialogSuccessComponent } from '../dialog-success/dialog-success.component';
+import { AuthProviderService } from '../services/auth-provider.service';
+import { ServicesDataService } from '../services/services-data.service';
 import {Menu} from '../../model/model.menu';
-import {FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {ServicesDataService} from '../services/services-data.service';
-import {environment} from '../../environments/environment';
-import {AppConstants} from '../app.constants';
-import {NGXLogger} from 'ngx-logger';
-import {TranslateService} from '@ngx-translate/core';
-import {HttpErrorResponse} from '@angular/common/http';
+
+
+const WIDTH = '50%';
+const HEIGHT = '15%';
 
 @Component({
   selector: 'app-create-menu',
@@ -15,92 +22,153 @@ import {HttpErrorResponse} from '@angular/common/http';
   styleUrls: ['./create-menu.component.css']
 })
 export class CreateMenuComponent implements OnInit {
-// FIXME : rendre le formulaire fonctionnel, car les tests unitaires sont KO.
-  // menu: Menu;
-  // createMenuForm: FormGroup;
-  // isSubmit = false;
-  // errorMessage: string;
+   menu: Menu;
+   registerForm: FormGroup;
+   submitted = false;
+   errorMessage: string;
+
+   isAdmin: boolean;
+
+   products: Array<Product> = [];
+
+   selectedProducts: any[];
+   toCheck = false;
 
 
   constructor(
       private servicesDataService: ServicesDataService,
-      private router: Router,
-      private formBuilder: FormBuilder,
       private logger: NGXLogger,
       protected injector: Injector,
+      public authProviderService: AuthProviderService,
+      private formBuilder: FormBuilder,
+      public dialog: MatDialog,
   ) { }
 
   ngOnInit() {
+    this.createForm();
+    this.isAdmin = this.authProviderService.isAdmin();
+   this.getProducts();
   }
 
-  // private createForm() {
+   private createForm() {
 
-  //   const target = {
-  //     name: ['' , [Validators.required, Validators.maxLength(40)]],
-  //     price: ['' , [Validators.required]],
-  //   };
+     const target = {
+       name: ['' , [Validators.required]],
+       price: ['' , [Validators.required]],
+     };
 
-  //   this.createMenuForm = this.formBuilder.group(target);
-  // }
+     this.registerForm = this.formBuilder.group(target);
+   }
 
+   get f() { return this.registerForm.controls; }
 
-  // public registerNewMenu(): void {
+  public createMenu(): void {
 
-  //   this.isSubmit = true;
+    this.errorMessage = null;
 
-  //   if (this.createMenuForm.invalid) {
-  //     return;
-  //   }
+    if (!this.isAdmin || !this.authProviderService.isAuthenticated()) {
+        this.errorMessage = 'Vous devez être connecté avec un compte administrateur.';
+        return;
+    }
 
-  //   this.menuFormToMenuBean();
+    this.errorMessage = null;
+    this.submitted = true;
 
-  //   if (!environment.production) {
-  //     this.logger.debug(AppConstants.CALL_SERVICE, this.menu);
-  //   }
+    if (this.registerForm.invalid) {
+        return;
+    }
 
-  //   this.servicesDataService.registerMenu(this.menu, '1', this.injector.get(TranslateService).currentLang)
-  //       .subscribe(data => {
-  //         this.logger.info(AppConstants.MENU_SAVE_SUCCESSFULLY);
-  //       }, error => {
-  //         this.logger.error(AppConstants.MENU_HASNT_BEEN_SAVED, error.message, error.status);
-  //         this.handleErrorRegister(error);
+    const menu = new Menu();
+    menu.name = this.registerForm.controls.name.value;
+    menu.price = this.registerForm.controls.price.value;
+    menu.managerId = this.authProviderService.getIdManager();
+    menu.productsDTO = this.selectedProducts;
+    menu.available = true;
 
-  //       });
-
-  // }
-
-  // // convenience getter for easy access to form fields
-  // get getField() { return this.createMenuForm.controls; }
-
-
-  // private menuFormToMenuBean() {
-  //   this.menu = new Menu();
-  //   this.menu.price = this.createMenuForm.get('price').value;
-  //   this.menu.name = this.createMenuForm.get('name').value;
-  // }
+    if (!environment.production) {
+        this.logger.debug(AppConstants.CALL_SERVICE, menu);
+    }
 
 
-  // public onNavigateToMenu() {
-  //  this.router.navigate(['menu']);
+    this.servicesDataService.registerMenu(menu)
+         .subscribe(data => {
+            this.handleSuccessRegister();
+            }, error => {
+           this.handleErrorRegister(error);
+         });
 
-  // }
+         this.selectedProducts = null;
+   }
 
-  // private handleErrorRegister(error: any) {
-  //   if (error instanceof HttpErrorResponse) {
-  //     if (422 === error.status) {
-  //       Object.keys(error.error).forEach(prop => {
-  //         const formControl = this.createMenuForm.get(prop);
-  //         if (formControl) {
-  //             formControl.setErrors({
-  //             serverError: error.error[prop]
-  //           });
-  //         }
-  //       });
-  //     } else if (400 === error.status) {
-  //       this.errorMessage = error.error;
-  //     } else if (500 === error.status) {
-  //       this.errorMessage = 'Une erreur serveur s\'est produite';
-  //     }
-  //   }
-  // }
+   private handleSuccessRegister() {
+       this.resetForm();
+       this.errorMessage = undefined;
+       this.openDialogSuccess();
+   }
+
+   private handleErrorRegister(error: any) {
+       if (error instanceof HttpErrorResponse) {
+           if (422 === error.status) {
+               Object.keys(error.error).forEach(prop => {
+                   const formControl = this.registerForm.get(prop);
+                   if (formControl) {
+                       formControl.setErrors({
+                           serverError: error.error[prop]
+                       });
+                   }
+               });
+           } else if (400 === error.status) {
+               this.errorMessage = error.error;
+           } else if (500 === error.status) {
+               this.errorMessage = 'Une erreur serveur s\'est produite';
+           } else if (error.status === 403) {
+               this.errorMessage = 'Vous devez être connecté pour ajouter un produit.';
+           }
+       }
+   }
+
+   private resetForm() {
+       this.registerForm.reset();
+       for (const key in this.registerForm.controls) {
+           if (!this.registerForm.controls[key]) {
+               continue;
+           }
+           this.registerForm.controls[key].setErrors(null);
+       }
+   }
+
+   public openDialogSuccess(): void {
+       this.dialog.open(
+           DialogSuccessComponent,
+           {
+               width: WIDTH,
+               height: HEIGHT
+           }
+       );
+   }
+
+   equals(objOne, objTwo) {
+    if (typeof objOne !== 'undefined' && typeof objTwo !== 'undefined') {
+      return objOne.id === objTwo.id;
+    }
+  }
+
+  selectAll(checkAll, select: NgModel, values) {
+    if (checkAll) {
+      this.toCheck = checkAll;
+      select.update.emit(values);
+    } else {
+      select.update.emit([]);
+    }
+  }
+
+  getProducts() {
+    this.servicesDataService.getAllProduct()
+    .subscribe(data => {
+      console.log(data.body);
+      this.products = data.body as Array<Product>;
+    }, err => {
+      this.products = [];
+    });
+  }
 }

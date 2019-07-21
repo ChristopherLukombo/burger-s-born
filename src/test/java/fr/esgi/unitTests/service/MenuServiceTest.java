@@ -7,6 +7,9 @@ import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
@@ -311,6 +314,74 @@ public class MenuServiceTest {
 
 		// Then
 		assertThat(menuServiceImpl.findProductsByMenuId(ID, STEAK)).isEmpty();
+	}
+	
+	@Test
+	public void shouldSaveWhenIsOK() {
+		// Given
+		MenuDTO menuDTO = getMenuDTO();
+		
+		// When
+		when(menuMapper.menuDTOToMenu((MenuDTO) any())).thenReturn(getMenu());
+		when(menuRepository.save((Menu) any())).thenReturn(getMenu());
+		when(menuMapper.menuToMenuDTO((Menu) any())).thenReturn(menuDTO);
+		
+		// Then
+		assertThat(menuServiceImpl.save(menuDTO)).isNotNull();
+	}
+
+	@Test
+	public void shouldSaveWhenIsKO() {
+		// Given
+		MenuDTO menuDTO = null;
+		
+		// When
+		when(menuMapper.menuDTOToMenu((MenuDTO) any())).thenReturn(null);
+		when(menuRepository.save((Menu) any())).thenReturn(null);
+		when(menuMapper.menuToMenuDTO((Menu) any())).thenReturn(menuDTO);
+		
+		// Then
+		assertThat(menuServiceImpl.save(menuDTO)).isNull();
+	}
+	
+	@Test
+	public void shouldDeleteWhenIsOK() {
+		// Given
+		doNothing().when(menuRepository).deleteById(anyLong());
+		
+		// When
+		menuServiceImpl.delete(anyLong());
+		
+		// Then
+		verify(menuRepository, times(1)).deleteById(anyLong());
+	}
+	
+	@Test
+	public void shouldUpdateWhenIsOK() {
+		// Given
+		MenuDTO menuDTO = getMenuDTO();
+		
+		// When
+		when(menuMapper.menuDTOToMenu((MenuDTO) any())).thenReturn(getMenu());
+		when(menuRepository.saveAndFlush((Menu) any())).thenReturn(getMenu());
+		when(menuMapper.menuToMenuDTO((Menu) any())).thenReturn(menuDTO);
+		
+		// Then
+		assertThat(menuServiceImpl.update(menuDTO)).isNotNull();
+	}
+
+	@Test
+	public void shouldUpdateWhenIsKO() {
+		// Given
+		MenuDTO menuDTO = null;
+		
+		// When
+		when(menuMapper.menuDTOToMenu((MenuDTO) any())).thenReturn(null);
+		when(menuRepository.saveAndFlush((Menu) any())).thenReturn(null);
+		when(menuMapper.menuToMenuDTO((Menu) any())).thenReturn(menuDTO);
+		
+		// Then
+		assertThat(menuServiceImpl.update(menuDTO)).isNull();
 	}
 	
 }

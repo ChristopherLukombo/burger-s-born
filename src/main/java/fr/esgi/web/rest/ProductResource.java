@@ -2,6 +2,7 @@ package fr.esgi.web.rest;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.List;
 import java.util.Locale;
 
 import javax.validation.Valid;
@@ -76,6 +77,27 @@ public class ProductResource {
 	}
 
 	/**
+	 * GET  /products : get all the products.
+	 *
+	 * @param page
+	 * @param size
+	 * @return all products
+	 * @throws BurgerSTerminalException
+	 */
+	@ApiOperation(value = "Get all the products.")
+	@GetMapping("/products/all")
+	public ResponseEntity<List<ProductDTO>> getAllProducts(Locale locale) throws BurgerSTerminalException {
+		LOGGER.debug("REST request to find all products");
+		final List<ProductDTO> products = productService.findAll();
+		if (null == products || products.isEmpty()) {
+			throw new BurgerSTerminalException(HttpStatus.NOT_FOUND.value(), 
+					messageSource.getMessage(ErrorMessage.ERROR_PRODUCTS_NOT_FOUND, null, locale));
+		}
+
+		return ResponseEntity.ok(products);
+	}
+
+	/**
 	 * GET  /products/category : get all the products by category name.
 	 * 
 	 * @param page
@@ -141,8 +163,8 @@ public class ProductResource {
 	 * PUT  /product : update a product.
 	 * 
 	 * @param productDTO
-	 * @return the ResponseEntity with status 200 (OK) and with body the assignmentModuleDTO
-	 * @throws BurgerSTerminalException if the id of command is empty.
+	 * @return the ResponseEntity with status 200 (OK) and with body the productDTO
+	 * @throws BurgerSTerminalException if the id is empty.
 	 */
 	@Authorized(values = { "ROLE_ADMIN" })
 	@ApiOperation(value = "Update a product.")
@@ -157,4 +179,22 @@ public class ProductResource {
 		return ResponseEntity.ok().body(result);
 	}
 
+	/**
+	 * GET  /product : get Products by menuId.
+	 * 
+	 * @param productDTO
+	 * @return the ResponseEntity with status 200 (OK) and with body the productDTO
+	 * @throws BurgerSTerminalException if the id is empty.
+	 */
+	@ApiOperation(value = "Get Products by menuId.")
+	@GetMapping("/product/{menuId}")
+	public ResponseEntity<List<ProductDTO>> getProductsByMenuId(@PathVariable Long menuId, Locale locale) throws BurgerSTerminalException {
+		LOGGER.debug("REST request to get products by menuId: {}", menuId);
+		List<ProductDTO> productDTOs = productService.findProductsByMenuId(menuId);
+		if (null == productDTOs || productDTOs.isEmpty()) {
+			throw new BurgerSTerminalException(HttpStatus.NOT_FOUND.value(), 
+					messageSource.getMessage(ErrorMessage.ERROR_PRODUCTS_NOT_FOUND, null, locale));
+		}
+		return ResponseEntity.ok().body(productDTOs);
+	}
 }

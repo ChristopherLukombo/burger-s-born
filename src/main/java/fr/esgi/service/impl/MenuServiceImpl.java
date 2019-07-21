@@ -37,19 +37,19 @@ public class MenuServiceImpl implements MenuService {
 	private final MenuMapper menuMapper;
 
 	private final ProductMapper productMapper;
-   
-    @Autowired
+
+	@Autowired
 	public MenuServiceImpl(MenuRepository menuRepository, MenuMapper menuMapper, ProductMapper productMapper) {
 		this.menuRepository = menuRepository;
 		this.menuMapper = menuMapper;
 		this.productMapper = productMapper;
 	}
 
-    /**
-     * Get all the menus.
-     * 
-     * @return the list of entities 
-     */
+	/**
+	 * Get all the menus.
+	 * 
+	 * @return the list of entities 
+	 */
 	@Override
 	@Transactional(readOnly = true)
 	public Page<MenuDTO> findAll(int page,int size) {
@@ -57,12 +57,12 @@ public class MenuServiceImpl implements MenuService {
 		return menuRepository.findAll(PageRequest.of(page, size))
 				.map(menuMapper::menuToMenuDTO);
 	}
-	
-    /**
-     * Get all the products by menu id.
-     * 	
-     * @return the list of entities
-     */
+
+	/**
+	 * Get all the products by menu id.
+	 * 	
+	 * @return the list of entities
+	 */
 	@Override
 	@Transactional(readOnly = true)
 	public List<ProductDTO> findProductsByMenuId(Long id, String categoryName) {
@@ -109,5 +109,27 @@ public class MenuServiceImpl implements MenuService {
 		return menuRepository.saveAll(menus).stream()
 				.map(menuMapper::menuToMenuDTO)
 				.collect(Collectors.toList());
+	}
+
+	@Override
+	public void delete(Long id) {
+		LOGGER.debug("Request to delete a menu");
+		menuRepository.deleteById(id);
+
+	}
+
+	@Override
+	public MenuDTO update(MenuDTO menuDTO) {
+		LOGGER.debug("Request to update a menu: {}", menuDTO);
+		Menu menu = menuMapper.menuDTOToMenu(menuDTO);
+		menu = menuRepository.saveAndFlush(menu);
+		return menuMapper.menuToMenuDTO(menu); 
+	}
+
+	@Override
+	public MenuDTO save(MenuDTO menuDTO) {
+		Menu menu = menuMapper.menuDTOToMenu(menuDTO);	
+		menu = menuRepository.save(menu);
+		return menuMapper.menuToMenuDTO(menu);
 	}
 }
