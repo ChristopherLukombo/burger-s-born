@@ -59,10 +59,10 @@
               #productSelect="ngModel"
               >
                 <mat-option disabled="disabled" class="filter-option">
-                  <input type="checkbox" (click)="selectAll(checkAll.checked, productSelect, products)" #checkAll>
+                  <input type="checkbox" (click)="selectAll(checkAll.checked, productSelect, products)" [checked]="checked"  #checkAll >
                 </mat-option>
                 <mat-option *ngFor="let product of products" [value]="product">
-                  {{product.name}} - {{product.price | number : '1.2-2'}} €
+                  {{product.name}} - {{product.price | number : '1.2-2'}} € - {{product.categoryName}}
                 </mat-option>
               </mat-select>
           </mat-form-field>
@@ -95,7 +95,7 @@
     <td>{{menu.price | number : '1.2-2'}} €</td>
 
     <td>
-      <button class="btn btn-primary" (click)="initForm(menu); toUpdate=true;getProducts(menu.id);" style="margin-right: 10px;" *ngIf="authProviderService.isAuthenticated() && isAdmin"> Modifier </button>
+      <button class="btn btn-primary" (click)="initForm(menu); toUpdate=true;getSelectedProducts(menu.id);" style="margin-right: 10px;" *ngIf="authProviderService.isAuthenticated() && isAdmin"> Modifier </button>
       <button class="btn btn-danger" (click)="delete(menu.id)" *ngIf="authProviderService.isAuthenticated() && isAdmin"> Supprimer </button>
     </td>
   </tr>

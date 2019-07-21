@@ -1,16 +1,15 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, Injector, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators, NgModel } from '@angular/forms';
+import { FormBuilder, FormGroup, NgModel, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material';
 import { NGXLogger } from 'ngx-logger';
 import { environment } from '../../environments/environment';
 import { Category } from '../../model/model.category';
-import { Product } from '../../model/model.product';
+import { Menu } from '../../model/model.menu';
 import { AppConstants } from '../app.constants';
 import { DialogSuccessComponent } from '../dialog-success/dialog-success.component';
 import { AuthProviderService } from '../services/auth-provider.service';
 import { ServicesDataService } from '../services/services-data.service';
-import { Menu } from '../../model/model.menu';
 
 
 const WIDTH = '50%';
@@ -29,7 +28,8 @@ export class CreateMenuComponent implements OnInit {
 
   isAdmin: boolean;
 
-  products: Array<Product> = [];
+  products;
+  categories: Array<Category> = [];
 
   selectedProducts: any[];
   toCheck = false;
@@ -47,6 +47,7 @@ export class CreateMenuComponent implements OnInit {
     this.createForm();
     this.isAdmin = this.authProviderService.isAdmin();
     this.getProducts();
+    this.loadCategories();
   }
 
   private createForm() {
@@ -166,9 +167,27 @@ export class CreateMenuComponent implements OnInit {
   getProducts() {
     this.servicesDataService.getAllProduct()
       .subscribe(data => {
-        this.products = data.body as Array<Product>;
+        this.products = data.body;
+        for (let i = 0; i < this.products.length; i++) {
+          this.categories.forEach(categ => {
+            if (this.products[i].categoryId === categ.id) {
+              this.products[i].categoryName = categ.name;
+            }
+          });
+        }
       }, err => {
         this.products = [];
+      });
+  }
+
+  public loadCategories(): void {
+    this.servicesDataService.findAllCategory()
+      .subscribe(data => {
+        this.categories = data['body'] as Array<Category>;
+      }, error => {
+        if (error.status === 404) {
+          this.errorMessage = 'Aucune catégorie de produit enregistré.';
+        }
       });
   }
 }

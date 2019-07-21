@@ -102,8 +102,8 @@ public class PayPalServiceImpl implements PayPalService {
 		ItemList itemList = new ItemList();
 		Command command = toCommand(commandDTO);
 		List<Item> items = getItems(command);
-		itemList.setItems(items);
 		Double price = getPrice(command.getProducts(), command.getMenus());
+		itemList.setItems(items);
 		Details details = getDetails((price != null) ? price : 0);
 		Amount amount = getAmount(details, price);
 		return getTransaction(itemList, amount);
@@ -171,14 +171,12 @@ public class PayPalServiceImpl implements PayPalService {
 	private List<Item> getItems(Command command) {
 		List<Item> items = new ArrayList<>();
 		for (Menu menu : command.getMenus()) {
-			for (Product product : menu.getProducts()) {
-				Item item = new Item();
-				item.setName(product.getName());
-				item.setPrice(String.valueOf(product.getPrice()));
-				item.setCurrency(Constants.EUR);
-				item.setQuantity(String.valueOf(1));
-				items.add(item);
-			}
+			Item item = new Item();
+			item.setName(menu.getName());
+			item.setPrice(String.valueOf(menu.getPrice()));
+			item.setCurrency(Constants.EUR);
+			item.setQuantity(String.valueOf(1));
+			items.add(item);
 		}
 		getOptionalProducts(command, items);
 
