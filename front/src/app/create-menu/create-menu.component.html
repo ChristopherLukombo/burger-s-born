@@ -31,7 +31,7 @@
     <div *ngIf="registerForm.get('price').errors?.serverError">
       Le champs {{registerForm.get('price').errors?.serverError}}
     </div>
-  </div> 
+  </div>
 
   <mat-list-item class="primary-imenu-item" role="listitem">
     <mat-form-field class="select-form">
@@ -49,7 +49,7 @@
             <input type="checkbox" (click)="selectAll(checkAll.checked, productSelect, products)" #checkAll>
           </mat-option>
           <mat-option *ngFor="let product of products" [value]="product">
-            {{product.name}}
+            {{product.name}} - {{product.price | number : '1.2-2'}} €
           </mat-option>
         </mat-select>
     </mat-form-field>

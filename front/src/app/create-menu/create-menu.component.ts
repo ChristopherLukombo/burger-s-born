@@ -10,7 +10,7 @@ import { AppConstants } from '../app.constants';
 import { DialogSuccessComponent } from '../dialog-success/dialog-success.component';
 import { AuthProviderService } from '../services/auth-provider.service';
 import { ServicesDataService } from '../services/services-data.service';
-import {Menu} from '../../model/model.menu';
+import { Menu } from '../../model/model.menu';
 
 
 const WIDTH = '50%';
@@ -22,60 +22,59 @@ const HEIGHT = '15%';
   styleUrls: ['./create-menu.component.css']
 })
 export class CreateMenuComponent implements OnInit {
-   menu: Menu;
-   registerForm: FormGroup;
-   submitted = false;
-   errorMessage: string;
+  menu: Menu;
+  registerForm: FormGroup;
+  submitted = false;
+  errorMessage: string;
 
-   isAdmin: boolean;
+  isAdmin: boolean;
 
-   products: Array<Product> = [];
+  products: Array<Product> = [];
 
-   selectedProducts: any[];
-   toCheck = false;
-
+  selectedProducts: any[];
+  toCheck = false;
 
   constructor(
-      private servicesDataService: ServicesDataService,
-      private logger: NGXLogger,
-      protected injector: Injector,
-      public authProviderService: AuthProviderService,
-      private formBuilder: FormBuilder,
-      public dialog: MatDialog,
+    private servicesDataService: ServicesDataService,
+    private logger: NGXLogger,
+    protected injector: Injector,
+    public authProviderService: AuthProviderService,
+    private formBuilder: FormBuilder,
+    public dialog: MatDialog,
   ) { }
 
   ngOnInit() {
     this.createForm();
     this.isAdmin = this.authProviderService.isAdmin();
-   this.getProducts();
+    this.getProducts();
   }
 
-   private createForm() {
+  private createForm() {
 
-     const target = {
-       name: ['' , [Validators.required]],
-       price: ['' , [Validators.required]],
-     };
+    const target = {
+      name: ['', [Validators.required]],
+      price: ['', [Validators.required]],
+    };
 
-     this.registerForm = this.formBuilder.group(target);
-   }
+    this.registerForm = this.formBuilder.group(target);
+  }
 
-   get f() { return this.registerForm.controls; }
+  get f() { return this.registerForm.controls; }
 
   public createMenu(): void {
 
     this.errorMessage = null;
 
     if (!this.isAdmin || !this.authProviderService.isAuthenticated()) {
-        this.errorMessage = 'Vous devez être connecté avec un compte administrateur.';
-        return;
+      this.errorMessage = 'Vous devez être connecté avec un compte administrateur.';
+      return;
     }
 
     this.errorMessage = null;
     this.submitted = true;
 
     if (this.registerForm.invalid) {
-        return;
+      return;
     }
 
     const menu = new Menu();
@@ -86,68 +85,70 @@ export class CreateMenuComponent implements OnInit {
     menu.available = true;
 
     if (!environment.production) {
-        this.logger.debug(AppConstants.CALL_SERVICE, menu);
+      this.logger.debug(AppConstants.CALL_SERVICE, menu);
     }
 
 
     this.servicesDataService.registerMenu(menu)
-         .subscribe(data => {
-            this.handleSuccessRegister();
-            }, error => {
-           this.handleErrorRegister(error);
-         });
+      .subscribe(data => {
+        this.handleSuccessRegister();
+      }, error => {
+        this.handleErrorRegister(error);
+      });
 
-         this.selectedProducts = null;
-   }
+    this.selectedProducts = null;
+  }
 
-   private handleSuccessRegister() {
-       this.resetForm();
-       this.errorMessage = undefined;
-       this.openDialogSuccess();
-   }
+  private handleSuccessRegister() {
+    this.resetForm();
+    this.errorMessage = undefined;
+    this.openDialogSuccess();
+  }
 
-   private handleErrorRegister(error: any) {
-       if (error instanceof HttpErrorResponse) {
-           if (422 === error.status) {
-               Object.keys(error.error).forEach(prop => {
-                   const formControl = this.registerForm.get(prop);
-                   if (formControl) {
-                       formControl.setErrors({
-                           serverError: error.error[prop]
-                       });
-                   }
-               });
-           } else if (400 === error.status) {
-               this.errorMessage = error.error;
-           } else if (500 === error.status) {
-               this.errorMessage = 'Une erreur serveur s\'est produite';
-           } else if (error.status === 403) {
-               this.errorMessage = 'Vous devez être connecté pour ajouter un produit.';
-           }
-       }
-   }
+  private handleErrorRegister(error: any) {
+    if (error instanceof HttpErrorResponse) {
+      if (422 === error.status) {
+        Object.keys(error.error).forEach(prop => {
+          const formControl = this.registerForm.get(prop);
+          if (formControl) {
+            formControl.setErrors({
+              serverError: error.error[prop]
+            });
+          }
+        });
+      } else if (400 === error.status) {
+        this.errorMessage = error.error;
+      } else if (500 === error.status) {
+        this.errorMessage = 'Une erreur serveur s\'est produite';
+      } else if (error.status === 403) {
+        this.errorMessage = 'Vous devez être connecté pour ajouter un produit.';
+      } else if (error.status === 401) {
+        this.errorMessage = 'Vous n`\'êtes pas autoriser à effectuer cette action';
+      }
+    }
+  }
 
-   private resetForm() {
-       this.registerForm.reset();
-       for (const key in this.registerForm.controls) {
-           if (!this.registerForm.controls[key]) {
-               continue;
-           }
-           this.registerForm.controls[key].setErrors(null);
-       }
-   }
+  private resetForm() {
+    this.registerForm.reset();
+    for (const key in this.registerForm.controls) {
+      if (!this.registerForm.controls[key]) {
+        continue;
+      }
+      this.registerForm.controls[key].setErrors(null);
+    }
+  }
 
-   public openDialogSuccess(): void {
-       this.dialog.open(
-           DialogSuccessComponent,
-           {
-               width: WIDTH,
-               height: HEIGHT
-           }
-       );
-   }
+  public openDialogSuccess(): void {
+    this.dialog.open(
+      DialogSuccessComponent,
+      {
+        width: WIDTH,
+        height: HEIGHT
+      }
+    );
+  }
 
-   equals(objOne, objTwo) {
+  equals(objOne, objTwo) {
     if (typeof objOne !== 'undefined' && typeof objTwo !== 'undefined') {
       return objOne.id === objTwo.id;
     }
@@ -164,11 +165,10 @@ export class CreateMenuComponent implements OnInit {
 
   getProducts() {
     this.servicesDataService.getAllProduct()
-    .subscribe(data => {
-      console.log(data.body);
-      this.products = data.body as Array<Product>;
-    }, err => {
-      this.products = [];
-    });
+      .subscribe(data => {
+        this.products = data.body as Array<Product>;
+      }, err => {
+        this.products = [];
+      });
   }
 }
