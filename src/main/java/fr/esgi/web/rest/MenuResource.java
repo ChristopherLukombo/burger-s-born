@@ -25,6 +25,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import fr.esgi.annotation.Authorized;
 import fr.esgi.config.ErrorMessage;
 import fr.esgi.exception.BurgerSTerminalException;
 import fr.esgi.service.MenuService;
@@ -61,6 +62,7 @@ public class MenuResource {
 	 * @throws URISyntaxException 
 	 * 
 	 */
+	@Authorized(values = { "ROLE_ADMIN" })
 	@ApiOperation(value = "Create a menu")
 	@PostMapping("/new/menu")
 	public ResponseEntity<MenuDTO> createMenu(@RequestBody @Valid MenuDTO menuDTO, Locale locale) throws BurgerSTerminalException, URISyntaxException{
@@ -137,7 +139,7 @@ public class MenuResource {
 	 * @param id the id of the menutDTO to delete
 	 * @return the ResponseEntity with status 200 (OK)
 	 */
-	
+	@Authorized(values = { "ROLE_ADMIN" })
 	@ApiOperation(value = "Delete a menu.")
 	@DeleteMapping("/delete/menu/{id}")
 	public ResponseEntity<Void> deleteMenu(@PathVariable Long id) {
@@ -154,6 +156,7 @@ public class MenuResource {
 	 * @return the ResponseEntity with status 200 (OK) and with body the assignmentModuleDTO
 	 * @throws BurgerSTerminalException if the id of command is empty.
 	 */
+	@Authorized(values = { "ROLE_ADMIN" })
 	@ApiOperation(value = "Update a menu.")
 	@PutMapping("/menu")
 	public ResponseEntity<MenuDTO> updateMenu(@RequestBody @Valid MenuDTO menuDTO, Locale locale) throws BurgerSTerminalException {

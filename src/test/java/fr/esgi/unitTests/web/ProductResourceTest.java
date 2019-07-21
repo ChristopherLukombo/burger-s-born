@@ -189,6 +189,68 @@ public class ProductResourceTest {
 	}
 	
 	@Test
+	public void shouldFindAllInListWhenIsOK() throws Exception {
+		// Given 
+		List<Product> products = new ArrayList<>();
+		products.add(getProduct());
+
+		// When
+		when(productRepository.findAll()).thenReturn(products);
+		when(productMapper.productToProductDTO(((Product) any()))).thenReturn(getProductDTO());
+
+		// Then
+		mockMvc.perform(get("/api/products/all")
+				.contentType(TestUtil.APPLICATION_JSON_UTF8))
+		.andExpect(status().isOk());
+	}
+
+	@Test
+	public void shouldFindAllInListWhenIsEmpty() throws Exception {
+		// Given 
+		List<Product> products = new ArrayList<>();
+
+		// When
+		when(productRepository.findAll()).thenReturn(products);
+		when(productMapper.productToProductDTO(((Product) any()))).thenReturn(getProductDTO());
+
+		// Then
+		mockMvc.perform(get("/api/products/all")
+				.contentType(TestUtil.APPLICATION_JSON_UTF8))
+		.andExpect(status().isNotFound());
+	}
+	
+	@Test
+	public void shouldFindAllByMenuIdWhenIsOK() throws Exception {
+		// Given 
+		List<Product> products = new ArrayList<>();
+		products.add(getProduct());
+
+		// When
+		when(productRepository.findAllByMenuId(anyLong())).thenReturn(products);
+		when(productMapper.productToProductDTO(((Product) any()))).thenReturn(getProductDTO());
+
+		// Then
+		mockMvc.perform(get("/api/product/1")
+				.contentType(TestUtil.APPLICATION_JSON_UTF8))
+		.andExpect(status().isOk());
+	}
+
+	@Test
+	public void shouldFindAllByMenuIdWhenIsEmpty() throws Exception {
+		// Given 
+		List<Product> products = new ArrayList<>();
+
+		// When
+		when(productRepository.findAllByMenuId(anyLong())).thenReturn(products);
+		when(productMapper.productToProductDTO(((Product) any()))).thenReturn(getProductDTO());
+
+		// Then
+		mockMvc.perform(get("/api/product/1")
+				.contentType(TestUtil.APPLICATION_JSON_UTF8))
+		.andExpect(status().isNotFound());
+	}
+	
+	@Test
 	public void shouldFindProductsByCategoryNameWhenIsOK() throws Exception {
 		// Given
 		List<Product> content = new ArrayList<>();
