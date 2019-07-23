@@ -1,48 +1,24 @@
 package fr.esgi.config;
 
-import java.io.IOException;
-
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
-import org.springframework.core.io.ClassPathResource;
-import org.springframework.core.io.Resource;
 import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
-import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.i18n.CookieLocaleResolver;
 import org.springframework.web.servlet.i18n.LocaleChangeInterceptor;
-import org.springframework.web.servlet.resource.PathResourceResolver;
 
 @Configuration
 @Profile("prod")
 public class WebMvcConfig implements WebMvcConfigurer {
-	
-	@Override
-	public void addResourceHandlers(ResourceHandlerRegistry registry) {
-		registry.addResourceHandler("/**")
-		.addResourceLocations("classpath:/static/")
-		.resourceChain(true)
-		.addResolver(new PathResourceResolver() {
-			@Override
-			protected Resource getResource(String resourcePath,
-					Resource location) throws IOException {
-				Resource requestedResource = location.createRelative(resourcePath);
-				return requestedResource.exists() && requestedResource.isReadable() ? requestedResource
-						: new ClassPathResource("/static/index.html");
-			}
-		});
-	}
-	
+
 	@Bean
-	@Profile("dev & prod")
     public LocaleResolver localeResolver() {
         return new CookieLocaleResolver();
     }
 	
     @Bean
-	@Profile("dev & prod")
     public LocaleChangeInterceptor localeInterceptor() {
         LocaleChangeInterceptor localeInterceptor = new LocaleChangeInterceptor();
         localeInterceptor.setParamName("lang");
@@ -50,7 +26,6 @@ public class WebMvcConfig implements WebMvcConfigurer {
     }
     
     @Override
-	@Profile("dev & prod")
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(localeInterceptor());
     }

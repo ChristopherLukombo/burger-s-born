@@ -31,6 +31,7 @@ import { ServicesDataService } from './services/services-data.service';
 import { StepOrderComponent } from './step-order/step-order.component';
 import { CreateMenuComponent } from './create-menu/create-menu.component';
 import { CreateProductComponent } from './create-product/create-product.component';
+import { LocationStrategy, HashLocationStrategy } from '@angular/common';
 
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http, 'assets/i18n/', '.json');
@@ -109,7 +110,8 @@ export function tokenGetter() {
     AuthProviderService,
     LocalStorageService,
     AuthGuard,
-    MatDatepickerModule
+    MatDatepickerModule,
+    {provide: LocationStrategy, useClass: HashLocationStrategy}
   ],
   schemas: [ CUSTOM_ELEMENTS_SCHEMA ],
   bootstrap: [AppComponent]
