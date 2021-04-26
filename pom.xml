@@ -30,7 +30,7 @@
 		<!-- dependencies -->
 		<node.version>v8.11.3</node.version>
 		<yarn.version>v1.3.2</yarn.version>
-		<commons-io.version>2.6</commons-io.version>
+		<commons-io.version>2.7</commons-io.version>
 		<org.mapstruct.version>1.2.0.CR2</org.mapstruct.version>
 
 		<!-- Sonar properties -->
